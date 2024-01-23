@@ -1,8 +1,7 @@
 package constants
 
 const (
-	PluginCode string = "OCI"
+	PluginCode string = "MAAS"
 
-	OciRegistry string = "oci-registry"
-	EcrRegistry string = "ecr-registry"
+	MaasInstance string = "maas instance"
 )

@@ -31,7 +31,7 @@ var _ = Describe("OCIValidator controller", Ordered, func() {
 			Namespace: validatorNamespace,
 		},
 		Spec: v1alpha1.MaasValidatorSpec{
-			OciRegistryRules: []v1alpha1.OciRegistryRule{
+			MaasInstanceRules: []v1alpha1.MaasInstanceRule{
 				{
 					Host:      "foo1.registry.io",
 					Artifacts: []v1alpha1.Artifact{},

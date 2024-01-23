@@ -27,18 +27,18 @@ import (
 	"github.com/spectrocloud-labs/validator/pkg/util/ptr"
 )
 
-type OciRuleService struct {
+type MaasRuleService struct {
 	log logr.Logger
 }
 
-func NewOciRuleService(log logr.Logger) *OciRuleService {
-	return &OciRuleService{
+func NewMaasRuleService(log logr.Logger) *MaasRuleService {
+	return &MaasRuleService{
 		log: log,
 	}
 }
 
-// ReconcileOciRegistryRule reconciles an OCI registry rule from the OCIValidator config
-func (s *OciRuleService) ReconcileOciRegistryRule(rule v1alpha1.OciRegistryRule, username, password string) (*vapitypes.ValidationResult, error) {
+// ReconcileMaasInstanceRule reconciles a MaaS instance rule from the MaasValidator config
+func (s *MaasRuleService) ReconcileMaasInstanceRule(rule v1alpha1.MaasInstanceRule, username, password string) (*vapitypes.ValidationResult, error) {
 	vr := buildValidationResult(rule)
 
 	opts, err := setupTransportOpts([]remote.Option{}, rule.CaCert)
@@ -297,18 +297,18 @@ func setupTransportOpts(opts []remote.Option, caCert string) ([]remote.Option, e
 }
 
 // buildValidationResult builds a default ValidationResult for a given validation type
-func buildValidationResult(rule v1alpha1.OciRegistryRule) *types.ValidationResult {
+func buildValidationResult(rule v1alpha1.MaasInstanceRule) *types.ValidationResult {
 	state := vapi.ValidationSucceeded
 	latestCondition := vapi.DefaultValidationCondition()
 	latestCondition.Details = make([]string, 0)
 	latestCondition.Failures = make([]string, 0)
-	latestCondition.Message = fmt.Sprintf("All %s checks passed", constants.OciRegistry)
+	latestCondition.Message = fmt.Sprintf("All %s checks passed", constants.MaasInstance)
 	latestCondition.ValidationRule = rule.Name()
-	latestCondition.ValidationType = constants.OciRegistry
+	latestCondition.ValidationType = constants.MaasInstance
 	return &types.ValidationResult{Condition: &latestCondition, State: &state}
 }
 
-func (s *OciRuleService) updateResult(vr *types.ValidationResult, errs []error, errMsg, ruleName string, details ...string) {
+func (s *MaasRuleService) updateResult(vr *types.ValidationResult, errs []error, errMsg, ruleName string, details ...string) {
 	if len(errs) > 0 {
 		vr.State = ptr.Ptr(vapi.ValidationFailed)
 		vr.Condition.Message = errMsg

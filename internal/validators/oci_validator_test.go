@@ -35,7 +35,7 @@ const (
 )
 
 var (
-	vr = buildValidationResult(v1alpha1.OciRegistryRule{})
+	vr = buildValidationResult(v1alpha1.MaasInstanceRule{})
 )
 
 func TestParseEcrRegion(t *testing.T) {
@@ -340,7 +340,7 @@ func TestValidateRepos(t *testing.T) {
 	}
 }
 
-func TestReconcileOciRegistryRule(t *testing.T) {
+func TestReconcileMaasInstanceRule(t *testing.T) {
 	s1 := httptest.NewServer(registry.New())
 	defer s1.Close()
 
@@ -350,19 +350,19 @@ func TestReconcileOciRegistryRule(t *testing.T) {
 	}
 
 	type testCase struct {
-		rule      v1alpha1.OciRegistryRule
+		rule      v1alpha1.MaasInstanceRule
 		expectErr bool
 	}
 
 	testCases := []testCase{
 		{
-			rule: v1alpha1.OciRegistryRule{
+			rule: v1alpha1.MaasInstanceRule{
 				Host: url.Host,
 			},
 			expectErr: false,
 		},
 		{
-			rule: v1alpha1.OciRegistryRule{
+			rule: v1alpha1.MaasInstanceRule{
 				Host: url.Host,
 				Artifacts: []v1alpha1.Artifact{
 					{
@@ -373,7 +373,7 @@ func TestReconcileOciRegistryRule(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			rule: v1alpha1.OciRegistryRule{
+			rule: v1alpha1.MaasInstanceRule{
 				Host: url.Host,
 				Artifacts: []v1alpha1.Artifact{
 					{
@@ -387,8 +387,8 @@ func TestReconcileOciRegistryRule(t *testing.T) {
 
 	for _, tc := range testCases {
 		l := logr.New(nil)
-		s := NewOciRuleService(l)
-		_, err := s.ReconcileOciRegistryRule(tc.rule, "", "")
+		s := NewMaasRuleService(l)
+		_, err := s.ReconcileMaasInstanceRule(tc.rule, "", "")
 
 		if tc.expectErr {
 			assert.NotNil(t, err)

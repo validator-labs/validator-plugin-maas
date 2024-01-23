@@ -75,14 +75,14 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		}
 	}
 
-	// OCI Registry rules
-	for _, rule := range validator.Spec.OciRegistryRules {
-		ociRuleService := val.NewOciRuleService(r.Log)
+	// Maas Instance rules
+	for _, rule := range validator.Spec.MaasInstanceRules {
+		maasRuleService := val.NewMaasRuleService(r.Log)
 		username, password := r.secretKeyAuth(req, rule)
 
-		validationResult, err := ociRuleService.ReconcileOciRegistryRule(rule, username, password)
+		validationResult, err := maasRuleService.ReconcileMaasInstanceRule(rule, username, password)
 		if err != nil {
-			r.Log.V(0).Error(err, "failed to reconcile OCI Registry rule")
+			r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule")
 		}
 		vres.SafeUpdateValidationResult(r.Client, nn, validationResult, err, r.Log)
 	}
@@ -98,7 +98,7 @@ func (r *MaasValidatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func (r *MaasValidatorReconciler) secretKeyAuth(req ctrl.Request, rule v1alpha1.OciRegistryRule) (string, string) {
+func (r *MaasValidatorReconciler) secretKeyAuth(req ctrl.Request, rule v1alpha1.MaasInstanceRule) (string, string) {
 	if rule.Auth.SecretName == "" {
 		return "", ""
 	}
