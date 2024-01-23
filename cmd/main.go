@@ -86,12 +86,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controller.OciValidatorReconciler{
+	if err = (&controller.MaasValidatorReconciler{
 		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("OciValidator"),
+		Log:    ctrl.Log.WithName("controllers").WithName("MaasValidator"),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "OciValidator")
+		setupLog.Error(err, "unable to create controller", "controller", "MaasValidator")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

@@ -21,13 +21,13 @@ import (
 )
 
 // MaasValidatorSpec defines the desired state of MaasValidator
-type OciValidatorSpec struct {
+type MaasValidatorSpec struct {
 	// +kubebuilder:validation:MaxItems=5
 	// +kubebuilder:validation:XValidation:message="OciRegistryRules must have a unique Host",rule="self.all(e, size(self.filter(x, x.host == e.host)) == 1)"
 	OciRegistryRules []OciRegistryRule `json:"ociRegistryRules,omitempty" yaml:"ociRegistryRules,omitempty"`
 }
 
-func (s OciValidatorSpec) ResultCount() int {
+func (s MaasValidatorSpec) ResultCount() int {
 	return len(s.OciRegistryRules)
 }
 
@@ -67,30 +67,30 @@ type Auth struct {
 	SecretName string `json:"secretName" yaml:"secretName"`
 }
 
-// OciValidatorStatus defines the observed state of OciValidator
-type OciValidatorStatus struct{}
+// MaasValidatorStatus defines the observed state of MaasValidator
+type MaasValidatorStatus struct{}
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// OciValidator is the Schema for the maasvalidators API
-type OciValidator struct {
+// MaasValidator is the Schema for the maasvalidators API
+type MaasValidator struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   OciValidatorSpec   `json:"spec,omitempty"`
-	Status OciValidatorStatus `json:"status,omitempty"`
+	Spec   MaasValidatorSpec   `json:"spec,omitempty"`
+	Status MaasValidatorStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// OciValidatorList contains a list of OciValidator
-type OciValidatorList struct {
+// MaasValidatorList contains a list of MaasValidator
+type MaasValidatorList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []OciValidator `json:"items"`
+	Items           []MaasValidator `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&OciValidator{}, &OciValidatorList{})
+	SchemeBuilder.Register(&MaasValidator{}, &MaasValidatorList{})
 }

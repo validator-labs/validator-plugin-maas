@@ -25,12 +25,12 @@ var _ = Describe("OCIValidator controller", Ordered, func() {
 		}
 	})
 
-	val := &v1alpha1.OciValidator{
+	val := &v1alpha1.MaasValidator{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      ociValidatorName,
 			Namespace: validatorNamespace,
 		},
-		Spec: v1alpha1.OciValidatorSpec{
+		Spec: v1alpha1.MaasValidatorSpec{
 			OciRegistryRules: []v1alpha1.OciRegistryRule{
 				{
 					Host:      "foo1.registry.io",

@@ -38,8 +38,8 @@ import (
 	vres "github.com/spectrocloud-labs/validator/pkg/validationresult"
 )
 
-// OciValidatorReconciler reconciles a OciValidator object
-type OciValidatorReconciler struct {
+// MaasValidatorReconciler reconciles a MaasValidator object
+type MaasValidatorReconciler struct {
 	client.Client
 	Log    logr.Logger
 	Scheme *runtime.Scheme
@@ -50,10 +50,10 @@ type OciValidatorReconciler struct {
 //+kubebuilder:rbac:groups=validation.spectrocloud.labs,resources=maasvalidators/finalizers,verbs=update
 
 // Reconcile reconciles each rule found in each OCIValidator in the cluster and creates ValidationResults accordingly
-func (r *OciValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	r.Log.V(0).Info("Reconciling OciValidator", "name", req.Name, "namespace", req.Namespace)
+func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	r.Log.V(0).Info("Reconciling MaasValidator", "name", req.Name, "namespace", req.Namespace)
 
-	validator := &v1alpha1.OciValidator{}
+	validator := &v1alpha1.MaasValidator{}
 	if err := r.Get(ctx, req.NamespacedName, validator); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
@@ -92,13 +92,13 @@ func (r *OciValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *OciValidatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *MaasValidatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&v1alpha1.OciValidator{}).
+		For(&v1alpha1.MaasValidator{}).
 		Complete(r)
 }
 
-func (r *OciValidatorReconciler) secretKeyAuth(req ctrl.Request, rule v1alpha1.OciRegistryRule) (string, string) {
+func (r *MaasValidatorReconciler) secretKeyAuth(req ctrl.Request, rule v1alpha1.OciRegistryRule) (string, string) {
 	if rule.Auth.SecretName == "" {
 		return "", ""
 	}
@@ -131,7 +131,7 @@ func (r *OciValidatorReconciler) secretKeyAuth(req ctrl.Request, rule v1alpha1.O
 	return string(username), string(password)
 }
 
-func buildValidationResult(validator *v1alpha1.OciValidator) *vapi.ValidationResult {
+func buildValidationResult(validator *v1alpha1.MaasValidator) *vapi.ValidationResult {
 	return &vapi.ValidationResult{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      validationResultName(validator),
@@ -153,6 +153,6 @@ func buildValidationResult(validator *v1alpha1.OciValidator) *vapi.ValidationRes
 	}
 }
 
-func validationResultName(validator *v1alpha1.OciValidator) string {
+func validationResultName(validator *v1alpha1.MaasValidator) string {
 	return fmt.Sprintf("validator-plugin-maas-%s", validator.Name)
 }

@@ -7,8 +7,8 @@ metadata:
 spec:
   group: validation.spectrocloud.labs
   names:
-    kind: OciValidator
-    listKind: OciValidatorList
+    kind: MaasValidator
+    listKind: MaasValidatorList
     plural: maasvalidators
     singular: maasvalidator
   scope: Namespaced
@@ -16,7 +16,7 @@ spec:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: OciValidator is the Schema for the maasvalidators API
+        description: MaasValidator is the Schema for the maasvalidators API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -31,7 +31,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: OciValidatorSpec defines the desired state of OciValidator
+            description: MaasValidatorSpec defines the desired state of MaasValidator
             properties:
               ociRegistryRules:
                 items:
@@ -83,7 +83,7 @@ spec:
                   rule: self.all(e, size(self.filter(x, x.host == e.host)) == 1)
             type: object
           status:
-            description: OciValidatorStatus defines the observed state of OciValidator
+            description: MaasValidatorStatus defines the observed state of MaasValidator
             type: object
         type: object
     served: true

@@ -129,12 +129,12 @@ var _ = BeforeSuite(func() {
 	})
 	Expect(err).ToNot(HaveOccurred(), "failed to init manager")
 
-	err = (&OciValidatorReconciler{
+	err = (&MaasValidatorReconciler{
 		Client: k8sManager.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("OciValidator"),
+		Log:    ctrl.Log.WithName("controllers").WithName("MaasValidator"),
 		Scheme: k8sManager.GetScheme(),
 	}).SetupWithManager(k8sManager)
-	Expect(err).ToNot(HaveOccurred(), "failed to start OciValidator controller")
+	Expect(err).ToNot(HaveOccurred(), "failed to start MaasValidator controller")
 
 	go func() {
 		defer GinkgoRecover()

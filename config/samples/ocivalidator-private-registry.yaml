@@ -1,5 +1,5 @@
 apiVersion: validation.spectrocloud.labs/v1alpha1
-kind: OciValidator
+kind: MaasValidator
 metadata:
   name: maasvalidator-sample-private-oci-registries
 spec:
