@@ -20,7 +20,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// OciValidatorSpec defines the desired state of OciValidator
+// MaasValidatorSpec defines the desired state of MaasValidator
 type OciValidatorSpec struct {
 	// +kubebuilder:validation:MaxItems=5
 	// +kubebuilder:validation:XValidation:message="OciRegistryRules must have a unique Host",rule="self.all(e, size(self.filter(x, x.host == e.host)) == 1)"
@@ -73,7 +73,7 @@ type OciValidatorStatus struct{}
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// OciValidator is the Schema for the ocivalidators API
+// OciValidator is the Schema for the maasvalidators API
 type OciValidator struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

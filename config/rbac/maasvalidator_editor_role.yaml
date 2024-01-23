@@ -1,20 +1,20 @@
-# permissions for end users to edit ocivalidators.
+# permissions for end users to edit maasvalidators.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: clusterrole
-    app.kubernetes.io/instance: ocivalidator-editor-role
+    app.kubernetes.io/instance: maasvalidator-editor-role
     app.kubernetes.io/component: rbac
     app.kubernetes.io/created-by: validator-plugin-maas
     app.kubernetes.io/part-of: validator-plugin-maas
     app.kubernetes.io/managed-by: kustomize
-  name: ocivalidator-editor-role
+  name: maasvalidator-editor-role
 rules:
 - apiGroups:
   - validation.spectrocloud.labs
   resources:
-  - ocivalidators
+  - maasvalidators
   - validationresults
   verbs:
   - create
@@ -27,7 +27,7 @@ rules:
 - apiGroups:
   - validation.spectrocloud.labs
   resources:
-  - ocivalidators/status
+  - maasvalidators/status
   - validationresults/status
   verbs:
   - get

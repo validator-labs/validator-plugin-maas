@@ -7,7 +7,7 @@ rules:
 - apiGroups:
   - validation.spectrocloud.labs
   resources:
-  - ocivalidators
+  - maasvalidators
   - validationresults
   verbs:
   - create
@@ -20,13 +20,13 @@ rules:
 - apiGroups:
   - validation.spectrocloud.labs
   resources:
-  - ocivalidators/finalizers
+  - maasvalidators/finalizers
   verbs:
   - update
 - apiGroups:
   - validation.spectrocloud.labs
   resources:
-  - ocivalidators/status
+  - maasvalidators/status
   - validationresults/status
   verbs:
   - get

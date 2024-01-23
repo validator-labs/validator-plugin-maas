@@ -4,20 +4,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.12.0
-  name: ocivalidators.validation.spectrocloud.labs
+  name: maasvalidators.validation.spectrocloud.labs
 spec:
   group: validation.spectrocloud.labs
   names:
-    kind: OciValidator
-    listKind: OciValidatorList
-    plural: ocivalidators
-    singular: ocivalidator
+    kind: maasvalidator
+    listKind: maasvalidatorList
+    plural: maasvalidators
+    singular: maasvalidator
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: OciValidator is the Schema for the ocivalidators API
+        description: OciValidator is the Schema for the maasvalidators API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
