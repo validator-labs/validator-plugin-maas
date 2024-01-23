@@ -41,7 +41,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	v1alpha1 "github.com/spectrocloud-labs/validator-plugin-oci/api/v1alpha1"
+	v1alpha1 "github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
 	vapi "github.com/spectrocloud-labs/validator/api/v1alpha1"
 	"github.com/spectrocloud-labs/validator/pkg/util/ptr"
 	//+kubebuilder:scaffold:imports

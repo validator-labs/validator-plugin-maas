@@ -1,5 +1,5 @@
 
-Validator-plugin-oci
+validator-plugin-maas
 ===========
 
 Perform various OCI validations (registry authentication, downloading artifacts, etc.)
@@ -7,7 +7,7 @@ Perform various OCI validations (registry authentication, downloading artifacts,
 
 ## Configuration
 
-The following table lists the configurable parameters of the Validator-plugin-oci chart and their default values.
+The following table lists the configurable parameters of the validator-plugin-maas chart and their default values.
 
 | Parameter                | Description             | Default        |
 | ------------------------ | ----------------------- | -------------- |
@@ -23,7 +23,7 @@ The following table lists the configurable parameters of the Validator-plugin-oc
 | `controllerManager.manager.args` |  | `["--health-probe-bind-address=:8081", "--leader-elect"]` |
 | `controllerManager.manager.containerSecurityContext.allowPrivilegeEscalation` |  | `false` |
 | `controllerManager.manager.containerSecurityContext.capabilities.drop` |  | `["ALL"]` |
-| `controllerManager.manager.image.repository` |  | `"quay.io/spectrocloud-labs/validator-plugin-oci"` |
+| `controllerManager.manager.image.repository` |  | `"quay.io/spectrocloud-labs/validator-plugin-maas"` |
 | `controllerManager.manager.image.tag` | x-release-please-version | `"v0.0.2"` |
 | `controllerManager.manager.resources.limits.cpu` |  | `"500m"` |
 | `controllerManager.manager.resources.limits.memory` |  | `"128Mi"` |

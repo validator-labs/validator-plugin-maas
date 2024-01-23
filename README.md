@@ -1,31 +1,34 @@
-[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/spectrocloud-labs/validator-plugin-oci/issues)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/spectrocloud-labs/validator-plugin-maas/issues)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-![Build](https://github.com/spectrocloud-labs/validator-plugin-oci/actions/workflows/build_container.yaml/badge.svg)
-[![Go Report Card](https://goreportcard.com/badge/github.com/spectrocloud-labs/validator-plugin-oci)](https://goreportcard.com/report/github.com/spectrocloud-labs/validator-plugin-oci)
-[![codecov](https://codecov.io/github/spectrocloud-labs/validator-plugin-oci/graph/badge.svg?token=Q15XUCRNCN)](https://codecov.io/github/spectrocloud-labs/validator-plugin-oci)
-[![Go Reference](https://pkg.go.dev/badge/github.com/spectrocloud-labs/validator-plugin-oci.svg)](https://pkg.go.dev/github.com/spectrocloud-labs/validator-plugin-oci)
+![Build](https://github.com/spectrocloud-labs/validator-plugin-maas/actions/workflows/build_container.yaml/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/spectrocloud-labs/validator-plugin-maas)](https://goreportcard.com/report/github.com/spectrocloud-labs/validator-plugin-maas)
+[![codecov](https://codecov.io/github/spectrocloud-labs/validator-plugin-maas/graph/badge.svg?token=Q15XUCRNCN)](https://codecov.io/github/spectrocloud-labs/validator-plugin-maas)
+[![Go Reference](https://pkg.go.dev/badge/github.com/spectrocloud-labs/validator-plugin-maas.svg)](https://pkg.go.dev/github.com/spectrocloud-labs/validator-plugin-maas)
 
-# validator-plugin-oci
-The OCI [validator](https://github.com/spectrocloud-labs/validator) plugin ensures that your OCI configuration matches a user-configurable expected state.
+# validator-plugin-maas
+The MaaS [validator](https://github.com/spectrocloud-labs/validator) plugin ensures that your MaaS configuration matches a user-configurable expected state.
 
 ## Description
-The OCI validator plugin reconciles `OciValidator` custom resources to perform the following validations against your OCI registry:
 
-1. Validate OCI registry authentication
-2. Validate the existence of arbitrary OCI artifacts (pack, image, etc.)
-3. Validate downloading arbitrary OCI artifacts
+The MaaS validator plugin reconciles `MaasValidator` custom resources to perform the following validations against your MaaS Instance:
 
-Each `OciValidator` CR is (re)-processed every two minutes to continuously ensure that your OCI registry matches the expected state.
+1. Validate MaaS authentication
+2. Validate that DNS resolution works (internal and extrnal)
+3. Validate that specific OS images exist
+4. Validate desired capacity (X machine in each AZ)
+5. Validate desired minimum CPU\RAM\Root Disk size resources per machine.
 
-See the [samples](https://github.com/spectrocloud-labs/validator-plugin-oci/tree/main/config/samples) directory for example `OciValidator` configurations.
+Each `MaasValidator` CR is (re)-processed every two minutes to continuously ensure that your OCI registry matches the expected state.
+
+See the [samples](https://github.com/spectrocloud-labs/validator-plugin-maas/tree/main/config/samples) directory for example `MaasValidator` configurations.
 
 ## Installation
-The OCI validator plugin is meant to be [installed by validator](https://github.com/spectrocloud-labs/validator/tree/gh_pages#installation) (via a ValidatorConfig), but it can also be installed directly as follows:
+The MaaS validator plugin is meant to be [installed by validator](https://github.com/spectrocloud-labs/validator/tree/gh_pages#installation) (via a ValidatorConfig), but it can also be installed directly as follows:
 
 ```bash
-helm repo add validator-plugin-oci https://spectrocloud-labs.github.io/validator-plugin-oci
+helm repo add validator-plugin-maas https://spectrocloud-labs.github.io/validator-plugin-maas
 helm repo update
-helm install validator-plugin-oci validator-plugin-oci/validator-plugin-oci -n validator-plugin-oci --create-namespace
+helm install validator-plugin-maas validator-plugin-maas/validator-plugin-maas -n validator-plugin-maas --create-namespace
 ```
 
 ## Getting Started
@@ -42,13 +45,13 @@ kubectl apply -f config/samples/
 2. Build and push your image to the location specified by `IMG`:
 
 ```sh
-make docker-build docker-push IMG=<some-registry>/validator-plugin-oci:tag
+make docker-build docker-push IMG=<some-registry>/validator-plugin-maas:tag
 ```
 
 3. Deploy the controller to the cluster with the image specified by `IMG`:
 
 ```sh
-make deploy IMG=<some-registry>/validator-plugin-oci:tag
+make deploy IMG=<some-registry>/validator-plugin-maas:tag
 ```
 
 ### Uninstall CRDs

@@ -1,4 +1,4 @@
-module github.com/spectrocloud-labs/validator-plugin-oci
+module github.com/spectrocloud-labs/validator-plugin-maas
 
 go 1.20
 

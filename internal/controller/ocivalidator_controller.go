@@ -30,9 +30,9 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/spectrocloud-labs/validator-plugin-oci/api/v1alpha1"
-	"github.com/spectrocloud-labs/validator-plugin-oci/internal/constants"
-	val "github.com/spectrocloud-labs/validator-plugin-oci/internal/validators"
+	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
+	"github.com/spectrocloud-labs/validator-plugin-maas/internal/constants"
+	val "github.com/spectrocloud-labs/validator-plugin-maas/internal/validators"
 	vapi "github.com/spectrocloud-labs/validator/api/v1alpha1"
 	"github.com/spectrocloud-labs/validator/pkg/util/ptr"
 	vres "github.com/spectrocloud-labs/validator/pkg/validationresult"
@@ -154,5 +154,5 @@ func buildValidationResult(validator *v1alpha1.OciValidator) *vapi.ValidationRes
 }
 
 func validationResultName(validator *v1alpha1.OciValidator) string {
-	return fmt.Sprintf("validator-plugin-oci-%s", validator.Name)
+	return fmt.Sprintf("validator-plugin-maas-%s", validator.Name)
 }

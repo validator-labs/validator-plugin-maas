@@ -1,14 +1,14 @@
-name: validator-plugin-oci
+name: validator-plugin-maas
 version: v2beta1
 
 vars:
   GOARCH:
     command: go
     args: ["env", "GOARCH"]
-  IMAGE: quay.io/spectrocloud-labs/validator-plugin-oci
+  IMAGE: quay.io/spectrocloud-labs/validator-plugin-maas
 
 images:
-  validator-plugin-oci:
+  validator-plugin-maas:
     image: ${IMAGE}
     tags:
     - dev
@@ -20,15 +20,15 @@ images:
       - --platform=linux/${GOARCH}
 
 deployments:
-  validator-plugin-oci:
-    namespace: validator-plugin-oci-system
+  validator-plugin-maas:
+    namespace: validator-plugin-maas-system
     kubectl:
       kustomize: true
       manifests:
       - config/devspace
 
 dev:
-  validator-plugin-oci:
+  validator-plugin-maas:
     imageSelector: ${IMAGE}
     terminal:
       enabled: true

@@ -4,8 +4,8 @@ metadata:
   name: {{ include "chart.fullname" . }}-controller-manager
   labels:
     app.kubernetes.io/component: manager
-    app.kubernetes.io/created-by: validator-plugin-oci
-    app.kubernetes.io/part-of: validator-plugin-oci
+    app.kubernetes.io/created-by: validator-plugin-maas
+    app.kubernetes.io/part-of: validator-plugin-maas
     control-plane: controller-manager
   {{- include "chart.labels" . | nindent 4 }}
 spec:

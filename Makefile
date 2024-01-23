@@ -1,6 +1,6 @@
 
 # Image URL to use all building/pushing image targets
-IMG ?= quay.io/spectrocloud-labs/validator-plugin-oci:latest
+IMG ?= quay.io/spectrocloud-labs/validator-plugin-maas:latest
 
 GOARCH ?= $(shell go env GOARCH)
 
@@ -72,7 +72,7 @@ setup-validator:
 
 .PHONY: dev
 dev: ## Run a controller via devspace
-	devspace dev -n validator-plugin-oci-system
+	devspace dev -n validator-plugin-maas-system
 
 ##@ Build
 
@@ -203,11 +203,11 @@ helm-build: helm helmify manifests kustomize
 
 .PHONY: helm-package
 helm-package: generate manifests
-	$(HELM) package --version $(CHART_VERSION) chart/validator-plugin-oci/
+	$(HELM) package --version $(CHART_VERSION) chart/validator-plugin-maas/
 	mkdir -p charts && mv validator-*.tgz charts
-	$(HELM) repo index --url https://spectrocloud-labs.github.io/validator-plugin-oci ./chart
-	mv charts/validator-plugin-oci/index.yaml index.yaml
+	$(HELM) repo index --url https://spectrocloud-labs.github.io/validator-plugin-mass ./chart
+	mv charts/validator-plugin-maas/index.yaml index.yaml
 
 .PHONY: frigate
 frigate:
-	frigate gen chart/validator-plugin-oci --no-deps -o markdown > chart/validator-plugin-oci/README.md
+	frigate gen chart/validator-plugin-maas --no-deps -o markdown > chart/validator-plugin-maas/README.md

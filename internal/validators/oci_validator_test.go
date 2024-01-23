@@ -16,7 +16,7 @@ import (
 	"github.com/google/go-containerregistry/pkg/registry"
 	"github.com/google/go-containerregistry/pkg/v1/random"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
-	"github.com/spectrocloud-labs/validator-plugin-oci/api/v1alpha1"
+	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/spectrocloud-labs/validator/pkg/types"
 	"github.com/stretchr/testify/assert"
 )

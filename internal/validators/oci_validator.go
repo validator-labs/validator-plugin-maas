@@ -19,8 +19,8 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"github.com/google/go-containerregistry/pkg/v1/validate"
 
-	"github.com/spectrocloud-labs/validator-plugin-oci/api/v1alpha1"
-	"github.com/spectrocloud-labs/validator-plugin-oci/internal/constants"
+	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
+	"github.com/spectrocloud-labs/validator-plugin-maas/internal/constants"
 	vapi "github.com/spectrocloud-labs/validator/api/v1alpha1"
 	"github.com/spectrocloud-labs/validator/pkg/types"
 	vapitypes "github.com/spectrocloud-labs/validator/pkg/types"

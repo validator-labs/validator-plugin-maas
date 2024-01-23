@@ -66,8 +66,8 @@ jobs:
       packages: write
       id-token: write
     env:
-      IMAGE_TAG: quay.io/spectrocloud-labs/validator-plugin-oci:${{ needs.release-please.outputs.tag_name }}
-      IMAGE_NAME: validator-plugin-oci
+      IMAGE_TAG: quay.io/spectrocloud-labs/validator-plugin-maas:${{ needs.release-please.outputs.tag_name }}
+      IMAGE_NAME: validator-plugin-maas
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
