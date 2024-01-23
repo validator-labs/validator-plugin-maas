@@ -23,15 +23,15 @@ import (
 // MaasValidatorSpec defines the desired state of MaasValidator
 type MaasValidatorSpec struct {
 	// +kubebuilder:validation:MaxItems=5
-	// +kubebuilder:validation:XValidation:message="OciRegistryRules must have a unique Host",rule="self.all(e, size(self.filter(x, x.host == e.host)) == 1)"
-	OciRegistryRules []OciRegistryRule `json:"ociRegistryRules,omitempty" yaml:"ociRegistryRules,omitempty"`
+	// +kubebuilder:validation:XValidation:message="MaasInstanceRules must have a unique Host",rule="self.all(e, size(self.filter(x, x.host == e.host)) == 1)"
+	MaasInstanceRules []MaasInstanceRule `json:"ociRegistryRules,omitempty" yaml:"ociRegistryRules,omitempty"`
 }
 
 func (s MaasValidatorSpec) ResultCount() int {
-	return len(s.OciRegistryRules)
+	return len(s.MaasInstanceRules)
 }
 
-type OciRegistryRule struct {
+type MaasInstanceRule struct {
 	// Host is a reference to the host URL of an OCI compliant registry
 	Host string `json:"host" yaml:"host"`
 
@@ -45,7 +45,7 @@ type OciRegistryRule struct {
 	CaCert string `json:"caCert,omitempty" yaml:"caCert,omitempty"`
 }
 
-func (r OciRegistryRule) Name() string {
+func (r MaasInstanceRule) Name() string {
 	return r.Host
 }
 
