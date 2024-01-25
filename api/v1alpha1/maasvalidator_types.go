@@ -36,9 +36,9 @@ type MaasInstanceRule struct {
 	Host string `json:"host" yaml:"host"`
 
 	// Artifacts is a slice of artifacts in the host registry that should be validated.
-	Artifacts []Artifact `json:"artifacts,omitempty" yaml:"artifacts,omitempty"`
+	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"artifacts,omitempty"`
 
-	// Auth provides authentication information for the registry
+	// Auth provides authentication information for the MaaS Instance
 	Auth Auth `json:"auth,omitempty" yaml:"auth,omitempty"`
 
 	// CaCert is the base64 encoded CA Certificate
@@ -49,18 +49,11 @@ func (r MaasInstanceRule) Name() string {
 	return r.Host
 }
 
-type Artifact struct {
-	// Ref is the path to the artifact in the host registry that should be validated.
-	// An individual artifact can take any of the following forms:
-	// <repository-path>/<artifact-name>
-	// <repository-path>/<artifact-name>:<tag>
-	// <repository-path>/<artifact-name>@<digest>
-	//
-	// When no tag or digest are specified, the default tag "latest" is used.
-	Ref string `json:"ref" yaml:"ref"`
+type OSImage struct {
+	Name string `json:"name" yaml:"name"`
 
-	// Download specifies whether a download attempt should be made for the artifact
-	Download bool `json:"download,omitempty" yaml:"download,omitempty"`
+	// OS Architecture
+	Architecture string `json:"os-arch" yaml:"os-arch"`
 }
 
 type Auth struct {
