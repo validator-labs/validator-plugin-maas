@@ -35,14 +35,11 @@ type MaasInstanceRule struct {
 	// Host is a reference to the host URL of an OCI compliant registry
 	Host string `json:"host" yaml:"host"`
 
-	// Artifacts is a slice of artifacts in the host registry that should be validated.
+	// OSImages is a list of bootable os images
 	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"artifacts,omitempty"`
 
 	// Auth provides authentication information for the MaaS Instance
 	Auth Auth `json:"auth,omitempty" yaml:"auth,omitempty"`
-
-	// CaCert is the base64 encoded CA Certificate
-	CaCert string `json:"caCert,omitempty" yaml:"caCert,omitempty"`
 }
 
 func (r MaasInstanceRule) Name() string {
@@ -58,6 +55,7 @@ type OSImage struct {
 
 type Auth struct {
 	SecretName string `json:"secretName" yaml:"secretName"`
+	TokenKey   string `json:"token" yaml:"token"`
 }
 
 // MaasValidatorStatus defines the observed state of MaasValidator
