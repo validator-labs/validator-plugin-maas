@@ -54,6 +54,7 @@ spec:
                       items:
                         properties:
                           name:
+                            description: The name of the bootable image
                             type: string
                           os-arch:
                             description: OS Architecture

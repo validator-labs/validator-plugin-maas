@@ -36,7 +36,7 @@ type MaasInstanceRule struct {
 	Host string `json:"host" yaml:"host"`
 
 	// OSImages is a list of bootable os images
-	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"artifacts,omitempty"`
+	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"bootable-images,omitempty"`
 
 	// Auth provides authentication information for the MaaS Instance
 	Auth Auth `json:"auth,omitempty" yaml:"auth,omitempty"`
@@ -47,8 +47,8 @@ func (r MaasInstanceRule) Name() string {
 }
 
 type OSImage struct {
+	// The name of the bootable image
 	Name string `json:"name" yaml:"name"`
-
 	// OS Architecture
 	Architecture string `json:"os-arch" yaml:"os-arch"`
 }
