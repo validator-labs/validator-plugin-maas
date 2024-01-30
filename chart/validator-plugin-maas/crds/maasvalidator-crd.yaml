@@ -45,9 +45,6 @@ spec:
                           type: string
                         token:
                           type: string
-                      required:
-                      - secretName
-                      - token
                       type: object
                     bootable-images:
                       description: OSImages is a list of bootable os images

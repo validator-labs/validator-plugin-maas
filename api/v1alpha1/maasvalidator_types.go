@@ -34,7 +34,6 @@ func (s MaasValidatorSpec) ResultCount() int {
 type MaasInstanceRule struct {
 	// Host is the URL for your MaaS instance
 	Host string `json:"host" yaml:"host"`
-
 	// OSImages is a list of bootable os images
 	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"bootable-images,omitempty"`
 
@@ -54,8 +53,10 @@ type OSImage struct {
 }
 
 type Auth struct {
+	// +kubebuilder:validation:Optional
 	SecretName string `json:"secretName" yaml:"secretName"`
-	TokenKey   string `json:"token" yaml:"token"`
+	// +kubebuilder:validation:Optional
+	TokenKey string `json:"token" yaml:"token"`
 }
 
 // MaasValidatorStatus defines the observed state of MaasValidator
