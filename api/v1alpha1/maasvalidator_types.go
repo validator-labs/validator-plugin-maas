@@ -32,7 +32,7 @@ func (s MaasValidatorSpec) ResultCount() int {
 }
 
 type MaasInstanceRule struct {
-	// Host is a reference to the host URL of an OCI compliant registry
+	// Host is the URL for your MaaS instance
 	Host string `json:"host" yaml:"host"`
 
 	// OSImages is a list of bootable os images

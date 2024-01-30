@@ -65,8 +65,7 @@ spec:
                         type: object
                       type: array
                     host:
-                      description: Host is a reference to the host URL of an OCI compliant
-                        registry
+                      description: Host is the URL for your MaaS instance
                       type: string
                   required:
                   - host
