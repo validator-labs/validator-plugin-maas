@@ -22,7 +22,6 @@ import (
 	"time"
 
 	"github.com/go-logr/logr"
-	corev1 "k8s.io/api/core/v1"
 	apierrs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -74,12 +73,11 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			return ctrl.Result{}, err
 		}
 	}
-
+	// TODO: create maas client here.
 	// Maas Instance rules
 	for _, rule := range validator.Spec.MaasInstanceRules {
 		maasRuleService := val.NewMaasRuleService(r.Log)
-		username, password := r.secretKeyAuth(req, rule)
-
+		username, password := "", ""
 		validationResult, err := maasRuleService.ReconcileMaasInstanceRule(rule, username, password)
 		if err != nil {
 			r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule")
@@ -96,39 +94,6 @@ func (r *MaasValidatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&v1alpha1.MaasValidator{}).
 		Complete(r)
-}
-
-func (r *MaasValidatorReconciler) secretKeyAuth(req ctrl.Request, rule v1alpha1.MaasInstanceRule) (string, string) {
-	if rule.Auth.SecretName == "" {
-		return "", ""
-	}
-
-	authSecret := &corev1.Secret{}
-	nn := ktypes.NamespacedName{Name: rule.Auth.SecretName, Namespace: req.Namespace}
-
-	if err := r.Get(context.Background(), nn, authSecret); err != nil {
-		if apierrs.IsNotFound(err) {
-			// no secrets found, set creds to empty string
-			r.Log.V(0).Error(err, fmt.Sprintf("auth secret %s not found for rule %s", rule.Auth.SecretName, rule.Name()))
-			return "", ""
-		} else {
-			r.Log.V(0).Error(err, fmt.Sprintf("failed to fetch auth secret %s for rule %s", rule.Auth.SecretName, rule.Name()))
-			return "", ""
-		}
-	}
-
-	errMalformedSecret := fmt.Errorf("malformed secret %s/%s", authSecret.Namespace, authSecret.Name)
-	username, ok := authSecret.Data["username"]
-	if !ok {
-		r.Log.V(0).Error(errMalformedSecret, "Auth secret missing username, defaulting to empty username", "name", rule.Auth.SecretName, "namespace", req.Namespace)
-	}
-
-	password, ok := authSecret.Data["password"]
-	if !ok {
-		r.Log.V(0).Error(errMalformedSecret, "Auth secret missing password, defaulting to empty password", "name", rule.Auth.SecretName, "namespace", req.Namespace)
-	}
-
-	return string(username), string(password)
 }
 
 func buildValidationResult(validator *v1alpha1.MaasValidator) *vapi.ValidationResult {
