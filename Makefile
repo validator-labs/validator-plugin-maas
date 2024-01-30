@@ -1,4 +1,4 @@
-
+PLUGIN_NAME := maas
 # Image URL to use all building/pushing image targets
 IMG ?= quay.io/spectrocloud-labs/validator-plugin-maas:latest
 
@@ -47,6 +47,7 @@ help: ## Display this help.
 .PHONY: manifests
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
 	$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+	@cp -v config/crd/bases/validation.spectrocloud.labs_$(PLUGIN_NAME)validators.yaml chart/validator-plugin-$(PLUGIN_NAME)/crds/$(PLUGIN_NAME)validator-crd.yaml
 
 .PHONY: generate
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
