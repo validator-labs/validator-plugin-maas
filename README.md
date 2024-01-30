@@ -18,7 +18,7 @@ The MaaS validator plugin reconciles `MaasValidator` custom resources to perform
 4. Validate desired capacity (X machine in each AZ)
 5. Validate desired minimum CPU\RAM\Root Disk size resources per machine.
 
-Each `MaasValidator` CR is (re)-processed every two minutes to continuously ensure that your OCI registry matches the expected state.
+Each `MaasValidator` CR is (re)-processed every two minutes to continuously ensure that your MaaS instance matches the expected state.
 
 See the [samples](https://github.com/spectrocloud-labs/validator-plugin-maas/tree/main/config/samples) directory for example `MaasValidator` configurations.
 
