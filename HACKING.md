@@ -37,3 +37,18 @@ make manifests
 ```
 
 This will update: `config/crd/bases/validation.spectrocloud.labs_maasvalidators.yaml`
+
+Build the binary with:
+```
+make
+```
+
+Install the CRDs with:
+```
+make install
+```
+
+Apply the samples:
+```
+kubectl apply -f config/samples/svalidator-osimages.yaml
+```
