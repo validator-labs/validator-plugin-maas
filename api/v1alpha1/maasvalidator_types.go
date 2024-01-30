@@ -24,7 +24,7 @@ import (
 type MaasValidatorSpec struct {
 	// +kubebuilder:validation:MaxItems=5
 	// +kubebuilder:validation:XValidation:message="MaasInstanceRules must have a unique Host",rule="self.all(e, size(self.filter(x, x.host == e.host)) == 1)"
-	MaasInstanceRules []MaasInstanceRule `json:"ociRegistryRules,omitempty" yaml:"ociRegistryRules,omitempty"`
+	MaasInstanceRules []MaasInstanceRule `json:"MaasInstanceRules,omitempty" yaml:"MaasInstanceRules,omitempty"`
 }
 
 func (s MaasValidatorSpec) ResultCount() int {

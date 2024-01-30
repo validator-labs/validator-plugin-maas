@@ -34,7 +34,7 @@ spec:
           spec:
             description: MaasValidatorSpec defines the desired state of MaasValidator
             properties:
-              ociRegistryRules:
+              MaasInstanceRules:
                 items:
                   properties:
                     auth:
@@ -65,7 +65,7 @@ spec:
                         type: object
                       type: array
                     host:
-                      description: Host is the URL for your MaaS instance ....
+                      description: Host is the URL for your MaaS instance
                       type: string
                   required:
                   - host

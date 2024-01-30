@@ -34,7 +34,7 @@ spec:
           spec:
             description: MaasValidatorSpec defines the desired state of MaasValidator
             properties:
-              ociRegistryRules:
+              MaasInstanceRules:
                 items:
                   properties:
                     auth:

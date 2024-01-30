@@ -14,7 +14,7 @@ custom rule definition in `api/v1alpha1/maasvalidator_types.go`
 
 ```
 type MaasInstanceRule struct {
-	// Host is a reference to the host URL of an OCI compliant registry
+	// Host is a reference to the host URL of a MaaS instance
 	Host string `json:"host" yaml:"host"`
 
 	// OSImages is a list of bootable os images
