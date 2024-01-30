@@ -2,7 +2,7 @@
 validator-plugin-maas
 ===========
 
-Perform various OCI validations (registry authentication, downloading artifacts, etc.)
+Perform various MaaS validations.
 
 
 ## Configuration
