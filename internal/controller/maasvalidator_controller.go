@@ -57,6 +57,9 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
+	secretName := validator.Spec.MaasInstanceRules[0].Auth.SecretName
+
+	r.Log.V(0).Info("Getting API token from secret", "name", secretName) //, validator.Spec.MaasInstanceRules[0].Auth.SecretName)
 	// Get the active validator's validation result
 	vr := &vapi.ValidationResult{}
 	nn := ktypes.NamespacedName{
@@ -73,6 +76,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			return ctrl.Result{}, err
 		}
 	}
+
 	// TODO: create maas client here.
 	// Maas Instance rules
 	for _, rule := range validator.Spec.MaasInstanceRules {
