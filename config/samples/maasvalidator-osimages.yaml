@@ -1,0 +1,14 @@
+apiVersion: validation.spectrocloud.labs/v1alpha1
+kind: MaasValidator
+metadata:
+  name: maasvalidator-sample
+spec:
+  MaasInstanceRules:
+    # private oci registry artifacts requiring auth and a caCert
+    - host: "http://maas.sc:5240/"
+      bootable-images:
+        - name: ubuntu/focal
+          os-arch: amd64/ga-20.04
+      auth:
+        # You have to specify credentials secret
+        secretName: maas-credentials
