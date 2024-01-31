@@ -22,9 +22,12 @@ import (
 	"time"
 
 	"github.com/go-logr/logr"
+	maasclient "github.com/maas/gomaasclient/client"
+	corev1 "k8s.io/api/core/v1"
 	apierrs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+
 	ktypes "k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -58,8 +61,18 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 
 	secretName := validator.Spec.MaasInstanceRules[0].Auth.SecretName
+	r.Log.V(0).Info("Getting API token from secret", "name", secretName)
+	var (
+		maasToken string = ""
+		err       error  = nil
+	)
 
-	r.Log.V(0).Info("Getting API token from secret", "name", secretName) //, validator.Spec.MaasInstanceRules[0].Auth.SecretName)
+	if maasToken, err = r.tokenFromSecret(secretName, req.Namespace); err != nil {
+		r.Log.Error(err, "failed to retrieve MaaS API Key", "key", req)
+	}
+
+	maasUrl := validator.Spec.MaasInstanceRules[0].Host
+	c, _ := maasclient.GetClient(maasUrl, maasToken, "2.0")
 	// Get the active validator's validation result
 	vr := &vapi.ValidationResult{}
 	nn := ktypes.NamespacedName{
@@ -76,8 +89,11 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			return ctrl.Result{}, err
 		}
 	}
-
-	// TODO: create maas client here.
+	machines, _ := c.Machines.Get()
+	for m := range machines {
+		r.Log.V(0).Info("Machine", "machine", m)
+	}
+	// TODO: create maas client here.o
 	// Maas Instance rules
 	for _, rule := range validator.Spec.MaasInstanceRules {
 		maasRuleService := val.NewMaasRuleService(r.Log)
@@ -124,4 +140,19 @@ func buildValidationResult(validator *v1alpha1.MaasValidator) *vapi.ValidationRe
 
 func validationResultName(validator *v1alpha1.MaasValidator) string {
 	return fmt.Sprintf("validator-plugin-maas-%s", validator.Name)
+}
+
+func (r *MaasValidatorReconciler) tokenFromSecret(name, namespace string) (string, error) {
+	r.Log.Info("Getting MaaS API token from secret", "name", name, "namespace", namespace)
+
+	nn := ktypes.NamespacedName{Name: name, Namespace: namespace}
+	secret := &corev1.Secret{}
+	if err := r.Get(context.Background(), nn, secret); err != nil {
+		return "", err
+	}
+
+	if key, found := secret.Data["MAAS_API_KEY"]; found {
+		return string(key), nil
+	}
+	return "", fmt.Errorf("secret does not contain MAAS_API_KEY")
 }
