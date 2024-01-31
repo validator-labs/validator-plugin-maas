@@ -19,10 +19,12 @@ package controller
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/go-logr/logr"
 	maasclient "github.com/maas/gomaasclient/client"
+	"github.com/maas/gomaasclient/entity"
 	corev1 "k8s.io/api/core/v1"
 	apierrs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -72,7 +74,19 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 
 	maasUrl := validator.Spec.MaasInstanceRules[0].Host
-	c, _ := maasclient.GetClient(maasUrl, maasToken, "2.0")
+	maasclient, err := maasclient.GetClient(maasUrl, maasToken, "2.0")
+	if err != nil {
+		r.Log.Error(err, "failed to initialize MaaS client")
+	}
+	readEntity := entity.BootResourcesReadParams{}
+	br, err := maasclient.BootResources.Get(&readEntity)
+	if err != nil {
+		r.Log.Error(err, "failed to retrieve boot-resources")
+	}
+	for _, b := range br {
+		fmt.Println(b.Architecture, b.Name)
+	}
+
 	// Get the active validator's validation result
 	vr := &vapi.ValidationResult{}
 	nn := ktypes.NamespacedName{
@@ -89,11 +103,6 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			return ctrl.Result{}, err
 		}
 	}
-	machines, _ := c.Machines.Get()
-	for m := range machines {
-		r.Log.V(0).Info("Machine", "machine", m)
-	}
-	// TODO: create maas client here.o
 	// Maas Instance rules
 	for _, rule := range validator.Spec.MaasInstanceRules {
 		maasRuleService := val.NewMaasRuleService(r.Log)
@@ -152,7 +161,9 @@ func (r *MaasValidatorReconciler) tokenFromSecret(name, namespace string) (strin
 	}
 
 	if key, found := secret.Data["MAAS_API_KEY"]; found {
-		return string(key), nil
+		token := string(key)
+		token = strings.TrimSuffix(token, "\n")
+		return token, nil
 	}
 	return "", fmt.Errorf("secret does not contain MAAS_API_KEY")
 }
