@@ -22,27 +22,22 @@ import (
 
 // MaasValidatorSpec defines the desired state of MaasValidator
 type MaasValidatorSpec struct {
+	MaasInstance `json:"MaasInstance" yaml:"MaasInstance"`
 	// +kubebuilder:validation:MaxItems=5
-	// +kubebuilder:validation:XValidation:message="MaasInstanceRules must have a unique Host",rule="self.all(e, size(self.filter(x, x.host == e.host)) == 1)"
 	MaasInstanceRules []MaasInstanceRule `json:"MaasInstanceRules,omitempty" yaml:"MaasInstanceRules,omitempty"`
 }
 
-func (s MaasValidatorSpec) ResultCount() int {
-	return len(s.MaasInstanceRules)
-}
-
-type MaasInstanceRule struct {
+// MaasInstance holds the information on how to connect to your MaaS server
+type MaasInstance struct {
 	// Host is the URL for your MaaS instance
 	Host string `json:"host" yaml:"host"`
-	// OSImages is a list of bootable os images
-	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"bootable-images,omitempty"`
-
 	// Auth provides authentication information for the MaaS Instance
 	Auth Auth `json:"auth,omitempty" yaml:"auth,omitempty"`
 }
 
-func (r MaasInstanceRule) Name() string {
-	return r.Host
+type MaasInstanceRule struct {
+	// OSImages is a list of bootable os images
+	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"bootable-images,omitempty"`
 }
 
 type OSImage struct {
