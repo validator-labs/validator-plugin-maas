@@ -22,7 +22,7 @@ import (
 
 // MaasValidatorSpec defines the desired state of MaasValidator
 type MaasValidatorSpec struct {
-	MaasInstanceRules `json:"MaasInstanceRule,omitempty" yaml:"MaasInstanceRule,omitempty"`
+	MaasInstanceRules `json:"MaasInstanceRules,omitempty" yaml:"MaasInstanceRules,omitempty"`
 	MaasInstance      `json:"MaasInstance" yaml:"MaasInstance"`
 }
 

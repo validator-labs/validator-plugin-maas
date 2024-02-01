@@ -51,7 +51,7 @@ spec:
                 - auth
                 - host
                 type: object
-              MaasInstanceRule:
+              MaasInstanceRules:
                 properties:
                   auth:
                     description: Auth provides authentication information for the
