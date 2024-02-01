@@ -25,15 +25,22 @@ type MaasValidatorSpec struct {
 	// +kubebuilder:validation:MaxItems=5
 	// +kubebuilder:validation:XValidation:message="MaasInstanceRules must have a unique Host",rule="self.all(e, size(self.filter(x, x.host == e.host)) == 1)"
 	MaasInstanceRules []MaasInstanceRule `json:"MaasInstanceRules,omitempty" yaml:"MaasInstanceRules,omitempty"`
+	MaasInstance      `json:"MaasInstance" yaml:"MaasInstance"`
 }
 
 func (s MaasValidatorSpec) ResultCount() int {
 	return len(s.MaasInstanceRules)
 }
 
-type MaasInstanceRule struct {
+// MaasInstance describes the MaaS host
+type MaasInstance struct {
 	// Host is the URL for your MaaS instance
 	Host string `json:"host" yaml:"host"`
+}
+
+type MaasInstanceRule struct {
+	// Unique rule name
+	RuleName string `json:"name" yaml:"name"`
 	// OSImages is a list of bootable os images
 	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"bootable-images,omitempty"`
 
@@ -42,7 +49,7 @@ type MaasInstanceRule struct {
 }
 
 func (r MaasInstanceRule) Name() string {
-	return r.Host
+	return r.RuleName
 }
 
 type OSImage struct {
