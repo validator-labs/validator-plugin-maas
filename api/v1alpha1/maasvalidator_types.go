@@ -22,7 +22,6 @@ import (
 
 // MaasValidatorSpec defines the desired state of MaasValidator
 type MaasValidatorSpec struct {
-	// +kubebuilder:validation:XValidation:message="MaasInstanceRules must have a unique Name",rule="self.all(e, size(self.filter(x, x.host == e.host)) == 1)"
 	MaasInstanceRules `json:"MaasInstanceRule,omitempty" yaml:"MaasInstanceRule,omitempty"`
 	MaasInstance      `json:"MaasInstance" yaml:"MaasInstance"`
 }
