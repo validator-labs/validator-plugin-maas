@@ -24,7 +24,6 @@ import (
 
 	"github.com/go-logr/logr"
 	maasclient "github.com/maas/gomaasclient/client"
-	"github.com/maas/gomaasclient/entity"
 	corev1 "k8s.io/api/core/v1"
 	apierrs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -63,7 +62,6 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 
 	secretName := validator.Spec.MaasInstance.Auth.SecretName
-	r.Log.V(0).Info("Getting API token from secret", "name", secretName)
 	var (
 		maasToken string = ""
 		err       error  = nil
@@ -77,14 +75,6 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	maasclient, err := maasclient.GetClient(maasUrl, maasToken, "2.0")
 	if err != nil {
 		r.Log.Error(err, "failed to initialize MaaS client")
-	}
-	readEntity := entity.BootResourcesReadParams{}
-	br, err := maasclient.BootResources.Get(&readEntity)
-	if err != nil {
-		r.Log.Error(err, "failed to retrieve boot-resources")
-	}
-	for _, b := range br {
-		fmt.Println(b.Architecture, b.Name)
 	}
 
 	// Get the active validator's validation result
