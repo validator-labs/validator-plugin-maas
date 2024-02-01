@@ -22,34 +22,30 @@ import (
 
 // MaasValidatorSpec defines the desired state of MaasValidator
 type MaasValidatorSpec struct {
-	// +kubebuilder:validation:MaxItems=5
-	// +kubebuilder:validation:XValidation:message="MaasInstanceRules must have a unique Host",rule="self.all(e, size(self.filter(x, x.host == e.host)) == 1)"
-	MaasInstanceRules []MaasInstanceRule `json:"MaasInstanceRules,omitempty" yaml:"MaasInstanceRules,omitempty"`
+	// +kubebuilder:validation:XValidation:message="MaasInstanceRules must have a unique Name",rule="self.all(e, size(self.filter(x, x.host == e.host)) == 1)"
+	MaasInstanceRules `json:"MaasInstanceRule,omitempty" yaml:"MaasInstanceRule,omitempty"`
 	MaasInstance      `json:"MaasInstance" yaml:"MaasInstance"`
 }
 
 func (s MaasValidatorSpec) ResultCount() int {
-	return len(s.MaasInstanceRules)
+	return len(s.MaasInstanceRules.OSImages)
 }
 
 // MaasInstance describes the MaaS host
 type MaasInstance struct {
 	// Host is the URL for your MaaS instance
 	Host string `json:"host" yaml:"host"`
+	Auth Auth   `json:"auth" yaml:"auth"`
 }
 
-type MaasInstanceRule struct {
+type MaasInstanceRules struct {
 	// Unique rule name
-	RuleName string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name"`
 	// OSImages is a list of bootable os images
 	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"bootable-images,omitempty"`
 
 	// Auth provides authentication information for the MaaS Instance
 	Auth Auth `json:"auth,omitempty" yaml:"auth,omitempty"`
-}
-
-func (r MaasInstanceRule) Name() string {
-	return r.RuleName
 }
 
 type OSImage struct {

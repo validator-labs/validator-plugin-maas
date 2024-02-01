@@ -37,49 +37,54 @@ spec:
               MaasInstance:
                 description: MaasInstance describes the MaaS host
                 properties:
+                  auth:
+                    properties:
+                      secretName:
+                        type: string
+                      token:
+                        type: string
+                    type: object
                   host:
                     description: Host is the URL for your MaaS instance
                     type: string
                 required:
+                - auth
                 - host
                 type: object
-              MaasInstanceRules:
-                items:
-                  properties:
-                    auth:
-                      description: Auth provides authentication information for the
-                        MaaS Instance
+              MaasInstanceRule:
+                properties:
+                  auth:
+                    description: Auth provides authentication information for the
+                      MaaS Instance
+                    properties:
+                      secretName:
+                        type: string
+                      token:
+                        type: string
+                    type: object
+                  bootable-images:
+                    description: OSImages is a list of bootable os images
+                    items:
                       properties:
-                        secretName:
+                        name:
+                          description: The name of the bootable image
                           type: string
-                        token:
+                        os-arch:
+                          description: OS Architecture
                           type: string
+                      required:
+                      - name
+                      - os-arch
                       type: object
-                    bootable-images:
-                      description: OSImages is a list of bootable os images
-                      items:
-                        properties:
-                          name:
-                            description: The name of the bootable image
-                            type: string
-                          os-arch:
-                            description: OS Architecture
-                            type: string
-                        required:
-                        - name
-                        - os-arch
-                        type: object
-                      type: array
-                    name:
-                      description: Unique rule name
-                      type: string
-                  required:
-                  - name
-                  type: object
-                maxItems: 5
-                type: array
+                    type: array
+                  name:
+                    description: Unique rule name
+                    type: string
+                required:
+                - name
+                type: object
                 x-kubernetes-validations:
-                - message: MaasInstanceRules must have a unique Host
+                - message: MaasInstanceRules must have a unique Name
                   rule: self.all(e, size(self.filter(x, x.host == e.host)) == 1)
             required:
             - MaasInstance

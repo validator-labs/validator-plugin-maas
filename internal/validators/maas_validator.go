@@ -5,6 +5,8 @@ import (
 
 	"github.com/go-logr/logr"
 
+	maasclient "github.com/maas/gomaasclient/client"
+
 	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/spectrocloud-labs/validator-plugin-maas/internal/constants"
 	vapi "github.com/spectrocloud-labs/validator/api/v1alpha1"
@@ -24,14 +26,14 @@ func NewMaasRuleService(log logr.Logger) *MaasRuleService {
 }
 
 // ReconcileMaasInstanceRule reconciles a MaaS instance rule from the MaasValidator config
-func (s *MaasRuleService) ReconcileMaasInstanceRule(rule v1alpha1.MaasInstanceRule, username, password string) (*vapitypes.ValidationResult, error) {
-	vr := buildValidationResult(rule)
+func (s *MaasRuleService) ReconcileMaasInstanceRule(imgRule v1alpha1.OSImage, mc *maasclient.Client) (*vapitypes.ValidationResult, error) {
+	vr := buildValidationResult(imgRule)
 
 	errs := make([]error, 0)
 	details := make([]string, 0)
 
-	errMsg := "failed to validate artifact in registry"
-	s.updateResult(vr, errs, errMsg, rule.Name(), details...)
+	errMsg := "failed to validate rule"
+	s.updateResult(vr, errs, errMsg, imgRule.Name, details...)
 
 	if len(errs) > 0 {
 		return vr, errs[0]
@@ -40,13 +42,13 @@ func (s *MaasRuleService) ReconcileMaasInstanceRule(rule v1alpha1.MaasInstanceRu
 }
 
 // buildValidationResult builds a default ValidationResult for a given validation type
-func buildValidationResult(rule v1alpha1.MaasInstanceRule) *types.ValidationResult {
+func buildValidationResult(rule v1alpha1.OSImage) *types.ValidationResult {
 	state := vapi.ValidationSucceeded
 	latestCondition := vapi.DefaultValidationCondition()
 	latestCondition.Details = make([]string, 0)
 	latestCondition.Failures = make([]string, 0)
 	latestCondition.Message = fmt.Sprintf("All %s checks passed", constants.MaasInstance)
-	latestCondition.ValidationRule = rule.Name()
+	latestCondition.ValidationRule = rule.Name
 	latestCondition.ValidationType = constants.MaasInstance
 	return &types.ValidationResult{Condition: &latestCondition, State: &state}
 }

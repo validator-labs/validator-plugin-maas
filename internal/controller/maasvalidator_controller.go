@@ -62,7 +62,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	secretName := validator.Spec.MaasInstanceRules[0].Auth.SecretName
+	secretName := validator.Spec.MaasInstance.Auth.SecretName
 	r.Log.V(0).Info("Getting API token from secret", "name", secretName)
 	var (
 		maasToken string = ""
@@ -103,11 +103,10 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			return ctrl.Result{}, err
 		}
 	}
-	// Maas Instance rules
-	for _, rule := range validator.Spec.MaasInstanceRules {
+	// Maas Instance image rules
+	for _, rule := range validator.Spec.MaasInstanceRules.OSImages {
 		maasRuleService := val.NewMaasRuleService(r.Log)
-		username, password := "", ""
-		validationResult, err := maasRuleService.ReconcileMaasInstanceRule(rule, username, password)
+		validationResult, err := maasRuleService.ReconcileMaasInstanceRule(rule, maasclient)
 		if err != nil {
 			r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule")
 		}
