@@ -1,3 +1,9 @@
+ifneq (,$(wildcard ./.env))
+	include .env
+	export
+endif
+
+
 PLUGIN_NAME := maas
 # Image URL to use all building/pushing image targets
 IMG ?= quay.io/spectrocloud-labs/validator-plugin-maas:latest

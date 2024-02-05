@@ -3,7 +3,7 @@ Hacking
 
 This project depends on the validator operator.
 
-Before you start hacking, install palette cli, and run:
+Before start hacking, install palette cli, and run:
 
 ```
 palette validator install
@@ -50,5 +50,30 @@ make install
 
 Apply the samples:
 ```
-kubectl apply -f config/samples/svalidator-osimages.yaml
+kubectl apply -f config/samples/maasvalidator-osimages.yaml
 ```
+
+Overriding target variables in the Makefile
+-------------------------------------------
+
+Many of the makefile targets have default variables defined. For example the default OCI image build
+is defined as:
+
+```
+CONTAINER_TOOL ?= docker
+```
+
+You can override it via the command line with:
+
+```
+make docker-build CONTAINER_TOOL=podman
+```
+
+This will invoke `podman build` instead of `docker build`.
+For a more permanent override you can use a `.env` file in the root of the project with:
+
+```
+$ cat .env
+CONTAINER_TOOL=podman
+```
+This will override the default OCI build tool and use podman every time you invoke `make docker-build`.  
