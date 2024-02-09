@@ -7,7 +7,7 @@ require (
 	github.com/maas/gomaasclient v0.3.0
 	github.com/onsi/ginkgo/v2 v2.15.0
 	github.com/onsi/gomega v1.31.1
-	github.com/spectrocloud-labs/validator v0.0.32
+	github.com/spectrocloud-labs/validator v0.0.35
 	github.com/spectrocloud/maas-client-go v0.0.1-beta1
 	k8s.io/api v0.28.4
 	k8s.io/apimachinery v0.28.4
