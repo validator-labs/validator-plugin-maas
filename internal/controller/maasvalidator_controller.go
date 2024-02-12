@@ -100,7 +100,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		if err != nil {
 			r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule")
 		}
-		vres.SafeUpdateValidationResult(r.Client, nn, validationResult, err, r.Log)
+		vres.SafeUpdateValidationResult(r.Client, nn, validationResult, validator.Spec.ResultCount(), err, r.Log)
 	}
 
 	r.Log.V(0).Info("Requeuing for re-validation in two minutes.", "name", req.Name, "namespace", req.Namespace)
@@ -125,7 +125,7 @@ func buildValidationResult(validator *v1alpha1.MaasValidator) *vapi.ValidationRe
 					Kind:       validator.Kind,
 					Name:       validator.Name,
 					UID:        validator.UID,
-					Controller: ptr.Ptr(true),
+					Controller: util.Ptr(true),
 				},
 			},
 		},

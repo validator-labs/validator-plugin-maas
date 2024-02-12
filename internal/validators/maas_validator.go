@@ -72,7 +72,7 @@ func buildValidationResult(rule v1alpha1.OSImage) *types.ValidationResult {
 
 func (s *MaasRuleService) updateResult(vr *types.ValidationResult, errs []error, errMsg, ruleName string, details ...string) {
 	if len(errs) > 0 {
-		vr.State = ptr.Ptr(vapi.ValidationFailed)
+		vr.State = util.Ptr(vapi.ValidationFailed)
 		vr.Condition.Message = errMsg
 		for _, err := range errs {
 			vr.Condition.Failures = append(vr.Condition.Failures, err.Error())

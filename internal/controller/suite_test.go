@@ -96,11 +96,11 @@ var _ = BeforeSuite(func() {
 		BinaryAssetsDirectory: filepath.Join(
 			"..", "..", "bin", "k8s", fmt.Sprintf("%s-%s-%s", k8sVersion, runtime.GOOS, runtime.GOARCH),
 		),
-		UseExistingCluster: ptr.Ptr(false),
+		UseExistingCluster: util.Ptr(false),
 	}
 
 	if os.Getenv("KUBECONFIG") != "" {
-		testEnv.UseExistingCluster = ptr.Ptr(true)
+		testEnv.UseExistingCluster = util.Ptr(true)
 	}
 
 	var err error
