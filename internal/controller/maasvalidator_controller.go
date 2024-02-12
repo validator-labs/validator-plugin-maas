@@ -37,7 +37,7 @@ import (
 	"github.com/spectrocloud-labs/validator-plugin-maas/internal/constants"
 	val "github.com/spectrocloud-labs/validator-plugin-maas/internal/validators"
 	vapi "github.com/spectrocloud-labs/validator/api/v1alpha1"
-	"github.com/spectrocloud-labs/validator/pkg/util/ptr"
+	"github.com/spectrocloud-labs/validator/pkg/util"
 	vres "github.com/spectrocloud-labs/validator/pkg/validationresult"
 )
 

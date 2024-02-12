@@ -43,7 +43,7 @@ import (
 
 	v1alpha1 "github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
 	vapi "github.com/spectrocloud-labs/validator/api/v1alpha1"
-	"github.com/spectrocloud-labs/validator/pkg/util/ptr"
+	"github.com/spectrocloud-labs/validator/pkg/util"
 	//+kubebuilder:scaffold:imports
 )
 
