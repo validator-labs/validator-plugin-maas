@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-logr/logr"
 
-	maasclient "github.com/maas/gomaasclient/client"
 	"github.com/maas/gomaasclient/entity"
 
 	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
@@ -18,24 +17,30 @@ import (
 )
 
 type MaasRuleService struct {
-	log logr.Logger
+	imagereader OSImageReader
+	log         logr.Logger
 }
 
-func NewMaasRuleService(log logr.Logger) *MaasRuleService {
+type OSImageReader interface {
+	Get(params *entity.BootResourcesReadParams) ([]entity.BootResource, error)
+}
+
+func NewMaasRuleService(log logr.Logger, imagereader OSImageReader) *MaasRuleService {
 	return &MaasRuleService{
-		log: log,
+		imagereader: imagereader,
+		log:         log,
 	}
 }
 
 // ReconcileMaasInstanceRule reconciles a MaaS instance rule from the MaasValidator config
-func (s *MaasRuleService) ReconcileMaasInstanceRule(imgRule v1alpha1.OSImage, mc *maasclient.Client) (*vapitypes.ValidationResult, error) {
+func (s *MaasRuleService) ReconcileMaasInstanceRule(imgRule v1alpha1.OSImage) (*vapitypes.ValidationResult, error) {
 	vr := buildValidationResult(imgRule)
 
 	errMsg := "failed to validate rule"
 	errs := make([]error, 0)
 	details := make([]string, 0)
 
-	brs, err := s.listOSImages(mc)
+	brs, err := s.listOSImages()
 	if err != nil {
 		return vr, err
 	}
@@ -83,10 +88,11 @@ func (s *MaasRuleService) updateResult(vr *types.ValidationResult, errs []error,
 	}
 }
 
-func (s *MaasRuleService) listOSImages(mc *maasclient.Client) ([]entity.BootResource, error) {
+func (s *MaasRuleService) listOSImages() ([]entity.BootResource, error) {
 	bootResoursces := make([]entity.BootResource, 0)
 	readEntity := entity.BootResourcesReadParams{}
-	br, err := mc.BootResources.Get(&readEntity)
+	br, err := s.imagereader.Get(&readEntity)
+
 	if err != nil {
 		return bootResoursces, err
 	}
