@@ -15,6 +15,8 @@ import (
 	"github.com/spectrocloud-labs/validator/pkg/util"
 )
 
+const errMsg string = "failed to validate rule"
+
 type MaasRuleService struct {
 	apiclient   MaaSAPIClient
 	imagereader OSImageReader
@@ -33,13 +35,14 @@ type MaaSAPI struct {
 	Client *gomaasclient.Client
 }
 
-func (m MaaSAPI) ListOSImages() ([]entity.BootResource, error) {
+func (m *MaaSAPI) ListOSImages() ([]entity.BootResource, error) {
 	images, _ := m.Client.BootResources.Get(&entity.BootResourcesReadParams{})
 	return images, nil
 }
 
-func (m MaaSAPI) ListDNSServers() ([]entity.DNSResource, error) {
-	return m.Client.DNSResources.Get()
+func (m *MaaSAPI) ListDNSServers() ([]entity.DNSResource, error) {
+	dnsresources, _ := m.Client.DNSResources.Get()
+	return dnsresources, nil
 }
 
 func NewMaasRuleService(imagereader OSImageReader, apiclient MaaSAPIClient) *MaasRuleService {
@@ -52,25 +55,13 @@ func NewMaasRuleService(imagereader OSImageReader, apiclient MaaSAPIClient) *Maa
 func (s *MaasRuleService) ReconcileMaasInstanceRule(imgRule v1alpha1.OSImage) (*vapitypes.ValidationResult, error) {
 	vr := buildValidationResult(imgRule)
 
-	errMsg := "failed to validate rule"
-	errs := make([]error, 0)
-	details := make([]string, 0)
-
 	brs, err := s.listOSImages()
 	if err != nil {
 		return vr, err
 	}
-	var found bool = false
-	for _, br := range brs {
-		if (imgRule.Name == br.Name) && (imgRule.Architecture == br.Architecture) {
-			found = true
-			break
-		}
-	}
-	if !found {
-		errs = append(errs, errors.New(errMsg))
-		details = append(details, fmt.Sprintf("OS image %s with arch %s was not found", imgRule.Name, imgRule.Architecture))
-	}
+
+	errs, details = findBootResources(imgRule, brs)
+
 	s.updateResult(vr, errs, errMsg, imgRule.Name, details...)
 
 	if len(errs) > 0 {
@@ -119,4 +110,24 @@ func (s *MaasRuleService) listOSImages() ([]entity.BootResource, error) {
 	//for _, b := range br {
 	//	fmt.Println(b.Architecture, b.Name)
 	//}
+}
+
+func findBootResources(imgRule v1alpha1.OSImage, images []entity.BootResource) (errs []error, details []string) {
+	errs = make([]error, 0)
+	details = make([]string, 0)
+
+	var found bool = false
+	for _, image := range images {
+		if (imgRule.Name == image.Name) && (imgRule.Architecture == image.Architecture) {
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		errs = append(errs, errors.New(errMsg))
+		details = append(details, fmt.Sprintf("OS image %s with arch %s was not found", imgRule.Name, imgRule.Architecture))
+	}
+
+	return errs, details
 }

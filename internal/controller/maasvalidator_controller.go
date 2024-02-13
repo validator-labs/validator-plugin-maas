@@ -98,7 +98,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 	// Maas Instance image rules
 	for _, rule := range validator.Spec.MaasInstanceRules.OSImages {
-		maasRuleService := val.NewMaasRuleService(maasclient.BootResources, apiclient)
+		maasRuleService := val.NewMaasRuleService(maasclient.BootResources, &apiclient)
 		validationResult, err := maasRuleService.ReconcileMaasInstanceRule(rule)
 		if err != nil {
 			r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule")
