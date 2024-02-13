@@ -1,12 +1,11 @@
 package validators
 
 import (
-	"github.com/maas/gomaasclient/entity"
-)
+	"testing"
 
-type MockOSImageReader struct {
-	images []entity.BootResource
-}
+	"github.com/maas/gomaasclient/entity"
+	"github.com/stretchr/testify/assert"
+)
 
 type DummyMaaSAPIClient struct {
 }
@@ -19,6 +18,9 @@ func (d *DummyMaaSAPIClient) ListOSImages() ([]entity.BootResource, error) {
 	return make([]entity.BootResource, 0), nil
 }
 
-func (m *MockOSImageReader) Get(params *entity.BootResourcesReadParams) ([]entity.BootResource, error) {
-	return m.images, nil
+func TestFindingBootResources(t *testing.T) {
+	maasRuleService := NewMaasRuleService(&DummyMaaSAPIClient{})
+
+	images, _ := maasRuleService.ListOSImages()
+	assert.Equal(t, len(images), 0)
 }

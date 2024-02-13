@@ -18,12 +18,7 @@ import (
 const errMsg string = "failed to validate rule"
 
 type MaasRuleService struct {
-	apiclient   MaaSAPIClient
-	imagereader OSImageReader
-}
-
-type OSImageReader interface {
-	Get(params *entity.BootResourcesReadParams) ([]entity.BootResource, error)
+	apiclient MaaSAPIClient
 }
 
 type MaaSAPIClient interface {
@@ -45,9 +40,9 @@ func (m *MaaSAPI) ListDNSServers() ([]entity.DNSResource, error) {
 	return dnsresources, nil
 }
 
-func NewMaasRuleService(imagereader OSImageReader, apiclient MaaSAPIClient) *MaasRuleService {
+func NewMaasRuleService(apiclient MaaSAPIClient) *MaasRuleService {
 	return &MaasRuleService{
-		imagereader: imagereader,
+		apiclient: apiclient,
 	}
 }
 
@@ -55,12 +50,12 @@ func NewMaasRuleService(imagereader OSImageReader, apiclient MaaSAPIClient) *Maa
 func (s *MaasRuleService) ReconcileMaasInstanceRule(imgRule v1alpha1.OSImage) (*vapitypes.ValidationResult, error) {
 	vr := buildValidationResult(imgRule)
 
-	brs, err := s.listOSImages()
+	brs, err := s.ListOSImages()
 	if err != nil {
 		return vr, err
 	}
 
-	errs, details = findBootResources(imgRule, brs)
+	errs, details := findBootResources(imgRule, brs)
 
 	s.updateResult(vr, errs, errMsg, imgRule.Name, details...)
 
@@ -95,21 +90,12 @@ func (s *MaasRuleService) updateResult(vr *types.ValidationResult, errs []error,
 	}
 }
 
-func (s *MaasRuleService) listOSImages() ([]entity.BootResource, error) {
-	bootResoursces := make([]entity.BootResource, 0)
-	readEntity := entity.BootResourcesReadParams{}
-
-	s.apiclient.ListOSImages()
-
-	br, err := s.imagereader.Get(&readEntity)
-
+func (s *MaasRuleService) ListOSImages() ([]entity.BootResource, error) {
+	images, err := s.apiclient.ListOSImages()
 	if err != nil {
-		return bootResoursces, err
+		return nil, err
 	}
-	return br, nil
-	//for _, b := range br {
-	//	fmt.Println(b.Architecture, b.Name)
-	//}
+	return images, nil
 }
 
 func findBootResources(imgRule v1alpha1.OSImage, images []entity.BootResource) (errs []error, details []string) {
