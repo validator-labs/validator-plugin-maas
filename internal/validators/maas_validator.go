@@ -4,8 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/go-logr/logr"
-
+	gomaasclient "github.com/maas/gomaasclient/client"
 	"github.com/maas/gomaasclient/entity"
 
 	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
@@ -17,18 +16,35 @@ import (
 )
 
 type MaasRuleService struct {
+	apiclient   MaaSAPIClient
 	imagereader OSImageReader
-	log         logr.Logger
 }
 
 type OSImageReader interface {
 	Get(params *entity.BootResourcesReadParams) ([]entity.BootResource, error)
 }
 
-func NewMaasRuleService(log logr.Logger, imagereader OSImageReader) *MaasRuleService {
+type MaaSAPIClient interface {
+	ListOSImages() ([]entity.BootResource, error)
+	ListDNSServers() ([]entity.DNSResource, error)
+}
+
+type MaaSAPI struct {
+	Client *gomaasclient.Client
+}
+
+func (m MaaSAPI) ListOSImages() ([]entity.BootResource, error) {
+	images, _ := m.Client.BootResources.Get(&entity.BootResourcesReadParams{})
+	return images, nil
+}
+
+func (m MaaSAPI) ListDNSServers() ([]entity.DNSResource, error) {
+	return m.Client.DNSResources.Get()
+}
+
+func NewMaasRuleService(imagereader OSImageReader, apiclient MaaSAPIClient) *MaasRuleService {
 	return &MaasRuleService{
 		imagereader: imagereader,
-		log:         log,
 	}
 }
 
@@ -91,6 +107,9 @@ func (s *MaasRuleService) updateResult(vr *types.ValidationResult, errs []error,
 func (s *MaasRuleService) listOSImages() ([]entity.BootResource, error) {
 	bootResoursces := make([]entity.BootResource, 0)
 	readEntity := entity.BootResourcesReadParams{}
+
+	s.apiclient.ListOSImages()
+
 	br, err := s.imagereader.Get(&readEntity)
 
 	if err != nil {

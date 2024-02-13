@@ -73,6 +73,9 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 	maasUrl := validator.Spec.MaasInstance.Host
 	maasclient, err := maasclient.GetClient(maasUrl, maasToken, "2.0")
+
+	apiclient := val.MaaSAPI{Client: maasclient}
+
 	if err != nil {
 		r.Log.Error(err, "failed to initialize MaaS client")
 	}
@@ -95,8 +98,8 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 	// Maas Instance image rules
 	for _, rule := range validator.Spec.MaasInstanceRules.OSImages {
-		maasRuleService := val.NewMaasRuleService(r.Log)
-		validationResult, err := maasRuleService.ReconcileMaasInstanceRule(rule, maasclient)
+		maasRuleService := val.NewMaasRuleService(maasclient.BootResources, apiclient)
+		validationResult, err := maasRuleService.ReconcileMaasInstanceRule(rule)
 		if err != nil {
 			r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule")
 		}
