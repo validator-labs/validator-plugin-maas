@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/maas/gomaasclient/entity"
@@ -30,28 +31,44 @@ func TestFindingBootResources(t *testing.T) {
 		details     []string
 	}
 
-	tc := TestCase{
-		ruleService: NewMaasRuleService(&DummyMaaSAPIClient{
-			images: []entity.BootResource{
-				{
-					Name:         "Ubuntu",
-					Architecture: "amd64/ga-20.04",
+	testCases := []TestCase{
+		{
+			ruleService: NewMaasRuleService(&DummyMaaSAPIClient{
+				images: []entity.BootResource{
+					{
+						Name:         "Ubuntu",
+						Architecture: "amd64/ga-20.04",
+					},
 				},
+			}),
+			imageRule: v1alpha1.OSImage{
+				Name:         "Ubuntu",
+				Architecture: "amd64/ga-20.04",
 			},
-		}),
-		imageRule: v1alpha1.OSImage{
-			Name:         "Ubuntu",
-			Architecture: "amd64/ga-20.04",
+			errors:  make([]error, 0),
+			details: make([]string, 0),
 		},
-		errors:  make([]error, 0),
-		details: make([]string, 0),
+		{
+			ruleService: NewMaasRuleService(
+				&DummyMaaSAPIClient{
+					images: make([]entity.BootResource, 0),
+				}),
+			imageRule: v1alpha1.OSImage{
+				Name:         "Ubuntu",
+				Architecture: "amd64/ga-20.04",
+			},
+			errors:  []error{errors.New("failed to validate rule")},
+			details: []string{"OS image Ubuntu with arch amd64/ga-20.04 was not found"},
+		},
 	}
 
-	images, _ := tc.ruleService.ListOSImages()
-	assert.Equal(t, len(images), 1)
+	for _, tc := range testCases {
+		images, _ := tc.ruleService.ListOSImages()
 
-	errors, details := findBootResources(tc.imageRule, images)
+		errors, details := findBootResources(tc.imageRule, images)
 
-	assert.Equal(t, errors, tc.errors)
-	assert.Equal(t, details, tc.details)
+		assert.Equal(t, errors, tc.errors)
+		assert.Equal(t, details, tc.details)
+	}
+
 }
