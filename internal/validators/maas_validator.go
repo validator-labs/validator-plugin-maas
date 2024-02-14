@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"errors"
 	"fmt"
 
 	gomaasclient "github.com/maas/gomaasclient/client"
@@ -124,11 +125,12 @@ func findBootResources(imgRules []v1alpha1.OSImage, images []entity.BootResource
 
 	diffSet := imgRulesSet.Difference(convertedSet)
 
-	fmt.Println(diffSet)
-	//for _, img in := range diffSet.Iterator() {
-	//	errors = append(errors, error.New(errMsg))
-	//	details = apppend(details, fmt.Sprintf("OS image %s with arch %s was not found", img.Name, img.Architecture))
-	//}
+	diffSetIt := diffSet.Iterator()
+
+	for img := range diffSetIt.C {
+		errs = append(errs, errors.New(errMsg))
+		details = append(details, fmt.Sprintf("OS image %s with arch %s was not found", img.Name, img.Architecture))
+	}
 
 	return errs, details
 }

@@ -25,6 +25,7 @@ func (d *DummyMaaSAPIClient) ListOSImages() ([]entity.BootResource, error) {
 func TestFindingBootResources(t *testing.T) {
 
 	type TestCase struct {
+		Name        string
 		ruleService *MaasRuleService
 		imageRules  []v1alpha1.OSImage
 		errors      []error
@@ -33,6 +34,7 @@ func TestFindingBootResources(t *testing.T) {
 
 	testCases := []TestCase{
 		{
+			Name: "image is found in MaaS",
 			ruleService: NewMaasRuleService(&DummyMaaSAPIClient{
 				images: []entity.BootResource{
 					{
@@ -48,6 +50,7 @@ func TestFindingBootResources(t *testing.T) {
 			details: make([]string, 0),
 		},
 		{
+			Name: "image is not found in MaaS",
 			ruleService: NewMaasRuleService(
 				&DummyMaaSAPIClient{
 					images: make([]entity.BootResource, 0),
@@ -59,15 +62,19 @@ func TestFindingBootResources(t *testing.T) {
 			details: []string{"OS image Ubuntu with arch amd64/ga-20.04 was not found"},
 		},
 		{
+			Name: "a few images are not found in MaaS",
 			ruleService: NewMaasRuleService(
 				&DummyMaaSAPIClient{
 					images: make([]entity.BootResource, 0),
 				}),
 			imageRules: []v1alpha1.OSImage{
 				{Name: "Ubuntu", Architecture: "amd64/ga-20.04"},
+				{Name: "Ubuntu", Architecture: "amd64/ga-22.04"},
 			},
-			errors:  []error{errors.New("failed to validate rule")},
-			details: []string{"OS image Ubuntu with arch amd64/ga-20.04 was not found"},
+			errors: []error{errors.New("failed to validate rule"), errors.New("failed to validate rule")},
+			details: []string{
+				"OS image Ubuntu with arch amd64/ga-20.04 was not found",
+				"OS image Ubuntu with arch amd64/ga-22.04 was not found"},
 		},
 	}
 
@@ -76,8 +83,11 @@ func TestFindingBootResources(t *testing.T) {
 
 		errors, details := findBootResources(tc.imageRules, images)
 
-		assert.Equal(t, errors, tc.errors)
-		assert.Equal(t, details, tc.details)
+		assert.Equal(t, errors, tc.errors, tc.Name)
+		for _, detail := range details {
+			assert.Contains(t, tc.details, detail, tc.Name)
+		}
+
 	}
 
 }
