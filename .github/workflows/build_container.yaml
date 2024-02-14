@@ -5,16 +5,20 @@ on:
   workflow_dispatch:
 
 env:
-  GO_VERSION: "~1.20"
   IMAGE_NAME: "validator-plugin-maas"
+
 defaults:
   run:
     shell: bash
 
+concurrency:
+  group: build-container-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   prepare_ci_run:
     name: Prepare CI Run
-    runs-on: ubuntu-22.04
+    runs-on: [self-hosted, Linux, X64, validator]
     if: "!(contains(github.head_ref, 'release-please') || contains(github.ref, 'release-please'))"
     outputs:
       GIT_SHA: ${{ steps.extract_branch.outputs.GIT_SHA }}
@@ -54,7 +58,7 @@ jobs:
   build_image:
     name: Build Container Image
     needs: prepare_ci_run
-    runs-on: ubuntu-22.04
+    runs-on: [self-hosted, Linux, X64, validator]
     env:
       BRANCH: ${{ needs.prepare_ci_run.outputs.BRANCH }}
       DATETIME: ${{ needs.prepare_ci_run.outputs.DATETIME }}
@@ -98,7 +102,7 @@ jobs:
     name: Upload images to quay registry
     needs: [ prepare_ci_run, build_image ]
     if: github.event_name == 'push' && needs.prepare_ci_run.outputs.NON_FORKED_AND_NON_ROBOT_RUN == 'true' # only run on push to main/maintenance branches
-    runs-on: ubuntu-22.04
+    runs-on: [self-hosted, Linux, X64, validator]
     env:
       DATETIME: ${{ needs.prepare_ci_run.outputs.DATETIME }}
       BUILD_TIME: ${{ needs.prepare_ci_run.outputs.BUILD_TIME }}
