@@ -8,6 +8,7 @@ import (
 )
 
 type DummyMaaSAPIClient struct {
+	images []entity.BootResource
 }
 
 func (d *DummyMaaSAPIClient) ListDNSServers() ([]entity.DNSResource, error) {
@@ -15,7 +16,8 @@ func (d *DummyMaaSAPIClient) ListDNSServers() ([]entity.DNSResource, error) {
 }
 
 func (d *DummyMaaSAPIClient) ListOSImages() ([]entity.BootResource, error) {
-	return make([]entity.BootResource, 0), nil
+	d.images = make([]entity.BootResource, 0)
+	return d.images, nil
 }
 
 func TestFindingBootResources(t *testing.T) {
