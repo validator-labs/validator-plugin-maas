@@ -13,5 +13,3 @@ spec:
     bootable-images:
     - name: ubuntu/focal
       os-arch: amd64/ga-20.04
-    - name: ubuntu/xenial
-      os-arch: amd64/ga-22.04
