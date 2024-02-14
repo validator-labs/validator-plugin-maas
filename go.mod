@@ -3,6 +3,7 @@ module github.com/spectrocloud-labs/validator-plugin-maas
 go 1.21.6
 
 require (
+	github.com/deckarep/golang-set/v2 v2.6.0
 	github.com/go-logr/logr v1.4.1
 	github.com/maas/gomaasclient v0.3.0
 	github.com/onsi/ginkgo/v2 v2.15.0

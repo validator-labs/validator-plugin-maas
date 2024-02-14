@@ -1,12 +1,12 @@
 package validators
 
 import (
-	"errors"
 	"fmt"
 
 	gomaasclient "github.com/maas/gomaasclient/client"
 	"github.com/maas/gomaasclient/entity"
 
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/spectrocloud-labs/validator-plugin-maas/internal/constants"
 	vapi "github.com/spectrocloud-labs/validator/api/v1alpha1"
@@ -47,17 +47,18 @@ func NewMaasRuleService(apiclient MaaSAPIClient) *MaasRuleService {
 }
 
 // ReconcileMaasInstanceRule reconciles a MaaS instance rule from the MaasValidator config
-func (s *MaasRuleService) ReconcileMaasInstanceRule(imgRule v1alpha1.OSImage) (*vapitypes.ValidationResult, error) {
-	vr := buildValidationResult(imgRule)
+func (s *MaasRuleService) ReconcileMaasInstanceImageRules(rules v1alpha1.MaasInstanceRules) (*vapitypes.ValidationResult, error) {
+
+	vr := buildValidationResult(rules)
 
 	brs, err := s.ListOSImages()
 	if err != nil {
 		return vr, err
 	}
 
-	errs, details := findBootResources(imgRule, brs)
+	errs, details := findBootResources(rules.OSImages, brs)
 
-	s.updateResult(vr, errs, errMsg, imgRule.Name, details...)
+	s.updateResult(vr, errs, errMsg, rules.Name, details...)
 
 	if len(errs) > 0 {
 		return vr, errs[0]
@@ -66,13 +67,13 @@ func (s *MaasRuleService) ReconcileMaasInstanceRule(imgRule v1alpha1.OSImage) (*
 }
 
 // buildValidationResult builds a default ValidationResult for a given validation type
-func buildValidationResult(rule v1alpha1.OSImage) *types.ValidationResult {
+func buildValidationResult(rules v1alpha1.MaasInstanceRules) *types.ValidationResult {
 	state := vapi.ValidationSucceeded
 	latestCondition := vapi.DefaultValidationCondition()
 	latestCondition.Details = make([]string, 0)
 	latestCondition.Failures = make([]string, 0)
 	latestCondition.Message = fmt.Sprintf("All %s checks passed", constants.MaasInstance)
-	latestCondition.ValidationRule = rule.Name
+	latestCondition.ValidationRule = rules.Name
 	latestCondition.ValidationType = constants.MaasInstance
 	return &types.ValidationResult{Condition: &latestCondition, State: &state}
 }
@@ -98,22 +99,36 @@ func (s *MaasRuleService) ListOSImages() ([]entity.BootResource, error) {
 	return images, nil
 }
 
-func findBootResources(imgRule v1alpha1.OSImage, images []entity.BootResource) (errs []error, details []string) {
+func convertBootResourceToOSImage(images []entity.BootResource) []v1alpha1.OSImage {
+	converted := make([]v1alpha1.OSImage, len(images))
+	for i, img := range images {
+		converted[i] = v1alpha1.OSImage{
+			Name:         img.Name,
+			Architecture: img.Architecture,
+		}
+	}
+	return converted
+}
+
+func findBootResources(imgRules []v1alpha1.OSImage, images []entity.BootResource) (errs []error, details []string) {
 	errs = make([]error, 0)
 	details = make([]string, 0)
 
-	var found bool = false
-	for _, image := range images {
-		if (imgRule.Name == image.Name) && (imgRule.Architecture == image.Architecture) {
-			found = true
-			break
-		}
+	converted := convertBootResourceToOSImage(images)
+	convertedSet := mapset.NewSet[v1alpha1.OSImage](converted...)
+	imgRulesSet := mapset.NewSet[v1alpha1.OSImage](imgRules...)
+
+	if imgRulesSet.IsSubset(convertedSet) {
+		return errs, details
 	}
 
-	if !found {
-		errs = append(errs, errors.New(errMsg))
-		details = append(details, fmt.Sprintf("OS image %s with arch %s was not found", imgRule.Name, imgRule.Architecture))
-	}
+	diffSet := imgRulesSet.Difference(convertedSet)
+
+	fmt.Println(diffSet)
+	//for _, img in := range diffSet.Iterator() {
+	//	errors = append(errors, error.New(errMsg))
+	//	details = apppend(details, fmt.Sprintf("OS image %s with arch %s was not found", img.Name, img.Architecture))
+	//}
 
 	return errs, details
 }
