@@ -1,8 +1,6 @@
 module github.com/spectrocloud-labs/validator-plugin-maas
 
-go 1.21.6
-
-toolchain go1.21.7
+go 1.21.7
 
 require (
 	github.com/deckarep/golang-set/v2 v2.6.0
