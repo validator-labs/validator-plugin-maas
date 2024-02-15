@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   gitleaks-pr-scan:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, validator]
     container:
       image: gcr.io/spectro-dev-public/bulwark/gitleaks:latest
       env:
@@ -18,7 +18,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITLEAKS_CONFIG: /workspace/config.toml
     steps:
-
       - name: run-bulwark-gitleaks-scan
         shell: sh
         env:
