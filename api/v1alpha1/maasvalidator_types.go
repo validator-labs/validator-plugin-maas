@@ -34,7 +34,8 @@ func (s MaasValidatorSpec) ResultCount() int {
 type MaasInstance struct {
 	// Host is the URL for your MaaS instance
 	Host string `json:"host" yaml:"host"`
-	Auth Auth   `json:"auth" yaml:"auth"`
+	// Auth provides authentication information for the MaaS Instance
+	Auth Auth `json:"auth" yaml:"auth"`
 }
 
 type MaasInstanceRules struct {
@@ -42,9 +43,6 @@ type MaasInstanceRules struct {
 	Name string `json:"name" yaml:"name"`
 	// OSImages is a list of bootable os images
 	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"bootable-images,omitempty"`
-
-	// Auth provides authentication information for the MaaS Instance
-	Auth Auth `json:"auth" yaml:"auth"`
 }
 
 type OSImage struct {
