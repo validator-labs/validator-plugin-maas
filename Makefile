@@ -68,6 +68,7 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 .PHONY: test
+test: ENVTEST_K8S_VERSION = 1.27.1
 test: manifests generate fmt vet envtest setup-validator ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test ./... -coverprofile cover.out
 
@@ -160,14 +161,8 @@ KUSTOMIZE ?= $(LOCALBIN)/kustomize
 CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
 ENVTEST ?= $(LOCALBIN)/setup-envtest
 
-## Tool Versions
-CHART_VERSION=v0.0.1 # x-release-please-version
-CONTROLLER_TOOLS_VERSION ?= v0.12.0
-ENVTEST_K8S_VERSION = 1.27.1
-HELM_VERSION=v3.10.1
-KUSTOMIZE_VERSION ?= v5.0.1
-
 .PHONY: kustomize
+kustomize: KUSTOMIZE_VERSION ?= v5.0.1
 kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary. If wrong version is installed, it will be removed before downloading.
 $(KUSTOMIZE): $(LOCALBIN)
 	@if test -x $(LOCALBIN)/kustomize && ! $(LOCALBIN)/kustomize version | grep -q $(KUSTOMIZE_VERSION); then \
@@ -177,6 +172,7 @@ $(KUSTOMIZE): $(LOCALBIN)
 	test -s $(LOCALBIN)/kustomize || GOBIN=$(LOCALBIN) GO111MODULE=on go install sigs.k8s.io/kustomize/kustomize/v5@$(KUSTOMIZE_VERSION)
 
 .PHONY: controller-gen
+controller-gen: CONTROLLER_TOOLS_VERSION ?= v0.12.0
 controller-gen: $(CONTROLLER_GEN) ## Download controller-gen locally if necessary. If wrong version is installed, it will be overwritten.
 $(CONTROLLER_GEN): $(LOCALBIN)
 	test -s $(LOCALBIN)/controller-gen && $(LOCALBIN)/controller-gen --version | grep -q $(CONTROLLER_TOOLS_VERSION) || \
@@ -187,12 +183,13 @@ envtest: $(ENVTEST) ## Download envtest-setup locally if necessary.
 $(ENVTEST): $(LOCALBIN)
 	test -s $(LOCALBIN)/setup-envtest || GOBIN=$(LOCALBIN) go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
 
-OSARCH=$(shell ./hack/get-os.sh)
-HELM = $(shell pwd)/bin/$(OSARCH)/helm
-HELM_INSTALLER ?= "https://get.helm.sh/helm-$(HELM_VERSION)-$(OSARCH).tar.gz"
-HELMIFY ?= $(LOCALBIN)/helmify
 
 .PHONY: helm
+helm: HELM_VERSION=v3.10.1
+helm: OSARCH=$(shell ./hack/get-os.sh)
+helm: HELM = $(shell pwd)/bin/$(OSARCH)/helm
+helm: HELM_INSTALLER ?= "https://get.helm.sh/helm-$(HELM_VERSION)-$(OSARCH).tar.gz"
+helm: HELMIFY ?= $(LOCALBIN)/helmify
 helm: $(HELM) ## Download helm locally if necessary.
 $(HELM): $(LOCALBIN)
 	[ -e "$(HELM)" ] && rm -rf "$(HELM)" || true
@@ -209,6 +206,7 @@ helm-build: helm helmify manifests kustomize
 	$(KUSTOMIZE) build config/default | $(HELMIFY) -crd-dir
 
 .PHONY: helm-package
+helm-package: CHART_VERSION=v0.0.1 # x-release-please-version
 helm-package: generate manifests
 	$(HELM) package --version $(CHART_VERSION) chart/validator-plugin-maas/
 	mkdir -p charts && mv validator-*.tgz charts
