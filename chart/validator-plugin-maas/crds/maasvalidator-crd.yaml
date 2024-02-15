@@ -74,14 +74,9 @@ spec:
                     description: Unique rule name
                     type: string
                   nameservers:
+                    description: List of DNS Servers (IP addresses)
                     items:
-                      properties:
-                        name:
-                          description: The IP address of the nameserver
-                          type: string
-                      required:
-                      - name
-                      type: object
+                      type: string
                     type: array
                 required:
                 - name

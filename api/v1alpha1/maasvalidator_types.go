@@ -42,8 +42,9 @@ type MaasInstanceRules struct {
 	// Unique rule name
 	Name string `json:"name" yaml:"name"`
 	// OSImages is a list of bootable os images
-	OSImages    []OSImage    `json:"bootable-images,omitempty" yaml:"bootable-images,omitempty"`
-	Nameservers []Nameserver `json:"nameservers,omitempty" yaml:"nameservers,omitempty"`
+	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"bootable-images,omitempty"`
+	// List of DNS Servers (IP addresses)
+	Nameservers []string `json:"nameservers,omitempty" yaml:"nameservers,omitempty"`
 }
 
 type OSImage struct {
@@ -51,11 +52,6 @@ type OSImage struct {
 	Name string `json:"name" yaml:"name"`
 	// OS Architecture
 	Architecture string `json:"os-arch" yaml:"os-arch"`
-}
-
-type Nameserver struct {
-	// The IP address of the nameserver
-	IPAddress string `json:"name" yaml:"name"`
 }
 
 type Auth struct {

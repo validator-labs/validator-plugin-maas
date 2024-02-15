@@ -13,6 +13,6 @@ spec:
     bootable-images:
     - name: ubuntu/focal
       os-arch: amd64/ga-20.04
-    - nameservers:
-      - 8.8.8.8
-      - 9.9.9.9
+    nameservers:
+    - "8.8.8.8"
+    - "9.9.9.9"
