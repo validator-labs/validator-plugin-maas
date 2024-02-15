@@ -25,7 +25,7 @@ type MaasRuleService struct {
 
 type MaaSAPIClient interface {
 	ListOSImages() ([]entity.BootResource, error)
-	ListDNSServers() ([]entity.DNSResource, error)
+	ListDNSServers() ([]v1alpha1.Nameserver, error)
 }
 
 type MaaSAPI struct {

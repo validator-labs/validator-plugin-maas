@@ -13,8 +13,8 @@ type DummyMaaSAPIClient struct {
 	images []entity.BootResource
 }
 
-func (d *DummyMaaSAPIClient) ListDNSServers() ([]entity.DNSResource, error) {
-	return make([]entity.DNSResource, 0), nil
+func (d *DummyMaaSAPIClient) ListDNSServers() ([]v1alpha1.Nameserver, error) {
+	return make([]v1alpha1.Nameserver, 0), nil
 }
 
 func (d *DummyMaaSAPIClient) ListOSImages() ([]entity.BootResource, error) {
