@@ -73,6 +73,16 @@ spec:
                   name:
                     description: Unique rule name
                     type: string
+                  nameservers:
+                    items:
+                      properties:
+                        name:
+                          description: The IP address of the nameserver
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: array
                 required:
                 - name
                 type: object
