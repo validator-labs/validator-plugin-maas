@@ -38,13 +38,15 @@ type MaasInstance struct {
 	Auth Auth `json:"auth" yaml:"auth"`
 }
 
+type Nameserver string
+
 type MaasInstanceRules struct {
 	// Unique rule name
 	Name string `json:"name" yaml:"name"`
 	// OSImages is a list of bootable os images
 	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"bootable-images,omitempty"`
 	// List of DNS Servers (IP addresses)
-	Nameservers []string `json:"nameservers,omitempty" yaml:"nameservers,omitempty"`
+	Nameservers []Nameserver `json:"nameservers,omitempty" yaml:"nameservers,omitempty"`
 }
 
 type OSImage struct {

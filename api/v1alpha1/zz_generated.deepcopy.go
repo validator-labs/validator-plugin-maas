@@ -66,7 +66,7 @@ func (in *MaasInstanceRules) DeepCopyInto(out *MaasInstanceRules) {
 	}
 	if in.Nameservers != nil {
 		in, out := &in.Nameservers, &out.Nameservers
-		*out = make([]string, len(*in))
+		*out = make([]Nameserver, len(*in))
 		copy(*out, *in)
 	}
 }

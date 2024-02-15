@@ -57,7 +57,7 @@ func (m *MaaSAPI) ListDNSServers() ([]v1alpha1.Nameserver, error) {
 		nameserversString := strings.Split(string(nameservers), " ")
 		nameservsersMaas := make([]v1alpha1.Nameserver, len(nameserversString))
 		for i, ns := range nameserversString {
-			nameservsersMaas[i] = v1alpha1.Nameserver{IPAddress: ns}
+			nameservsersMaas[i] = v1alpha1.Nameserver(ns)
 		}
 		return nameservsersMaas, nil
 	}
