@@ -32,13 +32,25 @@ type MaaSAPI struct {
 }
 
 func (m *MaaSAPI) ListOSImages() ([]entity.BootResource, error) {
-	images, _ := m.Client.BootResources.Get(&entity.BootResourcesReadParams{})
-	return images, nil
+	if m.Client != nil {
+		images, err := m.Client.BootResources.Get(&entity.BootResourcesReadParams{})
+		if err != nil {
+			return make([]entity.BootResource, 0), err
+		}
+		return images, nil
+	}
+	return make([]entity.BootResource, 0), nil
 }
 
 func (m *MaaSAPI) ListDNSServers() ([]entity.DNSResource, error) {
-	dnsresources, _ := m.Client.DNSResources.Get()
-	return dnsresources, nil
+	if m.Client != nil {
+		dnsresources, err := m.Client.DNSResources.Get()
+		if err != nil {
+			return make([]entity.DNSResource, 0), err
+		}
+		return dnsresources, nil
+	}
+	return make([]entity.DNSResource, 0), nil
 }
 
 func NewMaasRuleService(apiclient MaaSAPIClient) *MaasRuleService {

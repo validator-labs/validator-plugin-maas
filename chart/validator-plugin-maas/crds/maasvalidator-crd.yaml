@@ -81,6 +81,7 @@ spec:
                     description: Unique rule name
                     type: string
                 required:
+                - auth
                 - name
                 type: object
             required:

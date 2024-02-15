@@ -44,7 +44,7 @@ type MaasInstanceRules struct {
 	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"bootable-images,omitempty"`
 
 	// Auth provides authentication information for the MaaS Instance
-	Auth Auth `json:"auth,omitempty" yaml:"auth,omitempty"`
+	Auth Auth `json:"auth" yaml:"auth"`
 }
 
 type OSImage struct {

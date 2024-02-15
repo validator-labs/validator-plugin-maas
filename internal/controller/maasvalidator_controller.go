@@ -74,11 +74,11 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	maasUrl := validator.Spec.MaasInstance.Host
 	maasclient, err := maasclient.GetClient(maasUrl, maasToken, "2.0")
 
-	apiclient := val.MaaSAPI{Client: maasclient}
-
 	if err != nil {
 		r.Log.Error(err, "failed to initialize MaaS client")
 	}
+
+	apiclient := val.MaaSAPI{Client: maasclient}
 
 	// Get the active validator's validation result
 	vr := &vapi.ValidationResult{}
