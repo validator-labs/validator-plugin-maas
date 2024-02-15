@@ -3,6 +3,7 @@ package validators
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	gomaasclient "github.com/maas/gomaasclient/client"
 	"github.com/maas/gomaasclient/entity"
@@ -42,15 +43,25 @@ func (m *MaaSAPI) ListOSImages() ([]entity.BootResource, error) {
 	return make([]entity.BootResource, 0), nil
 }
 
-func (m *MaaSAPI) ListDNSServers() ([]entity.DNSResource, error) {
+// list the configured DNS servers in maas server configuration
+// https://github.com/maas/gomaasclient/blob/master/api/maas_server.go
+// Using the API: http://<your-server>/api/2.0/maas/op-get_config?name=upstream_dns
+// will return a list of space separated Name servers: "10.10.128.8 8.8.4.4"
+func (m *MaaSAPI) ListDNSServers() ([]v1alpha1.Nameserver, error) {
 	if m.Client != nil {
-		dnsresources, err := m.Client.DNSResources.Get()
+		nameservers, err := m.Client.MAASServer.Get("upstream_dns")
 		if err != nil {
-			return make([]entity.DNSResource, 0), err
+			return make([]v1alpha1.Nameserver, 0), err
 		}
-		return dnsresources, nil
+
+		nameserversString := strings.Split(string(nameservers), " ")
+		nameservsersMaas := make([]v1alpha1.Nameserver, len(nameserversString))
+		for i, ns := range nameserversString {
+			nameservsersMaas[i] = v1alpha1.Nameserver{IPAddress: ns}
+		}
+		return nameservsersMaas, nil
 	}
-	return make([]entity.DNSResource, 0), nil
+	return make([]v1alpha1.Nameserver, 0), nil
 }
 
 func NewMaasRuleService(apiclient MaaSAPIClient) *MaasRuleService {
