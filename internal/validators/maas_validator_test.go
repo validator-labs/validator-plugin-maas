@@ -103,20 +103,56 @@ func TestExtDNS(t *testing.T) {
 		details          []string
 	}
 
-	//testCases := []TestCase{}
-	tc := TestCase{
-		Name: "MaaS has 2 external nameservers",
-		ruleService: NewMaasRuleService(&DummyMaaSAPIClient{
-			nameservers: []v1alpha1.Nameserver{"8.8.8.8", "9.9.9.9"},
-		}),
-		externalDNSRules: []v1alpha1.Nameserver{"8.8.8.8", "9.9.9.9"},
-		errors:           make([]error, 0),
-		details:          make([]string, 0),
+	testCases := []TestCase{
+		{Name: "MaaS has 2 external nameservers",
+			ruleService: NewMaasRuleService(&DummyMaaSAPIClient{
+				nameservers: []v1alpha1.Nameserver{"8.8.8.8", "9.9.9.9"},
+			}),
+			externalDNSRules: []v1alpha1.Nameserver{"8.8.8.8", "9.9.9.9"},
+			errors:           make([]error, 0),
+			details:          make([]string, 0),
+		},
+		{Name: "MaaS has 2 external nameservers, only 1 required",
+			ruleService: NewMaasRuleService(&DummyMaaSAPIClient{
+				nameservers: []v1alpha1.Nameserver{"8.8.8.8", "9.9.9.9"},
+			}),
+			externalDNSRules: []v1alpha1.Nameserver{"9.9.9.9"},
+			errors:           make([]error, 0),
+			details:          make([]string, 0),
+		},
+		{Name: "MaaS has 1 external nameservers, 2 required",
+			ruleService: NewMaasRuleService(&DummyMaaSAPIClient{
+				nameservers: []v1alpha1.Nameserver{"9.9.9.9"},
+			}),
+			externalDNSRules: []v1alpha1.Nameserver{"9.9.9.9", "8.8.8.8"},
+			errors:           []error{errors.New("failed to validate rule")}, //, errors.New("failed to validate rule")},
+			details:          []string{"External nameserver 8.8.8.8 was not found"},
+		},
+		{Name: "MaaS has 0 external nameservers, 2 required",
+			ruleService: NewMaasRuleService(&DummyMaaSAPIClient{
+				nameservers: make([]v1alpha1.Nameserver, 0),
+			}),
+			externalDNSRules: []v1alpha1.Nameserver{"9.9.9.9", "8.8.8.8"},
+			errors:           []error{errors.New("failed to validate rule"), errors.New("failed to validate rule")},
+			details:          []string{"External nameserver 8.8.8.8 was not found", "External nameserver 9.9.9.9 was not found"},
+		},
+		{Name: "MaaS has 2 external nameservers, 2 required",
+			ruleService: NewMaasRuleService(&DummyMaaSAPIClient{
+				nameservers: []v1alpha1.Nameserver{"1.1.1.1", "8.8.4.4"},
+			}),
+			externalDNSRules: []v1alpha1.Nameserver{"9.9.9.9", "8.8.8.8"},
+			errors:           []error{errors.New("failed to validate rule"), errors.New("failed to validate rule")},
+			details:          []string{"External nameserver 8.8.8.8 was not found", "External nameserver 9.9.9.9 was not found"},
+		},
 	}
+	for _, tc := range testCases {
+		nameservers, _ := tc.ruleService.apiclient.ListDNSServers()
 
-	nameservers, _ := tc.ruleService.apiclient.ListDNSServers()
+		errors, details := assertExternalDNS(tc.externalDNSRules, nameservers)
+		assert.Equal(t, errors, tc.errors, tc.Name)
+		for _, detail := range details {
+			assert.Contains(t, tc.details, detail, tc.Name)
+		}
 
-	errors, details := assertExternalDNS(tc.externalDNSRules, nameservers)
-	assert.Equal(t, errors, tc.errors, tc.Name)
-	assert.Equal(t, details, tc.details, tc.Name)
+	}
 }

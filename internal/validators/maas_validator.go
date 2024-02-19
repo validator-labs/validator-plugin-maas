@@ -182,7 +182,7 @@ func assertExternalDNS(excepted, found []v1alpha1.Nameserver) (errs []error, det
 	expectedSet := mapset.NewSet[v1alpha1.Nameserver](excepted...)
 	foundSet := mapset.NewSet[v1alpha1.Nameserver](found...)
 
-	if foundSet.IsSubset(expectedSet) {
+	if expectedSet.IsSubset(foundSet) {
 		return errs, details
 	}
 
