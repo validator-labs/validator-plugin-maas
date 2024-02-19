@@ -104,6 +104,14 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 	vres.SafeUpdateValidationResult(r.Client, nn, validationResult, validator.Spec.ResultCount(), err, r.Log)
 
+	// Maas Instance Ext DNS rules
+	validationResult, err = maasRuleService.ReconsileMaasInstanceExtDNSRules(validator.Spec.MaasInstanceRules)
+	if err != nil {
+		r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule for external DNS")
+	}
+
+	vres.SafeUpdateValidationResult(r.Client, nn, validationResult, validator.Spec.ResultCount(), err, r.Log)
+
 	r.Log.V(0).Info("Requeuing for re-validation in two minutes.", "name", req.Name, "namespace", req.Namespace)
 	return ctrl.Result{RequeueAfter: time.Second * 120}, nil
 }
