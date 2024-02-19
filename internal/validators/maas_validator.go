@@ -90,6 +90,23 @@ func (s *MaasRuleService) ReconcileMaasInstanceImageRules(rules v1alpha1.MaasIns
 	return vr, nil
 }
 
+func (s *MaasRuleService) ReconsileMaasInstanceExtDNSRules(rules v1alpha1.MaasInstanceRules) (*vapitypes.ValidationResult, error) {
+
+	vr := buildValidationResult(rules)
+
+	extDNS, err := s.apiclient.ListDNSServers()
+	if err != nil {
+		return vr, err
+	}
+
+	errs, details := assertExternalDNS(rules.Nameservers, extDNS)
+	s.updateResult(vr, errs, errMsg, rules.Name, details...)
+	if len(errs) > 0 {
+		return vr, errs[0]
+	}
+	return vr, nil
+}
+
 // buildValidationResult builds a default ValidationResult for a given validation type
 func buildValidationResult(rules v1alpha1.MaasInstanceRules) *types.ValidationResult {
 	state := vapi.ValidationSucceeded
@@ -153,6 +170,28 @@ func findBootResources(imgRules []v1alpha1.OSImage, images []entity.BootResource
 	for img := range diffSetIt.C {
 		errs = append(errs, errors.New(errMsg))
 		details = append(details, fmt.Sprintf("OS image %s with arch %s was not found", img.Name, img.Architecture))
+	}
+
+	return errs, details
+}
+
+func assertExternalDNS(excepted, found []v1alpha1.Nameserver) (errs []error, details []string) {
+	errs = make([]error, 0)
+	details = make([]string, 0)
+
+	expectedSet := mapset.NewSet[v1alpha1.Nameserver](excepted...)
+	foundSet := mapset.NewSet[v1alpha1.Nameserver](found...)
+
+	if foundSet.IsSubset(expectedSet) {
+		return errs, details
+	}
+
+	diffSet := expectedSet.Difference(foundSet)
+	diffSetIt := diffSet.Iterator()
+
+	for ns := range diffSetIt.C {
+		errs = append(errs, errors.New(errMsg))
+		details = append(details, fmt.Sprintf("External nameserver %s was not found", ns))
 	}
 
 	return errs, details

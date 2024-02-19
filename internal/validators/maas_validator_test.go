@@ -10,11 +10,12 @@ import (
 )
 
 type DummyMaaSAPIClient struct {
-	images []entity.BootResource
+	images      []entity.BootResource
+	nameservers []v1alpha1.Nameserver
 }
 
 func (d *DummyMaaSAPIClient) ListDNSServers() ([]v1alpha1.Nameserver, error) {
-	return make([]v1alpha1.Nameserver, 0), nil
+	return d.nameservers, nil
 }
 
 func (d *DummyMaaSAPIClient) ListOSImages() ([]entity.BootResource, error) {
@@ -90,4 +91,32 @@ func TestFindingBootResources(t *testing.T) {
 
 	}
 
+}
+
+func TestExtDNS(t *testing.T) {
+
+	type TestCase struct {
+		Name             string
+		ruleService      *MaasRuleService
+		externalDNSRules []v1alpha1.Nameserver
+		errors           []error
+		details          []string
+	}
+
+	//testCases := []TestCase{}
+	tc := TestCase{
+		Name: "MaaS has 2 external nameservers",
+		ruleService: NewMaasRuleService(&DummyMaaSAPIClient{
+			nameservers: []v1alpha1.Nameserver{"8.8.8.8", "9.9.9.9"},
+		}),
+		externalDNSRules: []v1alpha1.Nameserver{"8.8.8.8", "9.9.9.9"},
+		errors:           make([]error, 0),
+		details:          make([]string, 0),
+	}
+
+	nameservers, _ := tc.ruleService.apiclient.ListDNSServers()
+
+	errors, details := assertExternalDNS(tc.externalDNSRules, nameservers)
+	assert.Equal(t, errors, tc.errors, tc.Name)
+	assert.Equal(t, details, tc.details, tc.Name)
 }
