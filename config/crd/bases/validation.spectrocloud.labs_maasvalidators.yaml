@@ -81,6 +81,16 @@ spec:
                 required:
                 - name
                 type: object
+              maasExternalDnsRule:
+                description: Verify that the MaasExternalDNSRule is enabled Checks
+                  that MaaS has at least one DNS server configured and that this DNS
+                  server is reachable on port 53.
+                properties:
+                  enabled:
+                    type: boolean
+                required:
+                - enabled
+                type: object
             required:
             - MaasInstance
             type: object

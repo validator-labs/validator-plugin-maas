@@ -22,8 +22,9 @@ import (
 
 // MaasValidatorSpec defines the desired state of MaasValidator
 type MaasValidatorSpec struct {
-	MaasInstanceRules `json:"MaasInstanceRules,omitempty" yaml:"MaasInstanceRules,omitempty"`
-	MaasInstance      `json:"MaasInstance" yaml:"MaasInstance"`
+	MaasInstance        `json:"MaasInstance" yaml:"MaasInstance"`
+	MaasExternalDNSRule `json:"maasExternalDnsRule,omitempty" yaml:"maasExternalDnsRule,omitempty"`
+	MaasInstanceRules   `json:"MaasInstanceRules,omitempty" yaml:"MaasInstanceRules,omitempty"`
 }
 
 func (s MaasValidatorSpec) ResultCount() int {
@@ -39,6 +40,13 @@ type MaasInstance struct {
 }
 
 type Nameserver string
+
+// Verify that the MaasExternalDNSRule is enabled
+// Checks that MaaS has at least one DNS server configured
+// and that this DNS server is reachable on port 53.
+type MaasExternalDNSRule struct {
+	Enabled bool `json:"enabled" yaml:"enabled"`
+}
 
 type MaasInstanceRules struct {
 	// Unique rule name

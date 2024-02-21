@@ -106,7 +106,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	vres.SafeUpdateValidationResult(r.Client, nn, validationResult, validator.Spec.ResultCount(), err, r.Log)
 
 	// Maas Instance Ext DNS rules
-	validationResult, err = maasRuleService.ReconsileMaasInstanceExtDNSRules(validator.Spec.MaasInstanceRules)
+	validationResult, err = maasRuleService.ReconsileMaasInstanceExtDNSRules(validator.Spec.MaasExternalDNSRule)
 	if err != nil {
 		r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule for external DNS")
 	}

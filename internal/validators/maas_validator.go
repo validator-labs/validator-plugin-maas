@@ -1,9 +1,13 @@
 package validators
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"net"
+	"reflect"
 	"strings"
+	"time"
 
 	gomaasclient "github.com/maas/gomaasclient/client"
 	"github.com/maas/gomaasclient/entity"
@@ -19,8 +23,15 @@ import (
 
 const errMsg string = "failed to validate rule"
 
+type Resolver interface {
+	LookupHost(ctx context.Context, nameserver string) (addrs []string, err error)
+	// LookupHost(host string) (addrs []string, err error) {
+}
+
 type MaasRuleService struct {
 	apiclient MaaSAPIClient
+	resolvers []Resolver
+	rr        map[v1alpha1.Nameserver]Resolver
 }
 
 type MaaSAPIClient interface {
@@ -65,9 +76,18 @@ func (m *MaaSAPI) ListDNSServers() ([]v1alpha1.Nameserver, error) {
 }
 
 func NewMaasRuleService(apiclient MaaSAPIClient) *MaasRuleService {
-	return &MaasRuleService{
+
+	mrs := &MaasRuleService{
 		apiclient: apiclient,
+		resolvers: make([]Resolver, 0),
+		rr:        make(map[v1alpha1.Nameserver]Resolver),
 	}
+
+	return mrs
+}
+
+func (s *MaasRuleService) SetResolvers(resolvers map[v1alpha1.Nameserver]Resolver) {
+	s.rr = resolvers
 }
 
 // ReconcileMaasInstanceRule reconciles a MaaS instance rule from the MaasValidator config
@@ -90,31 +110,57 @@ func (s *MaasRuleService) ReconcileMaasInstanceImageRules(rules v1alpha1.MaasIns
 	return vr, nil
 }
 
-func (s *MaasRuleService) ReconsileMaasInstanceExtDNSRules(rules v1alpha1.MaasInstanceRules) (*vapitypes.ValidationResult, error) {
+func (s *MaasRuleService) ReconsileMaasInstanceExtDNSRules(rule v1alpha1.MaasExternalDNSRule) (*vapitypes.ValidationResult, error) {
 
-	vr := buildValidationResult(rules)
+	vr := buildValidationResult(rule)
 
 	extDNS, err := s.apiclient.ListDNSServers()
 	if err != nil {
 		return vr, err
 	}
 
-	errs, details := assertExternalDNS(rules.Nameservers, extDNS)
-	s.updateResult(vr, errs, errMsg, rules.Name, details...)
+	resolvers := make(map[v1alpha1.Nameserver]Resolver, 0)
+
+	for _, ns := range extDNS {
+		r := &net.Resolver{
+			PreferGo: true,
+			Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+				d := net.Dialer{
+					Timeout: time.Millisecond * time.Duration(10000),
+				}
+				return d.DialContext(ctx, network, fmt.Sprintf("%s:53", ns))
+			},
+		}
+		r.Dial = func(ctx context.Context, network, address string) (net.Conn, error) {
+			d := net.Dialer{
+				Timeout: time.Millisecond * time.Duration(10000),
+			}
+			return d.DialContext(ctx, network, fmt.Sprintf("%s:53", ns))
+		}
+		resolvers[ns] = r
+	}
+	s.SetResolvers(resolvers)
+	errs, details := assertExternalDNS(s.rr)
+	s.updateResult(vr, errs, errMsg, getType(rule), details...)
 	if len(errs) > 0 {
 		return vr, errs[0]
 	}
 	return vr, nil
 }
 
+func getType(rule interface{}) string {
+	t := reflect.TypeOf(rule)
+	return t.Name()
+}
+
 // buildValidationResult builds a default ValidationResult for a given validation type
-func buildValidationResult(rules v1alpha1.MaasInstanceRules) *types.ValidationResult {
+func buildValidationResult(rule interface{}) *types.ValidationResult {
 	state := vapi.ValidationSucceeded
 	latestCondition := vapi.DefaultValidationCondition()
 	latestCondition.Details = make([]string, 0)
 	latestCondition.Failures = make([]string, 0)
 	latestCondition.Message = fmt.Sprintf("All %s checks passed", constants.MaasInstance)
-	latestCondition.ValidationRule = rules.Name
+	latestCondition.ValidationRule = getType(rule)
 	latestCondition.ValidationType = constants.MaasInstance
 	return &types.ValidationResult{Condition: &latestCondition, State: &state}
 }
@@ -175,24 +221,33 @@ func findBootResources(imgRules []v1alpha1.OSImage, images []entity.BootResource
 	return errs, details
 }
 
-func assertExternalDNS(excepted, found []v1alpha1.Nameserver) (errs []error, details []string) {
+func assertExternalDNS(resolvers map[v1alpha1.Nameserver]Resolver) (errs []error, details []string) {
 	errs = make([]error, 0)
 	details = make([]string, 0)
 
-	expectedSet := mapset.NewSet[v1alpha1.Nameserver](excepted...)
-	foundSet := mapset.NewSet[v1alpha1.Nameserver](found...)
-
-	if expectedSet.IsSubset(foundSet) {
+	if len(resolvers) == 0 {
+		errs = append(errs, errors.New(errMsg))
+		details = append(details, "No external nameservers found")
 		return errs, details
 	}
 
-	diffSet := expectedSet.Difference(foundSet)
-	diffSetIt := diffSet.Iterator()
+	for ns, rslvr := range resolvers {
+		if ok, err := dnsLookUpIsWorking(ns, rslvr); !ok {
+			errs = append(errs, err)
+			details = append(details, fmt.Sprintf("Failed to resolve DNS with %s", ns))
+		}
+	}
+	return errs, details
+}
 
-	for ns := range diffSetIt.C {
-		errs = append(errs, errors.New(errMsg))
-		details = append(details, fmt.Sprintf("External nameserver %s was not found", ns))
+func dnsLookUpIsWorking(nameserver v1alpha1.Nameserver, resolver Resolver) (bool, error) {
+	ip, err := resolver.LookupHost(context.Background(), "www.google.com")
+	if err != nil {
+		return false, err
+	}
+	if len(ip) > 1 {
+		return true, nil
 	}
 
-	return errs, details
+	return false, fmt.Errorf("failed DNS resolution with %s", string(nameserver))
 }
