@@ -47,8 +47,6 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 		},
 	}
 
-	//secret := &corev1.Secret{}
-
 	vr := &vapi.ValidationResult{}
 	vrKey := types.NamespacedName{Name: validationResultName(val), Namespace: validatorNamespace}
 

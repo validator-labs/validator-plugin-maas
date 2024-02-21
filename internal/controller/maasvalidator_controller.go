@@ -18,6 +18,7 @@ package controller
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"strings"
 	"time"
@@ -161,7 +162,11 @@ func (r *MaasValidatorReconciler) tokenFromSecret(name, namespace string) (strin
 	if key, found := secret.Data["MAAS_API_KEY"]; found {
 		token := string(key)
 		token = strings.TrimSuffix(token, "\n")
-		return token, nil
+		decodedBytes, err := base64.StdEncoding.DecodeString(token)
+		if err != nil {
+			return "", fmt.Errorf("failed to decode secret data")
+		}
+		return string(decodedBytes), nil
 	}
 	return "", fmt.Errorf("secret does not contain MAAS_API_KEY")
 }

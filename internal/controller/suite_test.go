@@ -141,6 +141,21 @@ var _ = BeforeSuite(func() {
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred(), "failed to start MaasValidator controller")
 
+	secret := &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "maas-api-token",
+			Namespace: validatorNamespace,
+		},
+		StringData: map[string]string{
+			// there is no such token, this is just a dummy
+			"MAAS_API_KEY": "LEV2Ulo4THd1eGtVMjJ4dkRjOmpXeXRqS2d5ZFlOVTlxdmZEaDo2VmFzTEhKU3hVaFBOeDdTNVd3N1ZzdVNQakJGc2FVUQo=", //gitleaks:allow
+		},
+		Type: corev1.SecretTypeOpaque,
+	}
+
+	err = k8sClient.Create(ctx, secret)
+	Expect(err).ToNot(HaveOccurred(), "failed to create maas secret")
+
 	go func() {
 		defer GinkgoRecover()
 		err = k8sManager.Start(ctx)
