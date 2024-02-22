@@ -5,6 +5,8 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/h2non/gock"
+	maasclient "github.com/maas/gomaasclient/client"
 	"github.com/maas/gomaasclient/entity"
 	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/stretchr/testify/assert"
@@ -103,5 +105,27 @@ func TestFindingBootResources(t *testing.T) {
 }
 
 func TestExtDNS(t *testing.T) {
+	var err error
+	stringBody := "10.10.128.8 8.8.4.4"
+	maasUrl := "http://maas.acme.org/"
+	// no such token in real
+	maasToken := "KEvRZ8LwuxkU22xvDc:jWytjKgydYNU9qvfDh:6VasLHJSxUhPNx7S5Ww7VsuSPjBFsaUQ" // gitleaks:allow
+	defer gock.Off()
+	gock.Observe(gock.DumpRequest)
+	gock.New(maasUrl).
+		Get("/api/2.0/maas/").
+		MatchParam("name", "upstream_dns").
+		MatchParam("op", "get_config"). //?name=upstream_dns&op=get_config").
+		Reply(200).
+		BodyString(stringBody)
 
+	maasclient, err := maasclient.GetClient(maasUrl, maasToken, "2.0")
+	if err != nil {
+		t.Fatalf("failed to creat maas client")
+	}
+	ns, err := maasclient.MAASServer.Get("upstream_dns")
+	if err != nil {
+		t.Fatalf("failed to get proper response %s", err)
+	}
+	assert.Equal(t, string(ns), stringBody)
 }
