@@ -6,7 +6,7 @@ require (
 	github.com/deckarep/golang-set/v2 v2.6.0
 	github.com/go-logr/logr v1.4.1
 	github.com/maas/gomaasclient v0.4.0
-	github.com/onsi/ginkgo/v2 v2.15.0
+	github.com/onsi/ginkgo/v2 v2.16.0
 	github.com/onsi/gomega v1.31.1
 	github.com/spectrocloud-labs/validator v0.0.35
 	github.com/stretchr/testify v1.8.4
