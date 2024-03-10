@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.0.2](https://github.com/spectrocloud-labs/validator-plugin-maas/compare/v0.0.1...v0.0.2) (2024-03-10)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/maas/gomaasclient to v0.4.0 ([#23](https://github.com/spectrocloud-labs/validator-plugin-maas/issues/23)) ([69fc53d](https://github.com/spectrocloud-labs/validator-plugin-maas/commit/69fc53d542893581d3d4df22f9b8706a3ce5f8c2))
+
+
+### Other
+
+* **deps:** update actions/setup-go action to v5 ([#8](https://github.com/spectrocloud-labs/validator-plugin-maas/issues/8)) ([e6cbc3c](https://github.com/spectrocloud-labs/validator-plugin-maas/commit/e6cbc3c47e5141ccde3d0ff895561ba6c44e9e13))
+* **deps:** update azure/setup-helm action to v4 ([#28](https://github.com/spectrocloud-labs/validator-plugin-maas/issues/28)) ([983d9b7](https://github.com/spectrocloud-labs/validator-plugin-maas/commit/983d9b7c1f87815aa07bd5ead9b3972f731080f2))
+* **deps:** update codecov/codecov-action digest to 0cfda1d ([#24](https://github.com/spectrocloud-labs/validator-plugin-maas/issues/24)) ([bec0eeb](https://github.com/spectrocloud-labs/validator-plugin-maas/commit/bec0eeb5128da3790967de7dd04ea456976a4ac4))
+* **deps:** update codecov/codecov-action digest to 54bcd87 ([#25](https://github.com/spectrocloud-labs/validator-plugin-maas/issues/25)) ([eadb2a3](https://github.com/spectrocloud-labs/validator-plugin-maas/commit/eadb2a31082c0bfc79b091e4d76eed89bf1dab58))
+* **deps:** update helm/kind-action action to v1.9.0 ([#12](https://github.com/spectrocloud-labs/validator-plugin-maas/issues/12)) ([78a6dd7](https://github.com/spectrocloud-labs/validator-plugin-maas/commit/78a6dd798ce59cb90842d5505f69f6b020c322f6))
+* fix broken build link in README ([#27](https://github.com/spectrocloud-labs/validator-plugin-maas/issues/27)) ([c34044b](https://github.com/spectrocloud-labs/validator-plugin-maas/commit/c34044b58d924de951d6346171201dd9d4d3bf18))
+* upgrade to validator v0.0.36 ([#36](https://github.com/spectrocloud-labs/validator-plugin-maas/issues/36)) ([1b294aa](https://github.com/spectrocloud-labs/validator-plugin-maas/commit/1b294aa90a44d96d289346d7ac3570eb75e9b531))
+
 ## [0.0.1](https://github.com/spectrocloud-labs/validator-plugin-maas/compare/v0.0.2...v0.0.1) (2024-02-16)
 
 
