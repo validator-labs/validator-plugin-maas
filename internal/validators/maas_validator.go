@@ -4,15 +4,14 @@ import (
 	"errors"
 	"fmt"
 
+	mapset "github.com/deckarep/golang-set/v2"
 	gomaasclient "github.com/maas/gomaasclient/client"
 	"github.com/maas/gomaasclient/entity"
 
-	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/spectrocloud-labs/validator-plugin-maas/internal/constants"
 	vapi "github.com/spectrocloud-labs/validator/api/v1alpha1"
 	"github.com/spectrocloud-labs/validator/pkg/types"
-	vapitypes "github.com/spectrocloud-labs/validator/pkg/types"
 	"github.com/spectrocloud-labs/validator/pkg/util"
 )
 
@@ -60,7 +59,7 @@ func NewMaasRuleService(apiclient MaaSAPIClient) *MaasRuleService {
 }
 
 // ReconcileMaasInstanceRule reconciles a MaaS instance rule from the MaasValidator config
-func (s *MaasRuleService) ReconcileMaasInstanceImageRules(rules v1alpha1.MaasInstanceRules) (*vapitypes.ValidationResult, error) {
+func (s *MaasRuleService) ReconcileMaasInstanceImageRules(rules v1alpha1.MaasInstanceRules) (*types.ValidationRuleResult, error) {
 
 	vr := buildValidationResult(rules)
 
@@ -71,7 +70,7 @@ func (s *MaasRuleService) ReconcileMaasInstanceImageRules(rules v1alpha1.MaasIns
 
 	errs, details := findBootResources(rules.OSImages, brs)
 
-	s.updateResult(vr, errs, errMsg, rules.Name, details...)
+	s.updateResult(vr, errs, errMsg, details...)
 
 	if len(errs) > 0 {
 		return vr, errs[0]
@@ -80,7 +79,7 @@ func (s *MaasRuleService) ReconcileMaasInstanceImageRules(rules v1alpha1.MaasIns
 }
 
 // buildValidationResult builds a default ValidationResult for a given validation type
-func buildValidationResult(rules v1alpha1.MaasInstanceRules) *types.ValidationResult {
+func buildValidationResult(rules v1alpha1.MaasInstanceRules) *types.ValidationRuleResult {
 	state := vapi.ValidationSucceeded
 	latestCondition := vapi.DefaultValidationCondition()
 	latestCondition.Details = make([]string, 0)
@@ -88,10 +87,10 @@ func buildValidationResult(rules v1alpha1.MaasInstanceRules) *types.ValidationRe
 	latestCondition.Message = fmt.Sprintf("All %s checks passed", constants.MaasInstance)
 	latestCondition.ValidationRule = rules.Name
 	latestCondition.ValidationType = constants.MaasInstance
-	return &types.ValidationResult{Condition: &latestCondition, State: &state}
+	return &types.ValidationRuleResult{Condition: &latestCondition, State: &state}
 }
 
-func (s *MaasRuleService) updateResult(vr *types.ValidationResult, errs []error, errMsg, ruleName string, details ...string) {
+func (s *MaasRuleService) updateResult(vr *types.ValidationRuleResult, errs []error, errMsg string, details ...string) {
 	if len(errs) > 0 {
 		vr.State = util.Ptr(vapi.ValidationFailed)
 		vr.Condition.Message = errMsg
@@ -99,9 +98,7 @@ func (s *MaasRuleService) updateResult(vr *types.ValidationResult, errs []error,
 			vr.Condition.Failures = append(vr.Condition.Failures, err.Error())
 		}
 	}
-	for _, detail := range details {
-		vr.Condition.Details = append(vr.Condition.Details, detail)
-	}
+	vr.Condition.Details = append(vr.Condition.Details, details...)
 }
 
 func (s *MaasRuleService) ListOSImages() ([]entity.BootResource, error) {

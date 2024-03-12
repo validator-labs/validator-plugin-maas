@@ -30,6 +30,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 
 	ktypes "k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/cluster-api/util/patch"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -37,6 +38,7 @@ import (
 	"github.com/spectrocloud-labs/validator-plugin-maas/internal/constants"
 	val "github.com/spectrocloud-labs/validator-plugin-maas/internal/validators"
 	vapi "github.com/spectrocloud-labs/validator/api/v1alpha1"
+	"github.com/spectrocloud-labs/validator/pkg/types"
 	"github.com/spectrocloud-labs/validator/pkg/util"
 	vres "github.com/spectrocloud-labs/validator/pkg/validationresult"
 )
@@ -54,7 +56,8 @@ type MaasValidatorReconciler struct {
 
 // Reconcile reconciles each rule found in each OCIValidator in the cluster and creates ValidationResults accordingly
 func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	r.Log.V(0).Info("Reconciling MaasValidator", "name", req.Name, "namespace", req.Namespace)
+	l := r.Log.V(0).WithValues("name", req.Name, "namespace", req.Namespace)
+	l.Info("Reconciling MaasValidator")
 
 	validator := &v1alpha1.MaasValidator{}
 	if err := r.Get(ctx, req.NamespacedName, validator); err != nil {
@@ -68,43 +71,64 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	)
 
 	if maasToken, err = r.tokenFromSecret(secretName, req.Namespace); err != nil {
-		r.Log.Error(err, "failed to retrieve MaaS API Key", "key", req)
+		l.Error(err, "failed to retrieve MAAS API Key")
 	}
 
 	maasUrl := validator.Spec.MaasInstance.Host
 	maasclient, err := maasclient.GetClient(maasUrl, maasToken, "2.0")
 
 	if err != nil {
-		r.Log.Error(err, "failed to initialize MaaS client")
+		l.Error(err, "failed to initialize MAAS client")
 	}
 
 	apiclient := val.MaaSAPI{Client: maasclient}
 
 	// Get the active validator's validation result
 	vr := &vapi.ValidationResult{}
+	p, err := patch.NewHelper(vr, r.Client)
+	if err != nil {
+		l.Error(err, "failed to create patch helper")
+		return ctrl.Result{}, err
+	}
 	nn := ktypes.NamespacedName{
 		Name:      validationResultName(validator),
 		Namespace: req.Namespace,
 	}
 	if err := r.Get(ctx, nn, vr); err == nil {
-		vres.HandleExistingValidationResult(nn, vr, r.Log)
+		vres.HandleExistingValidationResult(vr, r.Log)
 	} else {
 		if !apierrs.IsNotFound(err) {
-			r.Log.V(0).Error(err, "unexpected error getting ValidationResult", "name", nn.Name, "namespace", nn.Namespace)
+			l.Error(err, "unexpected error getting ValidationResult")
 		}
-		if err := vres.HandleNewValidationResult(r.Client, buildValidationResult(validator), r.Log); err != nil {
+		if err := vres.HandleNewValidationResult(ctx, r.Client, p, buildValidationResult(validator), r.Log); err != nil {
 			return ctrl.Result{}, err
 		}
+		return ctrl.Result{RequeueAfter: time.Millisecond}, nil
 	}
-	// Maas Instance image rules
+
+	// Always update the expected result count in case the validator's rules have changed
+	vr.Spec.ExpectedResults = validator.Spec.ResultCount()
+
+	resp := types.ValidationResponse{
+		ValidationRuleResults: make([]*types.ValidationRuleResult, 0, vr.Spec.ExpectedResults),
+		ValidationRuleErrors:  make([]error, 0, vr.Spec.ExpectedResults),
+	}
+
 	maasRuleService := val.NewMaasRuleService(&apiclient)
-	validationResult, err := maasRuleService.ReconcileMaasInstanceImageRules(validator.Spec.MaasInstanceRules)
+
+	// Maas Instance image rules
+	vrr, err := maasRuleService.ReconcileMaasInstanceImageRules(validator.Spec.MaasInstanceRules)
 	if err != nil {
 		r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule")
 	}
-	vres.SafeUpdateValidationResult(r.Client, nn, validationResult, validator.Spec.ResultCount(), err, r.Log)
+	resp.AddResult(vrr, err)
 
-	r.Log.V(0).Info("Requeuing for re-validation in two minutes.", "name", req.Name, "namespace", req.Namespace)
+	// Patch the ValidationResult with the latest ValidationRuleResults
+	if err := vres.SafeUpdateValidationResult(ctx, p, vr, resp, r.Log); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	l.Info("Requeuing for re-validation in two minutes.")
 	return ctrl.Result{RequeueAfter: time.Second * 120}, nil
 }
 
