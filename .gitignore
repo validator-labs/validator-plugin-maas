@@ -21,6 +21,7 @@ Dockerfile.cross
 .devspace
 .idea
 .vscode
+!.vscode/launch.json
 *.swp
 *.swo
 *~

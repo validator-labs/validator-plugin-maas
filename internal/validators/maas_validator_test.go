@@ -5,8 +5,9 @@ import (
 	"testing"
 
 	"github.com/maas/gomaasclient/entity"
-	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
 )
 
 type DummyMaaSAPIClient struct {
