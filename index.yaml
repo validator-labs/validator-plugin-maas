@@ -3,6 +3,16 @@ entries:
   validator-plugin-maas:
   - apiVersion: v2
     appVersion: 0.0.1
+    created: "2024-03-13T17:04:35.747648407Z"
+    description: Perform various validations against a MaaS instance
+    digest: 090de6c5794215061dce5785824092f9100f34bb8d59b4e09be00dfa99a9c0c8
+    name: validator-plugin-maas
+    type: application
+    urls:
+    - https://spectrocloud-labs.github.io/validator-plugin-maas/validator-plugin-maas-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
+    appVersion: 0.0.1
     created: "2024-03-11T00:29:22.07104661Z"
     description: Perform various validations against a MaaS instance
     digest: e724c606d7235d7cc177f6a00703891ff7e44ac0cbb54e57c354274ad29c0312
@@ -21,4 +31,4 @@ entries:
     urls:
     - https://spectrocloud-labs.github.io/validator-plugin-maas/validator-plugin-maas-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-11T00:29:22.069186414Z"
+generated: "2024-03-13T17:04:35.746504845Z"
