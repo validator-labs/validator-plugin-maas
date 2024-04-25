@@ -7,7 +7,7 @@ require (
 	github.com/go-logr/logr v1.4.1
 	github.com/maas/gomaasclient v0.4.0
 	github.com/onsi/ginkgo/v2 v2.17.1
-	github.com/onsi/gomega v1.32.0
+	github.com/onsi/gomega v1.33.0
 	github.com/spectrocloud-labs/validator v0.0.38
 	github.com/stretchr/testify v1.8.4
 	k8s.io/api v0.29.3
