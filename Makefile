@@ -6,7 +6,7 @@ endif
 
 PLUGIN_NAME := maas
 # Image URL to use all building/pushing image targets
-IMG ?= quay.io/spectrocloud-labs/validator-plugin-maas:latest
+IMG ?= quay.io/validator-labs/validator-plugin-maas:latest
 
 GOARCH ?= $(shell go env GOARCH)
 
@@ -75,7 +75,7 @@ test: manifests generate fmt vet envtest setup-validator ## Run tests.
 .PHONY: setup-validator
 setup-validator:
 	@if [ ! -d ../validator ]; then \
-		git clone https://github.com/spectrocloud-labs/validator ../validator; \
+		git clone https://github.com/validator-labs/validator ../validator; \
 	fi
 
 .PHONY: dev
@@ -210,7 +210,7 @@ helm-package: CHART_VERSION=v0.0.1 # x-release-please-version
 helm-package: generate manifests
 	$(HELM) package --version $(CHART_VERSION) chart/validator-plugin-maas/
 	mkdir -p charts && mv validator-*.tgz charts
-	$(HELM) repo index --url https://spectrocloud-labs.github.io/validator-plugin-mass ./chart
+	$(HELM) repo index --url https://validator-labs.github.io/validator-plugin-mass ./chart
 	mv charts/validator-plugin-maas/index.yaml index.yaml
 
 .PHONY: frigate
