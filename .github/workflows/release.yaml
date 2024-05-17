@@ -29,12 +29,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4
 
-      - uses: google-github-actions/release-please-action@e4dc86ba9405554aeba3c6bb2d169500e7d3b4ee # v4
+      - uses: googleapis/release-please-action@v4
         id: release
         with:
-          command: manifest
           token: ${{secrets.PAT}}
-          default-branch: main
 
   release-charts:
     needs: release-please
@@ -49,10 +47,10 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           charts_dir: chart
-          owner: spectrocloud-labs
+          owner: validator-labs
           branch: ${{ env.GITHUB_PAGES_BRANCH }}
-          commit_username: spectrocloud-labs-bot
-          commit_email: bot@noreply.spectrocloud-labs.io
+          commit_username: validator-labs-bot
+          commit_email: bot@noreply.validator-labs.io
           
   build-container:
     if: needs.release-please.outputs.releases_created == 'true'
@@ -64,7 +62,7 @@ jobs:
       packages: write
       id-token: write
     env:
-      IMAGE_TAG: quay.io/spectrocloud-labs/validator-plugin-maas:${{ needs.release-please.outputs.tag_name }}
+      IMAGE_TAG: quay.io/validator-labs/validator-plugin-maas:${{ needs.release-please.outputs.tag_name }}
       IMAGE_NAME: validator-plugin-maas
     steps:
       - name: Checkout
@@ -80,7 +78,7 @@ jobs:
         uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3
         with:
           registry: "quay.io"
-          username: tgillson
+          username: ${{ secrets.QUAY_USER }}
           password: ${{ secrets.QUAY_TOKEN }}
 
       - name: Build Docker Image
