@@ -1,4 +1,4 @@
-module github.com/spectrocloud-labs/validator-plugin-maas
+module github.com/validator-labs/validator-plugin-maas
 
 go 1.22.0
 
@@ -10,11 +10,11 @@ require (
 	github.com/maas/gomaasclient v0.4.0
 	github.com/onsi/ginkgo/v2 v2.17.3
 	github.com/onsi/gomega v1.33.1
-	github.com/spectrocloud-labs/validator v0.0.38
 	github.com/stretchr/testify v1.9.0
 	k8s.io/api v0.30.0
 	k8s.io/apimachinery v0.30.0
 	k8s.io/client-go v0.30.0
+	github.com/validator-labs/validator v0.0.39
 	sigs.k8s.io/cluster-api v1.7.2
 	sigs.k8s.io/controller-runtime v0.18.2
 )
