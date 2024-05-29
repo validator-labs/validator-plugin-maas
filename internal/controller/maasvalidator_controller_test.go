@@ -11,8 +11,8 @@ import (
 
 	// . "github.com/onsi/gomega"
 	//+kubebuilder:scaffold:imports
-	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
-	vapi "github.com/spectrocloud-labs/validator/api/v1alpha1"
+	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
+	vapi "github.com/validator-labs/validator/api/v1alpha1"
 )
 
 const MaasValidatorName = "maas-validator"

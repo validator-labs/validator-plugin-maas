@@ -8,11 +8,11 @@ import (
 	gomaasclient "github.com/maas/gomaasclient/client"
 	"github.com/maas/gomaasclient/entity"
 
-	"github.com/spectrocloud-labs/validator-plugin-maas/api/v1alpha1"
-	"github.com/spectrocloud-labs/validator-plugin-maas/internal/constants"
-	vapi "github.com/spectrocloud-labs/validator/api/v1alpha1"
-	"github.com/spectrocloud-labs/validator/pkg/types"
-	"github.com/spectrocloud-labs/validator/pkg/util"
+	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
+	"github.com/validator-labs/validator-plugin-maas/internal/constants"
+	vapi "github.com/validator-labs/validator/api/v1alpha1"
+	"github.com/validator-labs/validator/pkg/types"
+	"github.com/validator-labs/validator/pkg/util"
 )
 
 const errMsg string = "failed to validate rule"

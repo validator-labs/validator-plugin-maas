@@ -1,12 +1,12 @@
-[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/spectrocloud-labs/validator-plugin-maas/issues)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/validator-labs/validator-plugin-maas/issues)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-![Test](https://github.com/spectrocloud-labs/validator-plugin-maas/actions/workflows/test.yaml/badge.svg)
-[![Go Report Card](https://goreportcard.com/badge/github.com/spectrocloud-labs/validator-plugin-maas)](https://goreportcard.com/report/github.com/spectrocloud-labs/validator-plugin-maas)
-[![codecov](https://codecov.io/github/spectrocloud-labs/validator-plugin-maas/graph/badge.svg?token=Q15XUCRNCN)](https://codecov.io/github/spectrocloud-labs/validator-plugin-maas)
-[![Go Reference](https://pkg.go.dev/badge/github.com/spectrocloud-labs/validator-plugin-maas.svg)](https://pkg.go.dev/github.com/spectrocloud-labs/validator-plugin-maas)
+![Test](https://github.com/validator-labs/validator-plugin-maas/actions/workflows/test.yaml/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/validator-labs/validator-plugin-maas)](https://goreportcard.com/report/github.com/validator-labs/validator-plugin-maas)
+[![codecov](https://codecov.io/github/validator-labs/validator-plugin-maas/graph/badge.svg?token=Q15XUCRNCN)](https://codecov.io/github/validator-labs/validator-plugin-maas)
+[![Go Reference](https://pkg.go.dev/badge/github.com/validator-labs/validator-plugin-maas.svg)](https://pkg.go.dev/github.com/validator-labs/validator-plugin-maas)
 
 # validator-plugin-maas
-The MaaS [validator](https://github.com/spectrocloud-labs/validator) plugin ensures that your MaaS configuration matches a user-configurable expected state.
+The MaaS [validator](https://github.com/validator-labs/validator) plugin ensures that your MaaS configuration matches a user-configurable expected state.
 
 ## Description
 
@@ -20,13 +20,13 @@ The MaaS validator plugin reconciles `MaasValidator` custom resources to perform
 
 Each `MaasValidator` CR is (re)-processed every two minutes to continuously ensure that your MaaS instance matches the expected state.
 
-See the [samples](https://github.com/spectrocloud-labs/validator-plugin-maas/tree/main/config/samples) directory for example `MaasValidator` configurations.
+See the [samples](https://github.com/validator-labs/validator-plugin-maas/tree/main/config/samples) directory for example `MaasValidator` configurations.
 
 ## Installation
-The MaaS validator plugin is meant to be [installed by validator](https://github.com/spectrocloud-labs/validator/tree/gh_pages#installation) (via a ValidatorConfig), but it can also be installed directly as follows:
+The MaaS validator plugin is meant to be [installed by validator](https://github.com/validator-labs/validator/tree/gh_pages#installation) (via a ValidatorConfig), but it can also be installed directly as follows:
 
 ```bash
-helm repo add validator-plugin-maas https://spectrocloud-labs.github.io/validator-plugin-maas
+helm repo add validator-plugin-maas https://validator-labs.github.io/validator-plugin-maas
 helm repo update
 helm install validator-plugin-maas validator-plugin-maas/validator-plugin-maas -n validator-plugin-maas --create-namespace
 ```
