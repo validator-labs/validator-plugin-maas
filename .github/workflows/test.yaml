@@ -1,0 +1,13 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  call-test:
+    uses: validator-labs/workflows/.github/workflows/test.yaml@main
+    secrets: inherit
