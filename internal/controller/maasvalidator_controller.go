@@ -66,8 +66,8 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 	secretName := validator.Spec.MaasInstance.Auth.SecretName
 	var (
-		maasToken string = ""
-		err       error  = nil
+		maasToken string
+		err       error
 	)
 
 	if maasToken, err = r.tokenFromSecret(secretName, req.Namespace); err != nil {
