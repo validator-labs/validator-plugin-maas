@@ -2,7 +2,7 @@ module github.com/validator-labs/validator-plugin-maas
 
 go 1.22.0
 
-toolchain go1.22.4
+toolchain go1.22.5
 
 require (
 	github.com/deckarep/golang-set/v2 v2.6.0
