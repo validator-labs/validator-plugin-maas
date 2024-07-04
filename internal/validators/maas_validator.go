@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
+	gomaasclient "github.com/canonical/gomaasclient/client"
+	"github.com/canonical/gomaasclient/entity"
 	mapset "github.com/deckarep/golang-set/v2"
-	gomaasclient "github.com/maas/gomaasclient/client"
-	"github.com/maas/gomaasclient/entity"
 
 	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/validator-labs/validator-plugin-maas/internal/constants"

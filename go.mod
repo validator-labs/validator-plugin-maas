@@ -5,9 +5,9 @@ go 1.22.0
 toolchain go1.22.5
 
 require (
+	github.com/canonical/gomaasclient v0.6.0
 	github.com/deckarep/golang-set/v2 v2.6.0
 	github.com/go-logr/logr v1.4.2
-	github.com/maas/gomaasclient v0.6.0
 	github.com/onsi/ginkgo/v2 v2.19.0
 	github.com/onsi/gomega v1.33.1
 	github.com/stretchr/testify v1.9.0
@@ -47,7 +47,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/juju/collections v1.0.4 // indirect
 	github.com/juju/errors v1.0.0 // indirect
-	github.com/juju/gomaasapi/v2 v2.2.0 // indirect
+	github.com/juju/gomaasapi/v2 v2.3.0 // indirect
 	github.com/juju/loggo v1.0.0 // indirect
 	github.com/juju/mgo/v2 v2.0.2 // indirect
 	github.com/juju/schema v1.0.1 // indirect
