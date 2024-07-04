@@ -7,7 +7,7 @@ toolchain go1.22.5
 require (
 	github.com/deckarep/golang-set/v2 v2.6.0
 	github.com/go-logr/logr v1.4.2
-	github.com/maas/gomaasclient v0.5.0
+	github.com/maas/gomaasclient v0.6.0
 	github.com/onsi/ginkgo/v2 v2.19.0
 	github.com/onsi/gomega v1.33.1
 	github.com/stretchr/testify v1.9.0
