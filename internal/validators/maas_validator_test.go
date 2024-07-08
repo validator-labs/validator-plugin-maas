@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/maas/gomaasclient/entity"
+	"github.com/canonical/gomaasclient/entity"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
