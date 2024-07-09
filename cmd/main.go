@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Package main initializes an MaasValidator controller.
+// Package main initializes a MaasValidator controller.
 package main
 
 import (
