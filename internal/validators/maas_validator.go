@@ -1,3 +1,4 @@
+// Package validators handles MaaS rule reconciliation.
 package validators
 
 import (
@@ -22,13 +23,13 @@ type MaasRuleService struct {
 	apiclient MaaSAPIClient
 }
 
-// MaasAPIClient is an interface for interacting with the Maas API
+// MaaSAPIClient is an interface for interacting with the Maas API
 type MaaSAPIClient interface {
 	ListOSImages() ([]entity.BootResource, error)
 	ListDNSServers() ([]entity.DNSResource, error)
 }
 
-// MaaSAPI is a struct for which containts the Maas client
+// MaaSAPI is a struct for which contains the Maas client
 type MaaSAPI struct {
 	Client *gomaasclient.Client
 }
@@ -64,7 +65,7 @@ func NewMaasRuleService(apiclient MaaSAPIClient) *MaasRuleService {
 	}
 }
 
-// ReconcileMaasInstanceRule reconciles a MaaS instance rule from the MaasValidator config
+// ReconcileMaasInstanceImageRules reconciles a MaaS instance image rule from the MaasValidator config
 func (s *MaasRuleService) ReconcileMaasInstanceImageRules(rules v1alpha1.MaasInstanceRules) (*types.ValidationRuleResult, error) {
 
 	vr := buildValidationResult(rules)
