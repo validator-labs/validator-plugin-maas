@@ -74,8 +74,8 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		l.Error(err, "failed to retrieve MAAS API Key")
 	}
 
-	maasUrl := validator.Spec.MaasInstance.Host
-	maasclient, err := maasclient.GetClient(maasUrl, maasToken, "2.0")
+	maasURL := validator.Spec.MaasInstance.Host
+	maasclient, err := maasclient.GetClient(maasURL, maasToken, "2.0")
 
 	if err != nil {
 		l.Error(err, "failed to initialize MAAS client")

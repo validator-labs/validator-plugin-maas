@@ -17,19 +17,23 @@ import (
 
 const errMsg string = "failed to validate rule"
 
+// MaasRuleService is a service for reconciling Maas rules via its MaaSAPIClient
 type MaasRuleService struct {
 	apiclient MaaSAPIClient
 }
 
+// MaasAPIClient is an interface for interacting with the Maas API
 type MaaSAPIClient interface {
 	ListOSImages() ([]entity.BootResource, error)
 	ListDNSServers() ([]entity.DNSResource, error)
 }
 
+// MaaSAPI is a struct for which containts the Maas client
 type MaaSAPI struct {
 	Client *gomaasclient.Client
 }
 
+// ListOSImages returns a list of OS images from the Maas API
 func (m *MaaSAPI) ListOSImages() ([]entity.BootResource, error) {
 	if m.Client != nil {
 		images, err := m.Client.BootResources.Get(&entity.BootResourcesReadParams{})
@@ -41,6 +45,7 @@ func (m *MaaSAPI) ListOSImages() ([]entity.BootResource, error) {
 	return make([]entity.BootResource, 0), nil
 }
 
+// ListDNSServers returns a list of DNS servers from the Maas API
 func (m *MaaSAPI) ListDNSServers() ([]entity.DNSResource, error) {
 	if m.Client != nil {
 		dnsresources, err := m.Client.DNSResources.Get()
@@ -52,6 +57,7 @@ func (m *MaaSAPI) ListDNSServers() ([]entity.DNSResource, error) {
 	return make([]entity.DNSResource, 0), nil
 }
 
+// NewMaasRuleService returns a MaasRuleService
 func NewMaasRuleService(apiclient MaaSAPIClient) *MaasRuleService {
 	return &MaasRuleService{
 		apiclient: apiclient,
@@ -101,6 +107,7 @@ func (s *MaasRuleService) updateResult(vr *types.ValidationRuleResult, errs []er
 	vr.Condition.Details = append(vr.Condition.Details, details...)
 }
 
+// ListOSImages returns a list of OS images from the Maas API
 func (s *MaasRuleService) ListOSImages() ([]entity.BootResource, error) {
 	images, err := s.apiclient.ListOSImages()
 	if err != nil {
@@ -125,8 +132,8 @@ func findBootResources(imgRules []v1alpha1.OSImage, images []entity.BootResource
 	details = make([]string, 0)
 
 	converted := convertBootResourceToOSImage(images)
-	convertedSet := mapset.NewSet[v1alpha1.OSImage](converted...)
-	imgRulesSet := mapset.NewSet[v1alpha1.OSImage](imgRules...)
+	convertedSet := mapset.NewSet(converted...)
+	imgRulesSet := mapset.NewSet(imgRules...)
 
 	if imgRulesSet.IsSubset(convertedSet) {
 		return errs, details
