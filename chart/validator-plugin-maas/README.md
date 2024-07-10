@@ -1,13 +1,13 @@
 
-validator-plugin-maas
+Validator-plugin-maas
 ===========
 
-Perform various MaaS validations.
+Perform various validations against a MaaS instance
 
 
 ## Configuration
 
-The following table lists the configurable parameters of the validator-plugin-maas chart and their default values.
+The following table lists the configurable parameters of the Validator-plugin-maas chart and their default values.
 
 | Parameter                | Description             | Default        |
 | ------------------------ | ----------------------- | -------------- |
@@ -15,7 +15,7 @@ The following table lists the configurable parameters of the validator-plugin-ma
 | `controllerManager.kubeRbacProxy.containerSecurityContext.allowPrivilegeEscalation` |  | `false` |
 | `controllerManager.kubeRbacProxy.containerSecurityContext.capabilities.drop` |  | `["ALL"]` |
 | `controllerManager.kubeRbacProxy.image.repository` |  | `"gcr.io/kubebuilder/kube-rbac-proxy"` |
-| `controllerManager.kubeRbacProxy.image.tag` |  | `"v0.15.0"` |
+| `controllerManager.kubeRbacProxy.image.tag` |  | `"v0.16.0"` |
 | `controllerManager.kubeRbacProxy.resources.limits.cpu` |  | `"500m"` |
 | `controllerManager.kubeRbacProxy.resources.limits.memory` |  | `"128Mi"` |
 | `controllerManager.kubeRbacProxy.resources.requests.cpu` |  | `"5m"` |

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Package controller defines a controller for reconciling MaasValidator objects.
 package controller
 
 import (
@@ -74,8 +75,8 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		l.Error(err, "failed to retrieve MAAS API Key")
 	}
 
-	maasUrl := validator.Spec.MaasInstance.Host
-	maasclient, err := maasclient.GetClient(maasUrl, maasToken, "2.0")
+	maasURL := validator.Spec.MaasInstance.Host
+	maasclient, err := maasclient.GetClient(maasURL, maasToken, "2.0")
 
 	if err != nil {
 		l.Error(err, "failed to initialize MAAS client")

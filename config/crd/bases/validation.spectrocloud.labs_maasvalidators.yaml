@@ -43,6 +43,8 @@ spec:
                 description: MaasInstance describes the MaaS host
                 properties:
                   auth:
+                    description: Auth provides authentication information for the
+                      MaaS Instance
                     properties:
                       secretName:
                         type: string
@@ -57,6 +59,7 @@ spec:
                 - host
                 type: object
               MaasInstanceRules:
+                description: MaasInstanceRules defines the rules for the MaaS instance
                 properties:
                   auth:
                     description: Auth provides authentication information for the
@@ -70,6 +73,7 @@ spec:
                   bootable-images:
                     description: OSImages is a list of bootable os images
                     items:
+                      description: OSImage defines an OS Image
                       properties:
                         name:
                           description: The name of the bootable image

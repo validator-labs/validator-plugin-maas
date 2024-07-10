@@ -26,6 +26,7 @@ type MaasValidatorSpec struct {
 	MaasInstance      `json:"MaasInstance" yaml:"MaasInstance"`
 }
 
+// ResultCount returns the number of validation results expected for an MaasValidatorSpec.
 func (s MaasValidatorSpec) ResultCount() int {
 	return len(s.MaasInstanceRules.OSImages)
 }
@@ -37,6 +38,7 @@ type MaasInstance struct {
 	Auth Auth   `json:"auth" yaml:"auth"`
 }
 
+// MaasInstanceRules defines the rules for the MaaS instance
 type MaasInstanceRules struct {
 	// Unique rule name
 	Name string `json:"name" yaml:"name"`
@@ -47,6 +49,7 @@ type MaasInstanceRules struct {
 	Auth Auth `json:"auth" yaml:"auth"`
 }
 
+// OSImage defines an OS Image
 type OSImage struct {
 	// The name of the bootable image
 	Name string `json:"name" yaml:"name"`
@@ -54,6 +57,7 @@ type OSImage struct {
 	Architecture string `json:"os-arch" yaml:"os-arch"`
 }
 
+// Auth provides authentication information for the MaaS Instance
 type Auth struct {
 	// +kubebuilder:validation:Optional
 	SecretName string `json:"secretName" yaml:"secretName"`
