@@ -37,7 +37,8 @@ import (
 
 	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/validator-labs/validator-plugin-maas/internal/constants"
-	val "github.com/validator-labs/validator-plugin-maas/internal/validators"
+	utils "github.com/validator-labs/validator-plugin-maas/internal/utils/maas"
+	osval "github.com/validator-labs/validator-plugin-maas/internal/validators/os"
 	vapi "github.com/validator-labs/validator/api/v1alpha1"
 	"github.com/validator-labs/validator/pkg/types"
 	"github.com/validator-labs/validator/pkg/util"
@@ -65,7 +66,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	secretName := validator.Spec.MaasInstance.Auth.SecretName
+	secretName := validator.Spec.Auth.SecretName
 	var (
 		maasToken string
 		err       error
@@ -75,14 +76,14 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		l.Error(err, "failed to retrieve MAAS API Key")
 	}
 
-	maasURL := validator.Spec.MaasInstance.Host
+	maasURL := validator.Spec.Host
 	maasclient, err := maasclient.GetClient(maasURL, maasToken, "2.0")
 
 	if err != nil {
 		l.Error(err, "failed to initialize MAAS client")
 	}
 
-	apiclient := val.MaaSAPI{Client: maasclient}
+	apiclient := utils.NewAPI(maasclient)
 
 	// Get the active validator's validation result
 	vr := &vapi.ValidationResult{}
@@ -115,14 +116,16 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		ValidationRuleErrors:  make([]error, 0, vr.Spec.ExpectedResults),
 	}
 
-	maasRuleService := val.NewMaasRuleService(&apiclient)
+	maasRuleService := osval.NewImageRulesService(r.Log, &apiclient.ImageClient)
 
 	// Maas Instance image rules
-	vrr, err := maasRuleService.ReconcileMaasInstanceImageRules(validator.Spec.MaasInstanceRules)
-	if err != nil {
-		r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule")
+	for _, rule := range validator.Spec.OSImageRules {
+		vrr, err := maasRuleService.ReconcileMaasInstanceImageRules(rule)
+		if err != nil {
+			r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule")
+		}
+		resp.AddResult(vrr, err)
 	}
-	resp.AddResult(vrr, err)
 
 	// Patch the ValidationResult with the latest ValidationRuleResults
 	if err := vres.SafeUpdateValidationResult(ctx, p, vr, resp, r.Log); err != nil {

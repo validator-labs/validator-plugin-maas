@@ -7,4 +7,7 @@ const (
 
 	// MaasInstance is the name of the maas instance.
 	MaasInstance string = "maas instance"
+
+	// ErrMsg is a generic error message
+	ErrMsg string = "failed to validate rule"
 )

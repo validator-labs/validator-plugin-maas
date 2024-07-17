@@ -32,17 +32,27 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 			Namespace: validatorNamespace,
 		},
 		Spec: v1alpha1.MaasValidatorSpec{
-			MaasInstance: v1alpha1.MaasInstance{
-				Host: "maas.sc",
-				Auth: v1alpha1.Auth{
-					SecretName: "maas-api-token",
-				},
+			Host: "maas.sc",
+			Auth: v1alpha1.Auth{
+				SecretName: "maas-api-token",
 			},
-			MaasInstanceRules: v1alpha1.MaasInstanceRules{
-				Name: "validate ubuntu images",
-				OSImages: []v1alpha1.OSImage{
-					{Name: "Ubuntu", Architecture: "amd64/ga-20.04"},
-				},
+			OSImageRules: []v1alpha1.OSImageRule{
+				{Name: "Ubuntu", OSImages: []v1alpha1.OSImage{
+					{OSName: "Ubuntu", Architecture: "amd64/ga-20.04"},
+				}},
+			},
+			InternalDNSRules: []v1alpha1.InternalDNSRule{
+				{MaasDomain: "maas.sc", DNSRecords: []v1alpha1.DNSRecord{
+					{Hostname: "maas.sc", Type: "A", IP: "10.0.0.1", TTL: 3600},
+				}},
+			},
+			ExternalDNSRules: []v1alpha1.ExternalDNSRule{
+				{Name: "Upstream DNS", Enabled: true},
+			},
+			ResourceAvailabilityRules: []v1alpha1.ResourceAvailabilityRule{
+				{Name: "az1 2 machines", Resources: []v1alpha1.Resource{
+					{AZ: "az1", NumMachines: 2, NumCPU: 2, NumDisk: 20, NumRAM: 4},
+				}},
 			},
 		},
 	}

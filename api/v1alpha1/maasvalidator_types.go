@@ -22,39 +22,18 @@ import (
 
 // MaasValidatorSpec defines the desired state of MaasValidator
 type MaasValidatorSpec struct {
-	MaasInstanceRules `json:"MaasInstanceRules,omitempty" yaml:"MaasInstanceRules,omitempty"`
-	MaasInstance      `json:"MaasInstance" yaml:"MaasInstance"`
+	Auth Auth   `json:"auth" yaml:"auth"`
+	Host string `json:"host" yaml:"host"`
+
+	OSImageRules              []OSImageRule              `json:"osImageRules,omitempty" yaml:"osImageRules,omitempty"`
+	InternalDNSRules          []InternalDNSRule          `json:"internalDNSRules,omitempty" yaml:"internalDNSRules,omitempty"`
+	ExternalDNSRules          []ExternalDNSRule          `json:"externalDNSRules,omitempty" yaml:"externalDNSRules,omitempty"`
+	ResourceAvailabilityRules []ResourceAvailabilityRule `json:"resourceAvailabilityRules,omitempty" yaml:"resourceAvailabilityRules,omitempty"`
 }
 
 // ResultCount returns the number of validation results expected for an MaasValidatorSpec.
 func (s MaasValidatorSpec) ResultCount() int {
-	return len(s.MaasInstanceRules.OSImages)
-}
-
-// MaasInstance describes the MaaS host
-type MaasInstance struct {
-	// Host is the URL for your MaaS instance
-	Host string `json:"host" yaml:"host"`
-	Auth Auth   `json:"auth" yaml:"auth"`
-}
-
-// MaasInstanceRules defines the rules for the MaaS instance
-type MaasInstanceRules struct {
-	// Unique rule name
-	Name string `json:"name" yaml:"name"`
-	// OSImages is a list of bootable os images
-	OSImages []OSImage `json:"bootable-images,omitempty" yaml:"bootable-images,omitempty"`
-
-	// Auth provides authentication information for the MaaS Instance
-	Auth Auth `json:"auth" yaml:"auth"`
-}
-
-// OSImage defines an OS Image
-type OSImage struct {
-	// The name of the bootable image
-	Name string `json:"name" yaml:"name"`
-	// OS Architecture
-	Architecture string `json:"os-arch" yaml:"os-arch"`
+	return len(s.OSImageRules) + len(s.InternalDNSRules) + len(s.ExternalDNSRules) + len(s.ResourceAvailabilityRules)
 }
 
 // Auth provides authentication information for the MaaS Instance
@@ -63,6 +42,76 @@ type Auth struct {
 	SecretName string `json:"secretName" yaml:"secretName"`
 	// +kubebuilder:validation:Optional
 	TokenKey string `json:"token" yaml:"token"`
+}
+
+// OSImageRule defines a rule for validating one or more OS images
+type OSImageRule struct {
+	// Unique name for the rule
+	Name string `json:"name" yaml:"name"`
+	// The list of OS images to validate
+	OSImages []OSImage `json:"osImages" yaml:"osImages"`
+}
+
+// OSImage defines one OS image
+type OSImage struct {
+	// The name of the bootable image
+	OSName string `json:"osName" yaml:"osName"`
+	// OS Architecture
+	Architecture string `json:"osArch" yaml:"osArch"`
+}
+
+// InternalDNSRule provides rules for the internal DNS server
+type InternalDNSRule struct {
+	// The domain name for the internal DNS server
+	MaasDomain string `json:"maasDomain" yaml:"maasDomain"`
+	// The DNS records for the internal DNS server
+	DNSRecords []DNSRecord `json:"dnsRecords" yaml:"dnsRecords"`
+}
+
+// DNSRecord provides an internal DNS record
+type DNSRecord struct {
+	// The hostname for the DNS record
+	Hostname string `json:"hostname" yaml:"hostname"`
+	// The IP address for the DNS record
+	IP string `json:"ip" yaml:"ip"`
+	// The type of DNS record
+	Type string `json:"type" yaml:"type"`
+	// Optional Time To Live (TTL) for the DNS record
+	TTL int `json:"ttl,omitempty" yaml:"ttl,omitempty"`
+}
+
+// ExternalDNSRule provides rules for validating the external DNS server
+type ExternalDNSRule struct {
+	// Unique name for the rule
+	Name string `json:"name" yaml:"name"`
+	// Whether the external DNS server is enabled
+	Enabled bool `json:"enabled" yaml:"enabled"`
+}
+
+// ResourceAvailabilityRule provides rules for validating resource availability
+type ResourceAvailabilityRule struct {
+	// Unique name for the rule
+	Name string `json:"name" yaml:"name"`
+	// The list of resources to validate
+	Resources []Resource `json:"resources" yaml:"resources"`
+}
+
+// Resource defines a compute resource
+type Resource struct {
+	// Availability Zone
+	AZ string `json:"az" yaml:"az"`
+	// Minimum desired number of machines
+	NumMachines int `json:"numMachines" yaml:"numMachines"`
+	// Minimum CPU cores per machine
+	NumCPU int `json:"numCPU" yaml:"numCPU"`
+	// Minimum RAM per machine in GB
+	NumRAM int `json:"numRAM" yaml:"numRAM"`
+	// Minimum Disk space per machine in GB
+	NumDisk int `json:"numDisk" yaml:"numDisk"`
+	// Optional machine pool
+	Pool string `json:"pool,omitempty" yaml:"pool,omitempty"`
+	// Optional machine labels
+	Labels []string `json:"labels,omitempty" yaml:"labels,omitempty"`
 }
 
 // MaasValidatorStatus defines the observed state of MaasValidator
