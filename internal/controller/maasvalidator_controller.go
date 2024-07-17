@@ -37,7 +37,6 @@ import (
 
 	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/validator-labs/validator-plugin-maas/internal/constants"
-	utils "github.com/validator-labs/validator-plugin-maas/internal/utils/maas"
 	osval "github.com/validator-labs/validator-plugin-maas/internal/validators/os"
 	vapi "github.com/validator-labs/validator/api/v1alpha1"
 	"github.com/validator-labs/validator/pkg/types"
@@ -77,13 +76,11 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 
 	maasURL := validator.Spec.Host
-	maasclient, err := maasclient.GetClient(maasURL, maasToken, "2.0")
+	maasClient, err := maasclient.GetClient(maasURL, maasToken, "2.0")
 
 	if err != nil {
 		l.Error(err, "failed to initialize MAAS client")
 	}
-
-	apiclient := utils.NewAPI(maasclient)
 
 	// Get the active validator's validation result
 	vr := &vapi.ValidationResult{}
@@ -116,13 +113,13 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		ValidationRuleErrors:  make([]error, 0, vr.Spec.ExpectedResults),
 	}
 
-	maasRuleService := osval.NewImageRulesService(r.Log, &apiclient.ImageClient)
+	maasRuleService := osval.NewImageRulesService(r.Log, maasClient.BootResources)
 
-	// Maas Instance image rules
-	for _, rule := range validator.Spec.OSImageRules {
-		vrr, err := maasRuleService.ReconcileMaasInstanceImageRules(rule)
+	// MAAS Instance image rules
+	for _, rule := range validator.Spec.ImageRules {
+		vrr, err := maasRuleService.ReconcileMaasInstanceImageRule(rule)
 		if err != nil {
-			r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule")
+			r.Log.V(0).Error(err, "failed to reconcile MAAS instance rule")
 		}
 		resp.AddResult(vrr, err)
 	}
@@ -170,7 +167,7 @@ func validationResultName(validator *v1alpha1.MaasValidator) string {
 }
 
 func (r *MaasValidatorReconciler) tokenFromSecret(name, namespace string) (string, error) {
-	r.Log.Info("Getting MaaS API token from secret", "name", name, "namespace", namespace)
+	r.Log.Info("Getting MAAS API token from secret", "name", name, "namespace", namespace)
 
 	nn := ktypes.NamespacedName{Name: name, Namespace: namespace}
 	secret := &corev1.Secret{}

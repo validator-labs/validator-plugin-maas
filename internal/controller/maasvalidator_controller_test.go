@@ -36,9 +36,9 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 			Auth: v1alpha1.Auth{
 				SecretName: "maas-api-token",
 			},
-			OSImageRules: []v1alpha1.OSImageRule{
-				{Name: "Ubuntu", OSImages: []v1alpha1.OSImage{
-					{OSName: "Ubuntu", Architecture: "amd64/ga-20.04"},
+			ImageRules: []v1alpha1.ImageRule{
+				{Name: "Ubuntu", Images: []v1alpha1.Image{
+					{Name: "Ubuntu", Architecture: "amd64/ga-20.04"},
 				}},
 			},
 			InternalDNSRules: []v1alpha1.InternalDNSRule{
@@ -46,8 +46,8 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 					{Hostname: "maas.sc", Type: "A", IP: "10.0.0.1", TTL: 3600},
 				}},
 			},
-			ExternalDNSRules: []v1alpha1.ExternalDNSRule{
-				{Name: "Upstream DNS", Enabled: true},
+			UpstreamDNSRules: []v1alpha1.UpstreamDNSRule{
+				{Name: "Upstream DNS", NumDNSServers: 1},
 			},
 			ResourceAvailabilityRules: []v1alpha1.ResourceAvailabilityRule{
 				{Name: "az1 2 machines", Resources: []v1alpha1.Resource{

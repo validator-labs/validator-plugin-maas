@@ -7,14 +7,15 @@ spec:
   auth:
     # You have to specify credentials secret
     secretName: maas-credentials
-  osImageRules:
+    token: "foo" # reads token from cluster secret
+  imageRules:  
     - name: "OS Rule 1"
-      osImages:
-        - osName: ubuntu/focal
-          osArch: amd64/ga-20.04
-        - osName: ubuntu/jammy
-          osArch: amd64/ga-22.04
+      images:
+        - name: ubuntu/focal
+          architecture: amd64/ga-20.04
+        - name: ubuntu/jammy
+          architecture: amd64/ga-22.04
     - name: "OS Rule 2"
-      osImages:
-        - osName: ubuntu/jammy
-          osArch: amd64/ga-22.04
+      images:
+        - name: ubuntu/focal
+          architecture: amd64/ga-22.04

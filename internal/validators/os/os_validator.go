@@ -2,9 +2,9 @@
 package os
 
 import (
-	"errors"
 	"fmt"
 
+	"github.com/canonical/gomaasclient/api"
 	"github.com/canonical/gomaasclient/entity"
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/go-logr/logr"
@@ -16,36 +16,26 @@ import (
 	"github.com/validator-labs/validator/pkg/util"
 )
 
-// ImageAPI is an interface for interacting with the Maas API
-type imageAPI interface {
-	ListOSImages() ([]entity.BootResource, error)
-}
-
 // ImageRulesService is a service for reconciling OS image rules
 type ImageRulesService struct {
 	log logr.Logger
-	api imageAPI
+	api api.BootResources
 }
 
 // NewImageRulesService returns a ImageRulesService
-func NewImageRulesService(log logr.Logger, api imageAPI) *ImageRulesService {
+func NewImageRulesService(log logr.Logger, api api.BootResources) *ImageRulesService {
 	return &ImageRulesService{
 		log: log,
 		api: api,
 	}
 }
 
-// ReconcileMaasInstanceImageRules reconciles a MaaS instance image rule from the MaasValidator config
-func (s *ImageRulesService) ReconcileMaasInstanceImageRules(rule v1alpha1.OSImageRule) (*types.ValidationRuleResult, error) {
+// ReconcileMaasInstanceImageRule reconciles a MAAS instance image rule from the MaasValidator config
+func (s *ImageRulesService) ReconcileMaasInstanceImageRule(rule v1alpha1.ImageRule) (*types.ValidationRuleResult, error) {
 
 	vr := buildValidationResult(rule)
 
-	brs, err := s.api.ListOSImages()
-	if err != nil {
-		return vr, err
-	}
-
-	errs, details := findBootResources(rule, brs)
+	errs, details := s.findBootResources(rule)
 
 	s.updateResult(vr, errs, constants.ErrMsg, details...)
 
@@ -56,7 +46,7 @@ func (s *ImageRulesService) ReconcileMaasInstanceImageRules(rule v1alpha1.OSImag
 }
 
 // buildValidationResult builds a default ValidationResult for a given validation type
-func buildValidationResult(rule v1alpha1.OSImageRule) *types.ValidationRuleResult {
+func buildValidationResult(rule v1alpha1.ImageRule) *types.ValidationRuleResult {
 	state := vapi.ValidationSucceeded
 	latestCondition := vapi.DefaultValidationCondition()
 	latestCondition.Details = make([]string, 0)
@@ -79,48 +69,40 @@ func (s *ImageRulesService) updateResult(vr *types.ValidationRuleResult, errs []
 	vr.Condition.Details = append(vr.Condition.Details, details...)
 }
 
-// ListOSImages returns a list of OS images from the Maas API
-func (s *ImageRulesService) ListOSImages() ([]entity.BootResource, error) {
-	images, err := s.api.ListOSImages()
-	if err != nil {
-		return nil, err
-	}
-	return images, nil
-}
-
 // convertBootResourceToOSImage formats a list of BootResources as a list of OSImages
-func convertBootResourceToOSImage(images []entity.BootResource) []v1alpha1.OSImage {
-	converted := make([]v1alpha1.OSImage, len(images))
+func convertBootResourceToOSImage(images []entity.BootResource) []v1alpha1.Image {
+	converted := make([]v1alpha1.Image, len(images))
 	for i, img := range images {
-		converted[i] = v1alpha1.OSImage{
-			OSName:       img.Name,
+		converted[i] = v1alpha1.Image{
+			Name:         img.Name,
 			Architecture: img.Architecture,
 		}
 	}
 	return converted
 }
 
-// findBootResources checks if a list of OSImages is a subset of a list of BootResources
-func findBootResources(rule v1alpha1.OSImageRule, images []entity.BootResource) (errs []error, details []string) {
+// findBootResources checks if a list of Images is a subset of a list of BootResources
+func (s *ImageRulesService) findBootResources(rule v1alpha1.ImageRule) (errs []error, details []string) {
 	errs = make([]error, 0)
 	details = make([]string, 0)
 
-	converted := convertBootResourceToOSImage(images)
-	convertedSet := mapset.NewSet(converted...)
-	imgRulesSet := mapset.NewSet(rule.OSImages...)
-
-	if imgRulesSet.IsSubset(convertedSet) {
+	images, err := s.api.Get(&entity.BootResourcesReadParams{})
+	if err != nil {
 		return errs, details
 	}
+	converted := convertBootResourceToOSImage(images)
+	convertedSet := mapset.NewSet(converted...)
+	imgRulesSet := mapset.NewSet(rule.Images...)
 
 	diffSet := imgRulesSet.Difference(convertedSet)
+	intersectionSet := imgRulesSet.Intersect(convertedSet)
 
-	diffSetIt := diffSet.Iterator()
-
-	for img := range diffSetIt.C {
-		errs = append(errs, errors.New(constants.ErrMsg))
-		details = append(details, fmt.Sprintf("OS image %s with arch %s was not found", img.OSName, img.Architecture))
+	for img := range diffSet.Iterator().C {
+		errs = append(errs, fmt.Errorf("OS image %s with arch %s was not found", img.Name, img.Architecture))
 	}
 
+	for img := range intersectionSet.Iterator().C {
+		details = append(details, fmt.Sprintf("OS image %s with arch %s was found", img.Name, img.Architecture))
+	}
 	return errs, details
 }

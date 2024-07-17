@@ -40,33 +40,49 @@ spec:
             description: MaasValidatorSpec defines the desired state of MaasValidator
             properties:
               auth:
-                description: Auth provides authentication information for the MaaS
+                description: Auth provides authentication information for the MAAS
                   Instance
                 properties:
                   secretName:
                     type: string
                   token:
                     type: string
+                required:
+                - secretName
+                - token
                 type: object
-              externalDNSRules:
+              host:
+                description: Host is the URL for your MAAS Instance
+                type: string
+              imageRules:
                 items:
-                  description: |-
-                    Verify that the ExternalDNSRule is enabled
-                    Checks that MaaS has at least one DNS server configured
+                  description: ImageRule defines a rule for validating one or more
+                    OS images
                   properties:
-                    enabled:
-                      description: Whether the external DNS server is enabled
-                      type: boolean
+                    images:
+                      description: The list of OS images to validate
+                      items:
+                        description: Image defines one OS image
+                        properties:
+                          architecture:
+                            description: OS Architecture
+                            type: string
+                          name:
+                            description: The name of the bootable image
+                            type: string
+                        required:
+                        - architecture
+                        - name
+                        type: object
+                      type: array
                     name:
                       description: Unique name for the rule
                       type: string
                   required:
-                  - enabled
+                  - images
                   - name
                   type: object
                 type: array
-              host:
-                type: string
               internalDNSRules:
                 items:
                   description: InternalDNSRule provides rules for the internal DNS
@@ -103,35 +119,10 @@ spec:
                   - maasDomain
                   type: object
                 type: array
-              osImageRules:
-                items:
-                  description: OSImageRule defines an OS Image
-                  properties:
-                    name:
-                      description: Unique name for the rule
-                      type: string
-                    osImages:
-                      description: The list of OS images to validate
-                      items:
-                        properties:
-                          osArch:
-                            description: OS Architecture
-                            type: string
-                          osName:
-                            description: The name of the bootable image
-                            type: string
-                        required:
-                        - osArch
-                        - osName
-                        type: object
-                      type: array
-                  required:
-                  - name
-                  - osImages
-                  type: object
-                type: array
               resourceAvailabilityRules:
                 items:
+                  description: ResourceAvailabilityRule provides rules for validating
+                    resource availability
                   properties:
                     name:
                       description: Unique name for the rule
@@ -139,8 +130,7 @@ spec:
                     resources:
                       description: The list of resources to validate
                       items:
-                        description: ResourceAvailabilityRule provides rules for the
-                          resource availability
+                        description: Resource defines a compute resource
                         properties:
                           az:
                             description: Availability Zone
@@ -176,6 +166,22 @@ spec:
                   required:
                   - name
                   - resources
+                  type: object
+                type: array
+              upstreamDNSRules:
+                items:
+                  description: UpstreamDNSRule provides rules for validating the external
+                    DNS server
+                  properties:
+                    name:
+                      description: Unique name for the rule
+                      type: string
+                    numDNSServers:
+                      description: The minimum expected number of upstream DNS servers
+                      type: integer
+                  required:
+                  - name
+                  - numDNSServers
                   type: object
                 type: array
             required:
