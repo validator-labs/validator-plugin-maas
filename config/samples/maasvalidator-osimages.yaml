@@ -3,15 +3,19 @@ kind: MaasValidator
 metadata:
   name: maasvalidator-sample
 spec:
-  MaasInstance:
-    host: "http://maas.sc:5240/MAAS"
-    auth:
-      # You have to specify credentials secret
-      secretName: maas-credentials
-  MaasInstanceRules:
-    name: "rules for sc maas"
-    bootable-images:
-    - name: ubuntu/focal
-      os-arch: amd64/ga-20.04
-    - name: ubuntu/xenial
-      os-arch: amd64/ga-22.04
+  host: "http://maas.sc:5240/MAAS"
+  auth:
+    # You have to specify credentials secret
+    secretName: maas-credentials
+    token: "foo" # reads token from cluster secret
+  imageRules:  
+    - name: "OS Rule 1"
+      images:
+        - name: ubuntu/focal
+          architecture: amd64/ga-20.04
+        - name: ubuntu/jammy
+          architecture: amd64/ga-22.04
+    - name: "OS Rule 2"
+      images:
+        - name: ubuntu/focal
+          architecture: amd64/ga-22.04

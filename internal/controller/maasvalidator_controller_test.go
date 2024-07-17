@@ -3,6 +3,9 @@ package controller
 import (
 	"context"
 
+	"github.com/canonical/gomaasclient/api"
+	maasclient "github.com/canonical/gomaasclient/client"
+	"github.com/canonical/gomaasclient/entity"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -17,12 +20,31 @@ import (
 
 const MaasValidatorName = "maas-validator"
 
+type MockBootResourcesService struct {
+	api.BootResources
+}
+
+func (b *MockBootResourcesService) Get(params *entity.BootResourcesReadParams) ([]entity.BootResource, error) {
+	return []entity.BootResource{
+		{
+			Name:         "Ubuntu",
+			Architecture: "amd64/ga-22.04",
+		},
+	}, nil
+}
+
 var _ = Describe("MaaSValidator controller", Ordered, func() {
 
 	BeforeEach(func() {
 		// toggle true/false to enable/disable the OCIValidator controller specs
 		if false {
 			Skip("skipping")
+		}
+		// overwrite the maas client to inject mock services
+		SetUpClient = func(maasURL, massToken string) (*maasclient.Client, error) {
+			c := &maasclient.Client{}
+			c.BootResources = &MockBootResourcesService{}
+			return c, nil
 		}
 	})
 
@@ -32,17 +54,27 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 			Namespace: validatorNamespace,
 		},
 		Spec: v1alpha1.MaasValidatorSpec{
-			MaasInstance: v1alpha1.MaasInstance{
-				Host: "maas.sc",
-				Auth: v1alpha1.Auth{
-					SecretName: "maas-api-token",
-				},
+			Host: "maas.sc",
+			Auth: v1alpha1.Auth{
+				SecretName: "maas-api-token",
 			},
-			MaasInstanceRules: v1alpha1.MaasInstanceRules{
-				Name: "validate ubuntu images",
-				OSImages: []v1alpha1.OSImage{
+			ImageRules: []v1alpha1.ImageRule{
+				{Name: "Ubuntu", Images: []v1alpha1.Image{
 					{Name: "Ubuntu", Architecture: "amd64/ga-20.04"},
-				},
+				}},
+			},
+			InternalDNSRules: []v1alpha1.InternalDNSRule{
+				{MaasDomain: "maas.sc", DNSRecords: []v1alpha1.DNSRecord{
+					{Hostname: "maas.sc", Type: "A", IP: "10.0.0.1", TTL: 3600},
+				}},
+			},
+			UpstreamDNSRules: []v1alpha1.UpstreamDNSRule{
+				{Name: "Upstream DNS", NumDNSServers: 1},
+			},
+			ResourceAvailabilityRules: []v1alpha1.ResourceAvailabilityRule{
+				{Name: "az1 2 machines", Resources: []v1alpha1.Resource{
+					{AZ: "az1", NumMachines: 2, NumCPU: 2, NumDisk: 20, NumRAM: 4},
+				}},
 			},
 		},
 	}
