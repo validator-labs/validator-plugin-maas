@@ -12,6 +12,7 @@ import (
 	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/validator-labs/validator-plugin-maas/internal/constants"
 	vapi "github.com/validator-labs/validator/api/v1alpha1"
+	vapiconstants "github.com/validator-labs/validator/pkg/constants"
 	"github.com/validator-labs/validator/pkg/types"
 	"github.com/validator-labs/validator/pkg/util"
 )
@@ -37,7 +38,7 @@ func (s *ImageRulesService) ReconcileMaasInstanceImageRule(rule v1alpha1.ImageRu
 
 	errs, details := s.findBootResources(rule)
 
-	s.updateResult(vr, errs, constants.ErrMsg, details...)
+	s.updateResult(vr, errs, constants.ErrImageNotFound, details...)
 
 	if len(errs) > 0 {
 		return vr, errs[0]
@@ -51,9 +52,9 @@ func buildValidationResult(rule v1alpha1.ImageRule) *types.ValidationRuleResult 
 	latestCondition := vapi.DefaultValidationCondition()
 	latestCondition.Details = make([]string, 0)
 	latestCondition.Failures = make([]string, 0)
-	latestCondition.Message = fmt.Sprintf("All %s checks passed", constants.MaasInstance)
-	latestCondition.ValidationRule = rule.Name
-	latestCondition.ValidationType = constants.MaasInstance
+	latestCondition.Message = fmt.Sprintf("All %s checks passed", constants.ValidationTypeImage)
+	latestCondition.ValidationRule = fmt.Sprintf("%s-%s", vapiconstants.ValidationRulePrefix, util.Sanitize(rule.Name))
+	latestCondition.ValidationType = constants.ValidationTypeImage
 	return &types.ValidationRuleResult{Condition: &latestCondition, State: &state}
 }
 
