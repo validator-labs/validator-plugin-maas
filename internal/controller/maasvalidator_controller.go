@@ -127,6 +127,14 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		}
 		resp.AddResult(vrr, err)
 	}
+	// MAAS Instance image rules
+	for _, rule := range validator.Spec.ImageRules {
+		vrr, err := maasRuleService.ReconcileMaasInstanceImageRule(rule)
+		if err != nil {
+			r.Log.V(0).Error(err, "failed to reconcile MAAS instance rule")
+		}
+		resp.AddResult(vrr, err)
+	}
 
 	// Patch the ValidationResult with the latest ValidationRuleResults
 	if err := vres.SafeUpdateValidationResult(ctx, p, vr, resp, r.Log); err != nil {
@@ -179,6 +187,7 @@ func setUpClient(maasURL, maasToken string) (*maasclient.Client, error) {
 }
 
 func (r *MaasValidatorReconciler) tokenFromSecret(name, namespace string) (string, error) {
+	r.Log.Info("Getting MAAS API token from secret", "name", name, "namespace", namespace)
 	r.Log.Info("Getting MAAS API token from secret", "name", name, "namespace", namespace)
 
 	nn := ktypes.NamespacedName{Name: name, Namespace: namespace}
