@@ -24,6 +24,10 @@ type MockBootResourcesService struct {
 	api.BootResources
 }
 
+type MockUDNSRulesService struct {
+	api.MAASServer
+}
+
 func (b *MockBootResourcesService) Get(params *entity.BootResourcesReadParams) ([]entity.BootResource, error) {
 	return []entity.BootResource{
 		{
@@ -31,6 +35,10 @@ func (b *MockBootResourcesService) Get(params *entity.BootResourcesReadParams) (
 			Architecture: "amd64/ga-22.04",
 		},
 	}, nil
+}
+
+func (u *MockUDNSRulesService) Get(string) ([]byte, error) {
+	return []byte("8.8.8.8"), nil
 }
 
 var _ = Describe("MaaSValidator controller", Ordered, func() {
@@ -44,6 +52,7 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 		SetUpClient = func(maasURL, massToken string) (*maasclient.Client, error) {
 			c := &maasclient.Client{}
 			c.BootResources = &MockBootResourcesService{}
+			c.MAASServer = &MockUDNSRulesService{}
 			return c, nil
 		}
 	})
