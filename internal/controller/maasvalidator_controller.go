@@ -25,6 +25,7 @@ import (
 
 	maasclient "github.com/canonical/gomaasclient/client"
 	"github.com/go-logr/logr"
+
 	corev1 "k8s.io/api/core/v1"
 	apierrs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -37,7 +38,7 @@ import (
 
 	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/validator-labs/validator-plugin-maas/internal/constants"
-	val "github.com/validator-labs/validator-plugin-maas/internal/validators"
+	osval "github.com/validator-labs/validator-plugin-maas/internal/validators/os"
 	vapi "github.com/validator-labs/validator/api/v1alpha1"
 	"github.com/validator-labs/validator/pkg/types"
 	"github.com/validator-labs/validator/pkg/util"
@@ -55,7 +56,10 @@ type MaasValidatorReconciler struct {
 //+kubebuilder:rbac:groups=validation.spectrocloud.labs,resources=maasvalidators/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=validation.spectrocloud.labs,resources=maasvalidators/finalizers,verbs=update
 
-// Reconcile reconciles each rule found in each OCIValidator in the cluster and creates ValidationResults accordingly
+// SetUpClient is defined to enable monkey patching the setUpClient function in integration tests
+var SetUpClient = setUpClient
+
+// Reconcile reconciles each rule found in each MaasValidator in the cluster and creates ValidationResults accordingly
 func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	l := r.Log.V(0).WithValues("name", req.Name, "namespace", req.Namespace)
 	l.Info("Reconciling MaasValidator")
@@ -65,7 +69,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	secretName := validator.Spec.MaasInstance.Auth.SecretName
+	secretName := validator.Spec.Auth.SecretName
 	var (
 		maasToken string
 		err       error
@@ -75,14 +79,12 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		l.Error(err, "failed to retrieve MAAS API Key")
 	}
 
-	maasURL := validator.Spec.MaasInstance.Host
-	maasclient, err := maasclient.GetClient(maasURL, maasToken, "2.0")
+	maasURL := validator.Spec.Host
+	maasClient, err := SetUpClient(maasURL, maasToken)
 
 	if err != nil {
 		l.Error(err, "failed to initialize MAAS client")
 	}
-
-	apiclient := val.MaaSAPI{Client: maasclient}
 
 	// Get the active validator's validation result
 	vr := &vapi.ValidationResult{}
@@ -115,14 +117,16 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		ValidationRuleErrors:  make([]error, 0, vr.Spec.ExpectedResults),
 	}
 
-	maasRuleService := val.NewMaasRuleService(&apiclient)
+	maasRuleService := osval.NewImageRulesService(r.Log, maasClient.BootResources)
 
-	// Maas Instance image rules
-	vrr, err := maasRuleService.ReconcileMaasInstanceImageRules(validator.Spec.MaasInstanceRules)
-	if err != nil {
-		r.Log.V(0).Error(err, "failed to reconcile MaaS instance rule")
+	// MAAS Instance image rules
+	for _, rule := range validator.Spec.ImageRules {
+		vrr, err := maasRuleService.ReconcileMaasInstanceImageRule(rule)
+		if err != nil {
+			r.Log.V(0).Error(err, "failed to reconcile MAAS instance rule")
+		}
+		resp.AddResult(vrr, err)
 	}
-	resp.AddResult(vrr, err)
 
 	// Patch the ValidationResult with the latest ValidationRuleResults
 	if err := vres.SafeUpdateValidationResult(ctx, p, vr, resp, r.Log); err != nil {
@@ -166,8 +170,16 @@ func validationResultName(validator *v1alpha1.MaasValidator) string {
 	return fmt.Sprintf("validator-plugin-maas-%s", validator.Name)
 }
 
+func setUpClient(maasURL, maasToken string) (*maasclient.Client, error) {
+	maasClient, err := maasclient.GetClient(maasURL, maasToken, "2.0")
+	if err != nil {
+		return nil, err
+	}
+	return maasClient, nil
+}
+
 func (r *MaasValidatorReconciler) tokenFromSecret(name, namespace string) (string, error) {
-	r.Log.Info("Getting MaaS API token from secret", "name", name, "namespace", namespace)
+	r.Log.Info("Getting MAAS API token from secret", "name", name, "namespace", namespace)
 
 	nn := ktypes.NamespacedName{Name: name, Namespace: namespace}
 	secret := &corev1.Secret{}

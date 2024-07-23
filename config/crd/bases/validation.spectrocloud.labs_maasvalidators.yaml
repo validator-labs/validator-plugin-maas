@@ -39,62 +39,154 @@ spec:
           spec:
             description: MaasValidatorSpec defines the desired state of MaasValidator
             properties:
-              MaasInstance:
-                description: MaasInstance describes the MaaS host
+              auth:
+                description: Auth provides authentication information for the MAAS
+                  Instance
                 properties:
-                  auth:
-                    description: Auth provides authentication information for the
-                      MaaS Instance
-                    properties:
-                      secretName:
-                        type: string
-                      token:
-                        type: string
-                    type: object
-                  host:
-                    description: Host is the URL for your MaaS instance
+                  secretName:
+                    type: string
+                  token:
                     type: string
                 required:
-                - auth
-                - host
+                - secretName
+                - token
                 type: object
-              MaasInstanceRules:
-                description: MaasInstanceRules defines the rules for the MaaS instance
-                properties:
-                  auth:
-                    description: Auth provides authentication information for the
-                      MaaS Instance
-                    properties:
-                      secretName:
-                        type: string
-                      token:
-                        type: string
-                    type: object
-                  bootable-images:
-                    description: OSImages is a list of bootable os images
-                    items:
-                      description: OSImage defines an OS Image
-                      properties:
-                        name:
-                          description: The name of the bootable image
-                          type: string
-                        os-arch:
-                          description: OS Architecture
-                          type: string
-                      required:
-                      - name
-                      - os-arch
-                      type: object
-                    type: array
-                  name:
-                    description: Unique rule name
-                    type: string
-                required:
-                - auth
-                - name
-                type: object
+              host:
+                description: Host is the URL for your MAAS Instance
+                type: string
+              imageRules:
+                items:
+                  description: ImageRule defines a rule for validating one or more
+                    OS images
+                  properties:
+                    images:
+                      description: The list of OS images to validate
+                      items:
+                        description: Image defines one OS image
+                        properties:
+                          architecture:
+                            description: OS Architecture
+                            type: string
+                          name:
+                            description: The name of the bootable image
+                            type: string
+                        required:
+                        - architecture
+                        - name
+                        type: object
+                      type: array
+                    name:
+                      description: Unique name for the rule
+                      type: string
+                  required:
+                  - images
+                  - name
+                  type: object
+                type: array
+              internalDNSRules:
+                items:
+                  description: InternalDNSRule provides rules for the internal DNS
+                    server
+                  properties:
+                    dnsRecords:
+                      description: The DNS records for the internal DNS server
+                      items:
+                        description: DNSRecord provides an internal DNS record
+                        properties:
+                          hostname:
+                            description: The hostname for the DNS record
+                            type: string
+                          ip:
+                            description: The IP address for the DNS record
+                            type: string
+                          ttl:
+                            description: Optional Time To Live (TTL) for the DNS record
+                            type: integer
+                          type:
+                            description: The type of DNS record
+                            type: string
+                        required:
+                        - hostname
+                        - ip
+                        - type
+                        type: object
+                      type: array
+                    maasDomain:
+                      description: The domain name for the internal DNS server
+                      type: string
+                  required:
+                  - dnsRecords
+                  - maasDomain
+                  type: object
+                type: array
+              resourceAvailabilityRules:
+                items:
+                  description: ResourceAvailabilityRule provides rules for validating
+                    resource availability
+                  properties:
+                    name:
+                      description: Unique name for the rule
+                      type: string
+                    resources:
+                      description: The list of resources to validate
+                      items:
+                        description: Resource defines a compute resource
+                        properties:
+                          az:
+                            description: Availability Zone
+                            type: string
+                          labels:
+                            description: Optional machine labels
+                            items:
+                              type: string
+                            type: array
+                          numCPU:
+                            description: Minimum CPU cores per machine
+                            type: integer
+                          numDisk:
+                            description: Minimum Disk space per machine in GB
+                            type: integer
+                          numMachines:
+                            description: Minimum desired number of machines
+                            type: integer
+                          numRAM:
+                            description: Minimum RAM per machine in GB
+                            type: integer
+                          pool:
+                            description: Optional machine pool
+                            type: string
+                        required:
+                        - az
+                        - numCPU
+                        - numDisk
+                        - numMachines
+                        - numRAM
+                        type: object
+                      type: array
+                  required:
+                  - name
+                  - resources
+                  type: object
+                type: array
+              upstreamDNSRules:
+                items:
+                  description: UpstreamDNSRule provides rules for validating the external
+                    DNS server
+                  properties:
+                    name:
+                      description: Unique name for the rule
+                      type: string
+                    numDNSServers:
+                      description: The minimum expected number of upstream DNS servers
+                      type: integer
+                  required:
+                  - name
+                  - numDNSServers
+                  type: object
+                type: array
             required:
-            - MaasInstance
+            - auth
+            - host
             type: object
           status:
             description: MaasValidatorStatus defines the observed state of MaasValidator
