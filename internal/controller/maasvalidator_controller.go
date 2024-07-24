@@ -38,6 +38,7 @@ import (
 
 	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/validator-labs/validator-plugin-maas/internal/constants"
+	dnsval "github.com/validator-labs/validator-plugin-maas/internal/validators/dns"
 	osval "github.com/validator-labs/validator-plugin-maas/internal/validators/os"
 	vapi "github.com/validator-labs/validator/api/v1alpha1"
 	"github.com/validator-labs/validator/pkg/types"
@@ -117,13 +118,23 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		ValidationRuleErrors:  make([]error, 0, vr.Spec.ExpectedResults),
 	}
 
-	maasRuleService := osval.NewImageRulesService(r.Log, maasClient.BootResources)
+	imageRulesService := osval.NewImageRulesService(r.Log, maasClient.BootResources)
+	upstreamDNSRulesService := dnsval.NewUpstreamDNSRulesService(r.Log, maasClient.MAASServer)
 
 	// MAAS Instance image rules
 	for _, rule := range validator.Spec.ImageRules {
-		vrr, err := maasRuleService.ReconcileMaasInstanceImageRule(rule)
+		vrr, err := imageRulesService.ReconcileMaasInstanceImageRule(rule)
 		if err != nil {
-			r.Log.V(0).Error(err, "failed to reconcile MAAS instance rule")
+			r.Log.V(0).Error(err, "failed to reconcile MAAS image rule")
+		}
+		resp.AddResult(vrr, err)
+	}
+
+	// MAAS Instance upstream DNS rules
+	for _, rule := range validator.Spec.UpstreamDNSRules {
+		vrr, err := upstreamDNSRulesService.ReconcileMaasInstanceUpstreamDNSRules(rule)
+		if err != nil {
+			r.Log.V(0).Error(err, "failed to reconcile MAAS upstream DNS rule")
 		}
 		resp.AddResult(vrr, err)
 	}
