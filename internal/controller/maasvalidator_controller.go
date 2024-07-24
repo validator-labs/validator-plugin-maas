@@ -125,7 +125,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	for _, rule := range validator.Spec.ImageRules {
 		vrr, err := imageRulesService.ReconcileMaasInstanceImageRule(rule)
 		if err != nil {
-			r.Log.V(0).Error(err, "failed to reconcile MAAS instance image rule")
+			r.Log.V(0).Error(err, "failed to reconcile MAAS image rule")
 		}
 		resp.AddResult(vrr, err)
 	}
@@ -134,7 +134,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	for _, rule := range validator.Spec.UpstreamDNSRules {
 		vrr, err := upstreamDNSRulesService.ReconcileMaasInstanceUpstreamDNSRules(rule)
 		if err != nil {
-			r.Log.V(0).Error(err, "failed to reconcile MAAS instance upstream DNS rule")
+			r.Log.V(0).Error(err, "failed to reconcile MAAS upstream DNS rule")
 		}
 		resp.AddResult(vrr, err)
 	}
