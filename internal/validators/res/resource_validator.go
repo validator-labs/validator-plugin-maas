@@ -85,7 +85,7 @@ func (s *ResourceRulesService) findMachineResources(rule v1alpha1.ResourceAvaila
 
 	// each rule may have multiple resource checks for 1 AZ
 	for _, rr := range rule.Resources {
-		detail, err := compareResources(&resources, &rr)
+		detail, err := compareResources(&resources, rr)
 		if err != nil {
 			errs = append(errs, err)
 		}
@@ -97,7 +97,7 @@ func (s *ResourceRulesService) findMachineResources(rule v1alpha1.ResourceAvaila
 	return errs, details
 }
 
-func compareResources(resources *[]resource, expected *v1alpha1.Resource) (string, error) {
+func compareResources(resources *[]resource, expected v1alpha1.Resource) (string, error) {
 	need := expected.NumMachines
 	errMsg := fmt.Errorf("insufficient machines available with %v Cores, %vGB RAM, %vGB Disk", expected.NumCPU, expected.RAM, expected.Disk)
 

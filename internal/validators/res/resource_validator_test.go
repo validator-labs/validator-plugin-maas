@@ -49,7 +49,7 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 				},
 			},
 			errors:  nil,
-			details: []string{"Found 3 machines available with 16 Cores, 16GB RAM, 100GB Disk"},
+			details: []string{"Found 3 machine(s) available with 16 Cores, 16GB RAM, 100GB Disk"},
 		},
 		{
 			Name: "Not enough machines are found in MAAS",
