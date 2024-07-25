@@ -40,6 +40,7 @@ import (
 	"github.com/validator-labs/validator-plugin-maas/internal/constants"
 	dnsval "github.com/validator-labs/validator-plugin-maas/internal/validators/dns"
 	osval "github.com/validator-labs/validator-plugin-maas/internal/validators/os"
+	resval "github.com/validator-labs/validator-plugin-maas/internal/validators/res"
 	vapi "github.com/validator-labs/validator/api/v1alpha1"
 	"github.com/validator-labs/validator/pkg/types"
 	"github.com/validator-labs/validator/pkg/util"
@@ -120,6 +121,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 	imageRulesService := osval.NewImageRulesService(r.Log, maasClient.BootResources)
 	upstreamDNSRulesService := dnsval.NewUpstreamDNSRulesService(r.Log, maasClient.MAASServer)
+	resourceRulesService := resval.NewResourceRulesService(r.Log, maasClient.Machines)
 
 	// MAAS Instance image rules
 	for _, rule := range validator.Spec.ImageRules {
@@ -132,11 +134,22 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 	// MAAS Instance upstream DNS rules
 	for _, rule := range validator.Spec.UpstreamDNSRules {
-		vrr, err := upstreamDNSRulesService.ReconcileMaasInstanceUpstreamDNSRules(rule)
+		vrr, err := upstreamDNSRulesService.ReconcileMaasInstanceUpstreamDNSRule(rule)
 		if err != nil {
 			r.Log.V(0).Error(err, "failed to reconcile MAAS upstream DNS rule")
 		}
 		resp.AddResult(vrr, err)
+	}
+
+	seenAZ := make([]string, 0)
+	// MAAS Instance resource availability rules
+	for _, rule := range validator.Spec.ResourceAvailabilityRules {
+		vrr, err := resourceRulesService.ReconcileMaasInstanceResourceRule(rule, seenAZ)
+		if err != nil {
+			r.Log.V(0).Error(err, "failed to reconcile MAAS resource rule")
+		}
+		resp.AddResult(vrr, err)
+		seenAZ = append(seenAZ, rule.AZ)
 	}
 
 	// Patch the ValidationResult with the latest ValidationRuleResults

@@ -28,6 +28,10 @@ type MockUDNSRulesService struct {
 	api.MAASServer
 }
 
+type MockMachinesService struct {
+	api.Machines
+}
+
 func (b *MockBootResourcesService) Get(params *entity.BootResourcesReadParams) ([]entity.BootResource, error) {
 	return []entity.BootResource{
 		{
@@ -39,6 +43,20 @@ func (b *MockBootResourcesService) Get(params *entity.BootResourcesReadParams) (
 
 func (u *MockUDNSRulesService) Get(string) ([]byte, error) {
 	return []byte("8.8.8.8"), nil
+}
+
+func (m *MockMachinesService) Get(params *entity.MachinesParams) ([]entity.Machine, error) {
+	return []entity.Machine{
+		{
+			Hostname: "maas.sc",
+			CPUCount: 24,
+			Memory:   128 * 1024,
+			Storage:  1024 * 1000,
+			Zone:     entity.Zone{Name: "az1"},
+			Pool:     entity.ResourcePool{Name: "pool1"},
+			TagNames: []string{"foo", "bar"},
+		},
+	}, nil
 }
 
 var _ = Describe("MaaSValidator controller", Ordered, func() {
@@ -53,6 +71,7 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 			c := &maasclient.Client{}
 			c.BootResources = &MockBootResourcesService{}
 			c.MAASServer = &MockUDNSRulesService{}
+			c.Machines = &MockMachinesService{}
 			return c, nil
 		}
 	})
@@ -81,14 +100,12 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 				{Name: "Upstream DNS", NumDNSServers: 1},
 			},
 			ResourceAvailabilityRules: []v1alpha1.ResourceAvailabilityRule{
-				{Name: "az1 2 machines", Resources: []v1alpha1.Resource{
-					{AZ: "az1", NumMachines: 2, NumCPU: 2, NumDisk: 20, NumRAM: 4},
+				{Name: "az1 2 machines", AZ: "az1", Resources: []v1alpha1.Resource{
+					{NumMachines: 2, NumCPU: 2, Disk: 20, RAM: 4},
 				}},
 			},
 		},
 	}
-
-	//secret := &corev1.Secret{}
 
 	vr := &vapi.ValidationResult{}
 	vrKey := types.NamespacedName{Name: validationResultName(val), Namespace: validatorNamespace}

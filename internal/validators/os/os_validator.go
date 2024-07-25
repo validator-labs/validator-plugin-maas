@@ -34,7 +34,7 @@ func (s *ImageRulesService) ReconcileMaasInstanceImageRule(rule v1alpha1.ImageRu
 
 	vr := utils.BuildValidationResult(rule.Name, constants.ValidationTypeImage)
 
-	errs, details := s.findBootResources(rule)
+	details, errs := s.findBootResources(rule)
 
 	utils.UpdateResult(vr, errs, constants.ErrImageNotFound, details...)
 
@@ -57,13 +57,13 @@ func convertBootResourceToOSImage(images []entity.BootResource) []v1alpha1.Image
 }
 
 // findBootResources checks if a list of Images is a subset of a list of BootResources
-func (s *ImageRulesService) findBootResources(rule v1alpha1.ImageRule) (errs []error, details []string) {
-	errs = make([]error, 0)
-	details = make([]string, 0)
+func (s *ImageRulesService) findBootResources(rule v1alpha1.ImageRule) ([]string, []error) {
+	details := make([]string, 0)
+	errs := make([]error, 0)
 
 	images, err := s.api.Get(&entity.BootResourcesReadParams{})
 	if err != nil {
-		return errs, details
+		return details, errs
 	}
 	converted := convertBootResourceToOSImage(images)
 	convertedSet := mapset.NewSet(converted...)
@@ -79,5 +79,5 @@ func (s *ImageRulesService) findBootResources(rule v1alpha1.ImageRule) (errs []e
 	for img := range intersectionSet.Iterator().C {
 		details = append(details, fmt.Sprintf("OS image %s with arch %s was found", img.Name, img.Architecture))
 	}
-	return errs, details
+	return details, errs
 }
