@@ -11,7 +11,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.19.1
 	github.com/onsi/gomega v1.34.0
 	github.com/stretchr/testify v1.9.0
-	github.com/validator-labs/validator v0.0.49
+	github.com/validator-labs/validator v0.0.50
 	k8s.io/api v0.30.3
 	k8s.io/apimachinery v0.30.3
 	k8s.io/client-go v0.30.3
