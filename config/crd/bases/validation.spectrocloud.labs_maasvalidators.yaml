@@ -124,6 +124,9 @@ spec:
                   description: ResourceAvailabilityRule provides rules for validating
                     resource availability
                   properties:
+                    az:
+                      description: The availability zone to validate
+                      type: string
                     name:
                       description: Unique name for the rule
                       type: string
@@ -132,38 +135,35 @@ spec:
                       items:
                         description: Resource defines a compute resource
                         properties:
-                          az:
-                            description: Availability Zone
-                            type: string
-                          labels:
-                            description: Optional machine labels
-                            items:
-                              type: string
-                            type: array
+                          disk:
+                            description: Minimum Disk space per machine in GB
+                            type: integer
                           numCPU:
                             description: Minimum CPU cores per machine
-                            type: integer
-                          numDisk:
-                            description: Minimum Disk space per machine in GB
                             type: integer
                           numMachines:
                             description: Minimum desired number of machines
                             type: integer
-                          numRAM:
-                            description: Minimum RAM per machine in GB
-                            type: integer
                           pool:
                             description: Optional machine pool
                             type: string
+                          ram:
+                            description: Minimum RAM per machine in GB
+                            type: integer
+                          tags:
+                            description: Optional machine tags
+                            items:
+                              type: string
+                            type: array
                         required:
-                        - az
+                        - disk
                         - numCPU
-                        - numDisk
                         - numMachines
-                        - numRAM
+                        - ram
                         type: object
                       type: array
                   required:
+                  - az
                   - name
                   - resources
                   type: object

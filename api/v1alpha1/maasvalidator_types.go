@@ -91,26 +91,26 @@ type UpstreamDNSRule struct {
 type ResourceAvailabilityRule struct {
 	// Unique name for the rule
 	Name string `json:"name" yaml:"name"`
+	// The availability zone to validate
+	AZ string `json:"az" yaml:"az"`
 	// The list of resources to validate
 	Resources []Resource `json:"resources" yaml:"resources"`
 }
 
 // Resource defines a compute resource
 type Resource struct {
-	// Availability Zone
-	AZ string `json:"az" yaml:"az"`
 	// Minimum desired number of machines
 	NumMachines int `json:"numMachines" yaml:"numMachines"`
 	// Minimum CPU cores per machine
 	NumCPU int `json:"numCPU" yaml:"numCPU"`
 	// Minimum RAM per machine in GB
-	NumRAM int `json:"numRAM" yaml:"numRAM"`
+	RAM int `json:"ram" yaml:"ram"`
 	// Minimum Disk space per machine in GB
-	NumDisk int `json:"numDisk" yaml:"numDisk"`
+	Disk int `json:"disk" yaml:"disk"`
 	// Optional machine pool
 	Pool string `json:"pool,omitempty" yaml:"pool,omitempty"`
-	// Optional machine labels
-	Labels []string `json:"labels,omitempty" yaml:"labels,omitempty"`
+	// Optional machine tags
+	Tags []string `json:"tags,omitempty" yaml:"tags,omitempty"`
 }
 
 // MaasValidatorStatus defines the observed state of MaasValidator

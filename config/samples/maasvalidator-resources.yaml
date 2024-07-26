@@ -1,0 +1,33 @@
+apiVersion: validation.spectrocloud.labs/v1alpha1
+kind: MaasValidator
+metadata:
+  name: maasvalidator-sample-resources
+spec:
+  host: "http://maas.sc:5240/MAAS"
+  auth:
+    # You have to specify credentials secret
+    secretName: maas-credentials
+    token: "foo" # reads token from cluster secret
+  resourceAvailabilityRules:  
+    - name: "AZ1 Rule 1" # expect pass
+      az: "az1"
+      resources:
+        - numMachines: 1
+          numCPU: 16
+          ram: 16
+          disk: 100
+    - name: "AZ3 Rule 1" # expect fail
+      az: "az3"
+      resources:
+        - numMachines: 1
+          numCPU: 24
+          ram: 32
+          disk: 100
+        - numMachines: 3
+          numCPU: 16
+          ram: 16
+          disk: 100
+        - numMachines: 1
+          numCPU: 64
+          ram: 64
+          disk: 1000

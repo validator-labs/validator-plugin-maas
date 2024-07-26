@@ -28,8 +28,8 @@ func NewUpstreamDNSRulesService(log logr.Logger, api api.MAASServer) *UpstreamDN
 	}
 }
 
-// ReconcileMaasInstanceUpstreamDNSRules reconciles a MAAS instance upstream DNS rule
-func (s *UpstreamDNSRulesService) ReconcileMaasInstanceUpstreamDNSRules(rule v1alpha1.UpstreamDNSRule) (*types.ValidationRuleResult, error) {
+// ReconcileMaasInstanceUpstreamDNSRule reconciles a MAAS instance upstream DNS rule
+func (s *UpstreamDNSRulesService) ReconcileMaasInstanceUpstreamDNSRule(rule v1alpha1.UpstreamDNSRule) (*types.ValidationRuleResult, error) {
 
 	vr := utils.BuildValidationResult(rule.Name, constants.ValidationTypeUDNS)
 

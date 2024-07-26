@@ -76,7 +76,7 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 			var errors []string
 
 			for _, rule := range tc.upstreamDNSRules {
-				vr, _ := tc.ruleService.ReconcileMaasInstanceUpstreamDNSRules(rule)
+				vr, _ := tc.ruleService.ReconcileMaasInstanceUpstreamDNSRule(rule)
 				details = append(details, vr.Condition.Details...)
 				errors = append(errors, vr.Condition.Failures...)
 			}
