@@ -141,7 +141,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		resp.AddResult(vrr, err)
 	}
 
-	seenAZ := make([]string, 0)
+	seenAZ := make(map[string]bool, 0)
 	// MAAS Instance resource availability rules
 	for _, rule := range validator.Spec.ResourceAvailabilityRules {
 		vrr, err := resourceRulesService.ReconcileMaasInstanceResourceRule(rule, seenAZ)
@@ -149,7 +149,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			r.Log.V(0).Error(err, "failed to reconcile MAAS resource rule")
 		}
 		resp.AddResult(vrr, err)
-		seenAZ = append(seenAZ, rule.AZ)
+		seenAZ[rule.AZ] = true
 	}
 
 	// Patch the ValidationResult with the latest ValidationRuleResults

@@ -57,7 +57,9 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 				logr.Logger{},
 				&DummyMachine{
 					MachinesList: []entity.Machine{
-						{Zone: entity.Zone{Name: "az1"}, Hostname: "maas.foo", ResourceURI: "/api/2.0/machines/1/", CPUCount: 24, Memory: 32, Storage: 150, Pool: entity.ResourcePool{Name: "pool1"}, TagNames: []string{"tag1", "tag2"}},
+						{Zone: entity.Zone{Name: "az1"}, Hostname: "maas.foo", ResourceURI: "/api/2.0/machines/1/", CPUCount: 24, Memory: 32 * 1024, Storage: 150 * 1000, Pool: entity.ResourcePool{Name: "pool1"}, TagNames: []string{"tag1", "tag2"}},
+						{Zone: entity.Zone{Name: "az1"}, Hostname: "maas.foo", ResourceURI: "/api/2.0/machines/1/", CPUCount: 12, Memory: 32 * 1024, Storage: 150 * 1000, Pool: entity.ResourcePool{Name: "pool1"}, TagNames: []string{"tag1", "tag2"}},
+						{Zone: entity.Zone{Name: "az1"}, Hostname: "maas.foo", ResourceURI: "/api/2.0/machines/1/", CPUCount: 12, Memory: 32 * 1024, Storage: 150 * 1000, Pool: entity.ResourcePool{Name: "pool1"}, TagNames: []string{"tag1", "tag2"}},
 					},
 				}),
 			resources: []v1alpha1.ResourceAvailabilityRule{
@@ -65,7 +67,7 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 					{NumMachines: 2, NumCPU: 16, RAM: 16, Disk: 100, Pool: "pool1", Tags: []string{"tag1", "tag2"}},
 				}},
 			},
-			errors:  []string{"insufficient machines available with 16 Cores, 16GB RAM, 100GB Disk"},
+			errors:  []string{"insufficient machines available with 16 Cores, 16GB RAM, 100GB Disk. 1/2 available"},
 			details: nil,
 		},
 		{
@@ -80,7 +82,7 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 					{NumMachines: 1, NumCPU: 16, RAM: 16, Disk: 100, Pool: "pool1", Tags: []string{"tag1", "tag2"}},
 				}},
 			},
-			errors:  []string{"insufficient machines available with 16 Cores, 16GB RAM, 100GB Disk"},
+			errors:  []string{"not enough resources available in az: have: 0, need: 1"},
 			details: nil,
 		},
 	}
@@ -91,7 +93,7 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 			var errors []string
 
 			for _, rule := range tc.resources {
-				vr, _ := tc.ruleService.ReconcileMaasInstanceResourceRule(rule, []string{})
+				vr, _ := tc.ruleService.ReconcileMaasInstanceResourceRule(rule, map[string]bool{})
 				details = append(details, vr.Condition.Details...)
 				errors = append(errors, vr.Condition.Failures...)
 			}

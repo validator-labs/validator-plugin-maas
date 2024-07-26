@@ -3,6 +3,7 @@ package res
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 
 	"github.com/canonical/gomaasclient/api"
@@ -38,15 +39,15 @@ func NewResourceRulesService(log logr.Logger, api api.Machines) *ResourceRulesSe
 }
 
 // ReconcileMaasInstanceResourceRule reconciles a MAAS instance resource rule from the MaasValidator config
-func (s *ResourceRulesService) ReconcileMaasInstanceResourceRule(rule v1alpha1.ResourceAvailabilityRule, seen []string) (*types.ValidationRuleResult, error) {
+func (s *ResourceRulesService) ReconcileMaasInstanceResourceRule(rule v1alpha1.ResourceAvailabilityRule, seen map[string]bool) (*types.ValidationRuleResult, error) {
 	errs := make([]error, 0)
 	details := make([]string, 0)
 
 	vr := utils.BuildValidationResult(rule.Name, constants.ValidationTypeResource)
 
 	// do not process an AZ more than once
-	if containsString(seen, rule.AZ) {
-		errs = append(errs, fmt.Errorf("availability zone %s already validated", rule.AZ))
+	if seen[rule.AZ] {
+		errs = append(errs, fmt.Errorf("availability zone %s referenced in a previous rule; AZ resource requirements must be defined in a single rule", rule.AZ))
 	} else {
 		errs, details = s.findMachineResources(rule)
 	}
@@ -59,85 +60,82 @@ func (s *ResourceRulesService) ReconcileMaasInstanceResourceRule(rule v1alpha1.R
 	return vr, nil
 }
 
-// contains checks if a slice contains a string
-func containsString(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
-
 // findMachineResources checks whether the rule is satisfied by the machines in the availability zone
 func (s *ResourceRulesService) findMachineResources(rule v1alpha1.ResourceAvailabilityRule) ([]error, []string) {
 	errs := make([]error, 0)
 	details := make([]string, 0)
 
-	// Get all "ready" machines in the availability zone
-	machines, err := s.api.Get(&entity.MachinesParams{Zone: []string{rule.AZ}, Status: []string{"ready"}})
+	resources, err := s.getAvailableMAASResources(rule)
 	if err != nil {
-		errs = append(errs, fmt.Errorf("error retrieving machines in availability zone %s", rule.AZ))
+		errs = append(errs, err)
 		return errs, details
 	}
 
-	resources := formatMachines(machines)
-
 	// each rule may have multiple resource checks for 1 AZ
 	for _, rr := range rule.Resources {
-		detail, err := compareResources(&resources, rr)
+		var matching []resource
+		resources, matching, err = s.compareResources(resources, rr)
 		if err != nil {
 			errs = append(errs, err)
 		}
-		if detail != "" {
-			details = append(details, detail)
+
+		if len(matching) == rr.NumMachines {
+			details = append(details, fmt.Sprintf("Found %d machine(s) available with %v Cores, %vGB RAM, %vGB Disk", len(matching), rr.NumCPU, rr.RAM, rr.Disk))
 		}
 	}
 
 	return errs, details
 }
 
-func compareResources(resources *[]resource, expected v1alpha1.Resource) (string, error) {
-	need := expected.NumMachines
-	errMsg := fmt.Errorf("insufficient machines available with %v Cores, %vGB RAM, %vGB Disk", expected.NumCPU, expected.RAM, expected.Disk)
+func (s *ResourceRulesService) compareResources(resources []resource, expected v1alpha1.Resource) ([]resource, []resource, error) {
+	if len(resources) < expected.NumMachines {
+		return resources, nil, fmt.Errorf("not enough resources available in az: have: %v, need: %v", len(resources), expected.NumMachines)
+	}
 
-	for seen := 0; need > 0; seen++ {
-		// not enough machines left to fill requirement
-		if len(*resources)-seen < need {
-			return "", errMsg
+	matching := make([]resource, 0)
+	remaining := make([]resource, 0)
+
+	for _, r := range resources {
+		ok := true
+
+		if r.NumCPU < expected.NumCPU || r.RAM < expected.RAM || r.Disk < expected.Disk {
+			ok = false
 		}
-
-		resource := (*resources)[seen]
-		// check that the machine has the required resources
-		if resource.NumCPU < expected.NumCPU || resource.RAM < expected.RAM || resource.Disk < expected.Disk {
-			continue
-		}
-
 		// if pool is specified, check that the machine is in the required pool
-		if expected.Pool != "" && resource.Pool != expected.Pool {
-			continue
+		if expected.Pool != "" && r.Pool != expected.Pool {
+			ok = false
 		}
-
 		// if tags are specified, check that the machine has all the required tags
 		if len(expected.Tags) > 0 {
 			for _, tag := range expected.Tags {
-				if !containsString(resource.Tags, tag) {
-					continue
+				if !slices.Contains(r.Tags, tag) {
+					ok = false
 				}
 			}
 		}
 
-		// once all checks pass, remove the machine from the list of available machines
-		*resources = append((*resources)[:seen], (*resources)[seen+1:]...)
-		need--
-		// decrement seen to account for the removed resource
-		seen--
+		if ok {
+			matching = append(matching, r)
+		} else {
+			remaining = append(remaining, r)
+		}
+
+		if len(matching) == expected.NumMachines {
+			remaining = append(remaining, resources[len(matching):]...)
+			return remaining, matching, nil
+		}
 	}
 
-	return fmt.Sprintf("Found %d machine(s) available with %v Cores, %vGB RAM, %vGB Disk", expected.NumMachines, expected.NumCPU, expected.RAM, expected.Disk), nil
+	err := fmt.Errorf("insufficient machines available with %v Cores, %vGB RAM, %vGB Disk. %v/%v available", expected.NumCPU, expected.RAM, expected.Disk, len(matching), expected.NumMachines)
+	return resources, matching, err
 }
 
-func formatMachines(machines []entity.Machine) []resource {
+func (s *ResourceRulesService) getAvailableMAASResources(rule v1alpha1.ResourceAvailabilityRule) ([]resource, error) {
+	machines, err := s.api.Get(&entity.MachinesParams{Zone: []string{rule.AZ}, Status: []string{"ready"}})
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving machines in availability zone %s: %w", rule.AZ, err)
+	}
+
 	resources := make([]resource, 0)
 	for _, m := range machines {
 		resources = append(resources, resource{
@@ -153,5 +151,5 @@ func formatMachines(machines []entity.Machine) []resource {
 	sort.Slice(resources, func(i, j int) bool {
 		return resources[i].NumCPU < resources[j].NumCPU
 	})
-	return resources
+	return resources, nil
 }
