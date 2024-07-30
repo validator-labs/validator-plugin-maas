@@ -19,7 +19,7 @@ func (d *DummyMAASServer) Get(string) ([]byte, error) {
 	return []byte(d.upstreamDNS), nil
 }
 
-func TestReconcileMaasInstanceImageRule(t *testing.T) {
+func TestReconcileMaasInstanceUpstreamDNSRule(t *testing.T) {
 
 	testCases := []struct {
 		Name             string
