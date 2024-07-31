@@ -63,14 +63,20 @@ type Image struct {
 type InternalDNSRule struct {
 	// The domain name for the internal DNS server
 	MaasDomain string `json:"maasDomain" yaml:"maasDomain"`
-	// The DNS records for the internal DNS server
+	// The DNS resources for the internal DNS server
+	DNSResources []DNSResource `json:"dnsResources" yaml:"dnsResources"`
+}
+
+// DNSResource provides an internal DNS resource
+type DNSResource struct {
+	// The hostname for the DNS record
+	FQDN string `json:"fqdn" yaml:"fqdn"`
+	// The expected records for the FQDN
 	DNSRecords []DNSRecord `json:"dnsRecords" yaml:"dnsRecords"`
 }
 
-// DNSRecord provides an internal DNS record
+// DNSRecord provides one DNS Resource Record
 type DNSRecord struct {
-	// The hostname for the DNS record
-	Hostname string `json:"hostname" yaml:"hostname"`
 	// The IP address for the DNS record
 	IP string `json:"ip" yaml:"ip"`
 	// The type of DNS record

@@ -88,34 +88,44 @@ spec:
                   description: InternalDNSRule provides rules for the internal DNS
                     server
                   properties:
-                    dnsRecords:
-                      description: The DNS records for the internal DNS server
+                    dnsResources:
+                      description: The DNS resources for the internal DNS server
                       items:
-                        description: DNSRecord provides an internal DNS record
+                        description: DNSResource provides an internal DNS resource
                         properties:
-                          hostname:
+                          dnsRecords:
+                            description: The expected records for the FQDN
+                            items:
+                              description: DNSRecord provides one DNS Resource Record
+                              properties:
+                                ip:
+                                  description: The IP address for the DNS record
+                                  type: string
+                                ttl:
+                                  description: Optional Time To Live (TTL) for the
+                                    DNS record
+                                  type: integer
+                                type:
+                                  description: The type of DNS record
+                                  type: string
+                              required:
+                              - ip
+                              - type
+                              type: object
+                            type: array
+                          fqdn:
                             description: The hostname for the DNS record
                             type: string
-                          ip:
-                            description: The IP address for the DNS record
-                            type: string
-                          ttl:
-                            description: Optional Time To Live (TTL) for the DNS record
-                            type: integer
-                          type:
-                            description: The type of DNS record
-                            type: string
                         required:
-                        - hostname
-                        - ip
-                        - type
+                        - dnsRecords
+                        - fqdn
                         type: object
                       type: array
                     maasDomain:
                       description: The domain name for the internal DNS server
                       type: string
                   required:
-                  - dnsRecords
+                  - dnsResources
                   - maasDomain
                   type: object
                 type: array

@@ -17,6 +17,8 @@ require (
 	sigs.k8s.io/controller-runtime v0.18.4
 )
 
+replace github.com/canonical/gomaasclient v0.6.0 => github.com/arturshadnik/gomaasclient v0.0.0-20240730214136-d7dd8da98797
+
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect

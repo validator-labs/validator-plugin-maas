@@ -120,8 +120,9 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 
 	imageRulesService := osval.NewImageRulesService(r.Log, maasClient.BootResources)
-	upstreamDNSRulesService := dnsval.NewUpstreamDNSRulesService(r.Log, maasClient.MAASServer)
 	resourceRulesService := resval.NewResourceRulesService(r.Log, maasClient.Machines)
+	upstreamDNSRulesService := dnsval.NewUpstreamDNSRulesService(r.Log, maasClient.MAASServer)
+	internalDNSRulesService := dnsval.NewInternalDNSRulesService(r.Log, maasClient.DNSResources)
 
 	// MAAS Instance image rules
 	for _, rule := range validator.Spec.ImageRules {
@@ -150,6 +151,15 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		}
 		resp.AddResult(vrr, err)
 		seenAZ[rule.AZ] = true
+	}
+
+	// MAAS Instance internal DNS rules
+	for _, rule := range validator.Spec.InternalDNSRules {
+		vrr, err := internalDNSRulesService.ReconcileMaasInstanceInternalDNSRule(rule)
+		if err != nil {
+			r.Log.V(0).Error(err, "failed to reconcile MAAS internal DNS rule")
+		}
+		resp.AddResult(vrr, err)
 	}
 
 	// Patch the ValidationResult with the latest ValidationRuleResults

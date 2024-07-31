@@ -32,6 +32,10 @@ type MockMachinesService struct {
 	api.Machines
 }
 
+type MockIDNSRulesService struct {
+	api.DNSResources
+}
+
 func (b *MockBootResourcesService) Get(params *entity.BootResourcesReadParams) ([]entity.BootResource, error) {
 	return []entity.BootResource{
 		{
@@ -59,6 +63,22 @@ func (m *MockMachinesService) Get(params *entity.MachinesParams) ([]entity.Machi
 	}, nil
 }
 
+func (i *MockIDNSRulesService) Get(params *entity.DNSResourcesGetParams) ([]entity.DNSResource, error) {
+	return []entity.DNSResource{
+		{
+			FQDN: "foo.maas.sc",
+			ResourceRecords: []entity.DNSResourceRecord{
+				{
+					RRType: "A",
+					RRData: "8.8.8.8",
+					TTL:    10,
+					ID:     0,
+				},
+			},
+		},
+	}, nil
+}
+
 var _ = Describe("MaaSValidator controller", Ordered, func() {
 
 	BeforeEach(func() {
@@ -72,6 +92,7 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 			c.BootResources = &MockBootResourcesService{}
 			c.MAASServer = &MockUDNSRulesService{}
 			c.Machines = &MockMachinesService{}
+			c.DNSResources = &MockIDNSRulesService{}
 			return c, nil
 		}
 	})
@@ -92,8 +113,10 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 				}},
 			},
 			InternalDNSRules: []v1alpha1.InternalDNSRule{
-				{MaasDomain: "maas.sc", DNSRecords: []v1alpha1.DNSRecord{
-					{Hostname: "maas.sc", Type: "A", IP: "10.0.0.1", TTL: 3600},
+				{MaasDomain: "maas.sc", DNSResources: []v1alpha1.DNSResource{
+					{FQDN: "maas.sc", DNSRecords: []v1alpha1.DNSRecord{
+						{Type: "A", IP: "10.0.0.1", TTL: 3600},
+					}},
 				}},
 			},
 			UpstreamDNSRules: []v1alpha1.UpstreamDNSRule{
