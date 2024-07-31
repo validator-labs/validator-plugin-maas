@@ -43,13 +43,13 @@ func (s *InternalDNSRulesService) ReconcileMaasInstanceInternalDNSRule(rule v1al
 }
 
 func (s *InternalDNSRulesService) ensureDNSResources(rule v1alpha1.InternalDNSRule) ([]string, []error) {
-	details := make([]string, 0)
-	errs := make([]error, 0)
-
-	maasDNSResources, err := s.api.Get(&entity.DNSResourcesGetParams{All: true})
+	maasDNSResources, err := s.api.Get(&entity.DNSResourcesParams{All: true})
 	if err != nil {
 		return nil, []error{err}
 	}
+
+	details := make([]string, 0)
+	errs := make([]error, 0)
 
 	formattedRecords := formatDNSRecords(maasDNSResources)
 

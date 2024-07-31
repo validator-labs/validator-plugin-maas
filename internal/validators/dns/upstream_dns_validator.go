@@ -45,13 +45,14 @@ func (s *UpstreamDNSRulesService) ReconcileMaasInstanceUpstreamDNSRule(rule v1al
 }
 
 func (s *UpstreamDNSRulesService) findDNSServers(expected int) ([]string, []error) {
-	details := make([]string, 0)
-	errs := make([]error, 0)
-
 	ns, err := s.api.Get("upstream_dns")
 	if err != nil {
 		return nil, []error{err}
 	}
+
+	details := make([]string, 0)
+	errs := make([]error, 0)
+
 	nameservers := strings.Split(string(ns), " ")
 	numServers := len(nameservers)
 

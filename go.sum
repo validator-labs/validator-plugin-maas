@@ -10,8 +10,8 @@ github.com/Masterminds/sprig/v3 v3.2.3 h1:eL2fZNezLomi0uOLqjQoN6BfsDD+fyLtgbJMAj
 github.com/Masterminds/sprig/v3 v3.2.3/go.mod h1:rXcFaZ2zZbLRJv/xSysmlgIM1u11eBaRMhvYXJNkGuM=
 github.com/antlr/antlr4/runtime/Go/antlr/v4 v4.0.0-20230305170008-8188dc5388df h1:7RFfzj4SSt6nnvCPbCqijJi1nWCd+TqAT3bYCStRC18=
 github.com/antlr/antlr4/runtime/Go/antlr/v4 v4.0.0-20230305170008-8188dc5388df/go.mod h1:pSwJ0fSY5KhvocuWSx4fz3BA8OrA1bQn+K1Eli3BRwM=
-github.com/arturshadnik/gomaasclient v0.0.0-20240730214136-d7dd8da98797 h1:lr8q69ZH1hcg8MdUSqg6s09XbgoWqRh9kyDcSxQl+gI=
-github.com/arturshadnik/gomaasclient v0.0.0-20240730214136-d7dd8da98797/go.mod h1:rRYH2hfLDZ7Z6LNmNBbLzwnu1wK894fznN5pbVtur/s=
+github.com/arturshadnik/gomaasclient v0.0.0-20240731231205-8239cfb13409 h1:J4cbZQZFlLZNy5nGyDyPW0/VI4bivvR0EyZiR/H9Y7k=
+github.com/arturshadnik/gomaasclient v0.0.0-20240731231205-8239cfb13409/go.mod h1:rRYH2hfLDZ7Z6LNmNBbLzwnu1wK894fznN5pbVtur/s=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 h1:DklsrG3dyBCFEj5IhUbnKptjxatkF07cF2ak3yi77so=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2/go.mod h1:WaHUgvxTVq04UNunO+XhnAqY/wQc+bxr74GqbsZ/Jqw=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=

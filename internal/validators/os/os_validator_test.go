@@ -36,6 +36,7 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 				&DummyBootResources{
 					images: []entity.BootResource{
 						{
+							Type:         "Synced",
 							Name:         "Ubuntu",
 							Architecture: "amd64/ga-20.04",
 						},

@@ -39,6 +39,7 @@ type MockIDNSRulesService struct {
 func (b *MockBootResourcesService) Get(params *entity.BootResourcesReadParams) ([]entity.BootResource, error) {
 	return []entity.BootResource{
 		{
+			Type:         "Synced",
 			Name:         "Ubuntu",
 			Architecture: "amd64/ga-22.04",
 		},
@@ -63,7 +64,7 @@ func (m *MockMachinesService) Get(params *entity.MachinesParams) ([]entity.Machi
 	}, nil
 }
 
-func (i *MockIDNSRulesService) Get(params *entity.DNSResourcesGetParams) ([]entity.DNSResource, error) {
+func (i *MockIDNSRulesService) Get(params *entity.DNSResourcesParams) ([]entity.DNSResource, error) {
 	return []entity.DNSResource{
 		{
 			FQDN: "foo.maas.sc",
