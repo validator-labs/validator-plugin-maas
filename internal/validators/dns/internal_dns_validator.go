@@ -2,7 +2,6 @@ package dns
 
 import (
 	"fmt"
-	"slices"
 
 	"github.com/canonical/gomaasclient/api"
 	"github.com/canonical/gomaasclient/entity"
@@ -32,7 +31,7 @@ func NewInternalDNSRulesService(log logr.Logger, api api.DNSResources) *Internal
 func (s *InternalDNSRulesService) ReconcileMaasInstanceInternalDNSRule(rule v1alpha1.InternalDNSRule) (*types.ValidationRuleResult, error) {
 	vr := utils.BuildValidationResult(rule.MaasDomain, constants.ValidationTypeIDNS)
 
-	details, errs := s.findDNSServers(rule)
+	details, errs := s.ensureDNSResources(rule)
 
 	utils.UpdateResult(vr, errs, constants.ErrIDNSNotConfigured, details...)
 
@@ -43,7 +42,7 @@ func (s *InternalDNSRulesService) ReconcileMaasInstanceInternalDNSRule(rule v1al
 	return vr, nil
 }
 
-func (s *InternalDNSRulesService) findDNSServers(rule v1alpha1.InternalDNSRule) ([]string, []error) {
+func (s *InternalDNSRulesService) ensureDNSResources(rule v1alpha1.InternalDNSRule) ([]string, []error) {
 	details := make([]string, 0)
 	errs := make([]error, 0)
 
@@ -65,14 +64,15 @@ func (s *InternalDNSRulesService) findDNSServers(rule v1alpha1.InternalDNSRule) 
 	return details, errs
 }
 
-func checkOneResourcePresent(formattedRecords map[string][]v1alpha1.DNSRecord, resource v1alpha1.DNSResource) bool {
+func checkOneResourcePresent(formattedRecords map[string]map[string]v1alpha1.DNSRecord, resource v1alpha1.DNSResource) bool {
 	if formattedRecords[resource.FQDN] == nil {
 		return false
 	}
 
+	frr := formattedRecords[resource.FQDN]
 	for _, rec := range resource.DNSRecords {
-		frr := formattedRecords[resource.FQDN]
-		if !slices.Contains(frr, rec) {
+		key := fmt.Sprint(rec.IP, rec.Type, rec.TTL)
+		if _, ok := frr[key]; !ok {
 			return false
 		}
 	}
@@ -80,18 +80,19 @@ func checkOneResourcePresent(formattedRecords map[string][]v1alpha1.DNSRecord, r
 	return true
 }
 
-func formatDNSRecords(dnsResources []entity.DNSResource) map[string][]v1alpha1.DNSRecord {
-	formattedRecords := make(map[string][]v1alpha1.DNSRecord)
+func formatDNSRecords(dnsResources []entity.DNSResource) map[string]map[string]v1alpha1.DNSRecord {
+	formattedRecords := make(map[string]map[string]v1alpha1.DNSRecord)
 
 	for _, r := range dnsResources {
 		if r.ResourceRecords != nil && len(r.ResourceRecords) > 0 {
-			fr := make([]v1alpha1.DNSRecord, 0)
+			fr := make(map[string]v1alpha1.DNSRecord, 0)
 			for _, rr := range r.ResourceRecords {
-				fr = append(fr, v1alpha1.DNSRecord{
+				key := fmt.Sprint(rr.RRData, rr.RRType, rr.TTL)
+				fr[key] = v1alpha1.DNSRecord{
 					IP:   rr.RRData,
 					Type: rr.RRType,
 					TTL:  rr.TTL,
-				})
+				}
 			}
 			formattedRecords[r.FQDN] = fr
 		}
