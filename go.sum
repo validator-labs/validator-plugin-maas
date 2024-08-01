@@ -245,8 +245,8 @@ github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsTg=
 github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
-github.com/validator-labs/validator v0.0.51 h1:L5fCGagNILkz9T6dLme2TEBtgW9OjSKXOR3LtEBjiYE=
-github.com/validator-labs/validator v0.0.51/go.mod h1:OeJMHGKW3pWGkvKxHLN7HzjelSILJg2k8w3Z9SdML1g=
+github.com/validator-labs/validator v0.1.0 h1:GVekIT5sG+kcyUbT04qb/pURmd9eE6NNKnSR9yJ1sQk=
+github.com/validator-labs/validator v0.1.0/go.mod h1:OeJMHGKW3pWGkvKxHLN7HzjelSILJg2k8w3Z9SdML1g=
 github.com/xdg-go/stringprep v1.0.2/go.mod h1:8F9zXuvzgwmyT5DUm4GUfZGDdT3W+LCvS6+da4O5kxM=
 github.com/xdg-go/stringprep v1.0.3/go.mod h1:W3f5j4i+9rC0kuIEJL0ky1VpHXQU3ocBgklLGvcBnW8=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
