@@ -46,11 +46,14 @@ func (s *ImageRulesService) ReconcileMaasInstanceImageRule(rule v1alpha1.ImageRu
 
 // convertBootResourceToOSImage formats a list of BootResources as a list of OSImages
 func convertBootResourceToOSImage(images []entity.BootResource) []v1alpha1.Image {
-	converted := make([]v1alpha1.Image, len(images))
-	for i, img := range images {
-		converted[i] = v1alpha1.Image{
-			Name:         img.Name,
-			Architecture: img.Architecture,
+	converted := make([]v1alpha1.Image, 0)
+	for _, img := range images {
+		// the client lib does not seem to care about params it is given, so for now manually filtering
+		if img.Type == "Synced" {
+			converted = append(converted, v1alpha1.Image{
+				Name:         img.Name,
+				Architecture: img.Architecture,
+			})
 		}
 	}
 	return converted
@@ -58,13 +61,14 @@ func convertBootResourceToOSImage(images []entity.BootResource) []v1alpha1.Image
 
 // findBootResources checks if a list of Images is a subset of a list of BootResources
 func (s *ImageRulesService) findBootResources(rule v1alpha1.ImageRule) ([]string, []error) {
+	images, err := s.api.Get(&entity.BootResourcesReadParams{Type: "Synced"})
+	if err != nil {
+		return nil, []error{err}
+	}
+
 	details := make([]string, 0)
 	errs := make([]error, 0)
 
-	images, err := s.api.Get(&entity.BootResourcesReadParams{})
-	if err != nil {
-		return details, errs
-	}
 	converted := convertBootResourceToOSImage(images)
 	convertedSet := mapset.NewSet(converted...)
 	imgRulesSet := mapset.NewSet(rule.Images...)

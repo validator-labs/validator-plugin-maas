@@ -16,7 +16,7 @@ type DummyDNSResources struct {
 	resources []entity.DNSResource
 }
 
-func (d *DummyDNSResources) Get(params *entity.DNSResourcesGetParams) ([]entity.DNSResource, error) {
+func (d *DummyDNSResources) Get(params *entity.DNSResourcesParams) ([]entity.DNSResource, error) {
 	return d.resources, nil
 }
 
