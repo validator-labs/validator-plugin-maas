@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.0.6](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.5...v0.0.6) (2024-08-01)
+
+
+### Features
+
+* implement internal dns rules validation ([#111](https://github.com/validator-labs/validator-plugin-maas/issues/111)) ([6c7b757](https://github.com/validator-labs/validator-plugin-maas/commit/6c7b757a687df5f1a1f75034069433d0f32f425b))
+* implement resource rules validation ([#105](https://github.com/validator-labs/validator-plugin-maas/issues/105)) ([1b428e1](https://github.com/validator-labs/validator-plugin-maas/commit/1b428e139d8d362613bbba5866ab55c3859c3e73))
+
+
+### Dependency Updates
+
+* **deps:** update module github.com/onsi/gomega to v1.34.1 ([02600b9](https://github.com/validator-labs/validator-plugin-maas/commit/02600b916fab417166bc3056d4724b060001caae))
+* **deps:** update module github.com/validator-labs/validator to v0.0.50 ([ae3eb42](https://github.com/validator-labs/validator-plugin-maas/commit/ae3eb4268856ca022d6cd33cbe7f48f914874ad0))
+* **deps:** update module github.com/validator-labs/validator to v0.0.51 ([3a30e35](https://github.com/validator-labs/validator-plugin-maas/commit/3a30e35ede7a37104aefbdab83a98dfa2e034019))
+
+
+### Refactoring
+
+* update image validator to only consider "synced" images ([#113](https://github.com/validator-labs/validator-plugin-maas/issues/113)) ([8f62d0c](https://github.com/validator-labs/validator-plugin-maas/commit/8f62d0c7d34aebffc42f6093ba51d98102bc2cbc))
+
 ## [0.0.5](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.4...v0.0.5) (2024-07-26)
 
 
