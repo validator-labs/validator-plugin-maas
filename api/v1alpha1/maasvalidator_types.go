@@ -40,7 +40,7 @@ func (s MaasValidatorSpec) ResultCount() int {
 // Auth provides authentication information for the MAAS Instance
 type Auth struct {
 	SecretName string `json:"secretName" yaml:"secretName"`
-	TokenKey   string `json:"token" yaml:"token"`
+	TokenKey   string `json:"tokenKey" yaml:"tokenKey"`
 }
 
 // ImageRule defines a rule for validating one or more OS images

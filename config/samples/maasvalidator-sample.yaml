@@ -19,22 +19,21 @@ spec:
           - type: "A"
             ip: "10.11.130.183"
             ttl: 10
-    - maasDomain: "maas.sc"
-      dnsResources:
-        - fqdn: "am-ubuntu-0c36d8.maas.sc"
-          dnsRecords:
-          - type: "A"
-            ip: "10.11.130.176"
-            ttl: 10
-          - type: "A"
-            ip: "10.11.130.183"
-            ttl: 10
-          - type: "A"
-            ip: "10.11.130.192"
-            ttl: 10
-          - type: "A"
-            ip: "10.11.130.193"
-            ttl: 10
   upstreamDNSRules:
     - name: "Upstream DNS Rule 1"
       numDNSServers: 1
+  imageRules:
+    - name: Image Rule
+      images:
+        - name: ubuntu/focal
+          architecture: amd64/ga-20.04
+        - name: ubuntu/jammy
+          architecture: amd64/ga-22.04
+  resourceAvailabilityRules:  
+    - name: "AZ1 Rule 1" # expect pass
+      az: "az1"
+      resources:
+        - numMachines: 1
+          numCPU: 16
+          ram: 16
+          disk: 100

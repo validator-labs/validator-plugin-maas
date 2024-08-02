@@ -6,8 +6,8 @@ spec:
   host: "http://maas.sc:5240/MAAS"
   auth:
     # You have to specify credentials secret
-    secretName: maas-credentials
-    token: "foo" # reads token from cluster secret
+    secretName: maas-creds
+    tokenKey: "MAAS_API_KEY"
   imageRules:  
     - name: "OS Rule 1"
       images:
