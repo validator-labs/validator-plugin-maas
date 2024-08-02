@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.7](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.6...v0.0.7) (2024-08-02)
+
+
+### Bug Fixes
+
+* allow user to configure key for API Token ([#116](https://github.com/validator-labs/validator-plugin-maas/issues/116)) ([50305c9](https://github.com/validator-labs/validator-plugin-maas/commit/50305c9efcc4e240f112fa382c678ecedef4b5d1))
+
+
+### Dependency Updates
+
+* **deps:** update module github.com/validator-labs/validator to v0.1.0 ([e51495e](https://github.com/validator-labs/validator-plugin-maas/commit/e51495ed0d8f338d8e9dd910b35abc16521ea9fe))
+
 ## [0.0.6](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.5...v0.0.6) (2024-08-01)
 
 
