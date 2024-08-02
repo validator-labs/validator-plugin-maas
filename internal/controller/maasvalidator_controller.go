@@ -72,13 +72,15 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 
 	secretName := validator.Spec.Auth.SecretName
+	tokenKey := validator.Spec.Auth.TokenKey
+
 	var (
 		maasToken string
 		err       error
 	)
 
-	if maasToken, err = r.tokenFromSecret(secretName, req.Namespace); err != nil {
-		l.Error(err, "failed to retrieve MAAS API Key")
+	if maasToken, err = r.tokenFromSecret(secretName, req.Namespace, tokenKey); err != nil {
+		l.Error(err, "failed to retrieve MAAS API token")
 	}
 
 	maasURL := validator.Spec.Host
@@ -212,7 +214,7 @@ func setUpClient(maasURL, maasToken string) (*maasclient.Client, error) {
 	return maasClient, nil
 }
 
-func (r *MaasValidatorReconciler) tokenFromSecret(name, namespace string) (string, error) {
+func (r *MaasValidatorReconciler) tokenFromSecret(name, namespace, tokenKey string) (string, error) {
 	r.Log.Info("Getting MAAS API token from secret", "name", name, "namespace", namespace)
 
 	nn := ktypes.NamespacedName{Name: name, Namespace: namespace}
@@ -221,10 +223,10 @@ func (r *MaasValidatorReconciler) tokenFromSecret(name, namespace string) (strin
 		return "", err
 	}
 
-	if key, found := secret.Data["MAAS_API_KEY"]; found {
+	if key, found := secret.Data[tokenKey]; found {
 		token := string(key)
 		token = strings.TrimSuffix(token, "\n")
 		return token, nil
 	}
-	return "", fmt.Errorf("secret does not contain MAAS_API_KEY")
+	return "", fmt.Errorf("secret does not contain %s", tokenKey)
 }
