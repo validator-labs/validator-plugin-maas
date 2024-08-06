@@ -2,11 +2,15 @@
 package validate
 
 import (
+	"fmt"
+
 	"github.com/go-logr/logr"
 
 	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/validator-labs/validator/pkg/types"
 
+	"github.com/validator-labs/validator-plugin-maas/internal/utils"
+	"github.com/validator-labs/validator-plugin-maas/pkg/constants"
 	dnsval "github.com/validator-labs/validator-plugin-maas/pkg/validators/dns"
 	osval "github.com/validator-labs/validator-plugin-maas/pkg/validators/os"
 	resval "github.com/validator-labs/validator-plugin-maas/pkg/validators/res"
@@ -19,13 +23,17 @@ var SetUpClient = setUpClient
 
 // Validate validates the MaasValidatorSpec and returns a ValidationResponse.
 func Validate(spec v1alpha1.MaasValidatorSpec, maasURL string, maasToken string, log logr.Logger) types.ValidationResponse {
+	resp := types.ValidationResponse{
+		ValidationRuleResults: make([]*types.ValidationRuleResult, 0, spec.ResultCount()),
+		ValidationRuleErrors:  make([]error, 0, spec.ResultCount()),
+	}
+	vrr := utils.BuildValidationResult(constants.PluginCode)
 
 	maasClient, err := SetUpClient(maasURL, maasToken)
 	if err != nil {
-		log.Error(err, "failed to initialize MAAS client")
+		resp.AddResult(vrr, fmt.Errorf("failed to create MAAS client: %w", err))
+		return resp
 	}
-
-	resp := types.ValidationResponse{}
 
 	imageRulesService := osval.NewImageRulesService(log, maasClient.BootResources)
 	resourceRulesService := resval.NewResourceRulesService(log, maasClient.Machines)
