@@ -32,7 +32,7 @@ func NewImageRulesService(log logr.Logger, api api.BootResources) *ImageRulesSer
 // ReconcileMaasInstanceImageRule reconciles a MAAS instance image rule from the MaasValidator config
 func (s *ImageRulesService) ReconcileMaasInstanceImageRule(rule v1alpha1.ImageRule) (*types.ValidationRuleResult, error) {
 
-	vr := utils.BuildValidationResult(rule.Name, constants.ValidationTypeImage)
+	vr := utils.BuildValidationResult(rule.Name)
 
 	details, errs := s.findBootResources(rule)
 

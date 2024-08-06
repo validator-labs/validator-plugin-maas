@@ -4,6 +4,7 @@ package utils
 import (
 	"fmt"
 
+	"github.com/validator-labs/validator-plugin-maas/pkg/constants"
 	vapi "github.com/validator-labs/validator/api/v1alpha1"
 	vapiconstants "github.com/validator-labs/validator/pkg/constants"
 	"github.com/validator-labs/validator/pkg/types"
@@ -11,14 +12,14 @@ import (
 )
 
 // BuildValidationResult builds a default ValidationResult for a given validation type
-func BuildValidationResult(ruleName, ruleType string) *types.ValidationRuleResult {
+func BuildValidationResult(ruleName string) *types.ValidationRuleResult {
 	state := vapi.ValidationSucceeded
 	latestCondition := vapi.DefaultValidationCondition()
 	latestCondition.Details = make([]string, 0)
 	latestCondition.Failures = make([]string, 0)
-	latestCondition.Message = fmt.Sprintf("All %s checks passed", ruleType)
+	latestCondition.Message = "Initialization succeeded"
 	latestCondition.ValidationRule = fmt.Sprintf("%s-%s", vapiconstants.ValidationRulePrefix, util.Sanitize(ruleName))
-	latestCondition.ValidationType = ruleType
+	latestCondition.ValidationType = constants.PluginCode
 	return &types.ValidationRuleResult{Condition: &latestCondition, State: &state}
 }
 
