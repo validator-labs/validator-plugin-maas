@@ -15,7 +15,9 @@ import (
 	// . "github.com/onsi/gomega"
 	//+kubebuilder:scaffold:imports
 	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
+	"github.com/validator-labs/validator-plugin-maas/pkg/validate"
 	vapi "github.com/validator-labs/validator/api/v1alpha1"
+	vres "github.com/validator-labs/validator/pkg/validationresult"
 )
 
 const MaasValidatorName = "maas-validator"
@@ -88,7 +90,7 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 			Skip("skipping")
 		}
 		// overwrite the maas client to inject mock services
-		SetUpClient = func(maasURL, massToken string) (*maasclient.Client, error) {
+		validate.SetUpClient = func(maasURL, massToken string) (*maasclient.Client, error) {
 			c := &maasclient.Client{}
 			c.BootResources = &MockBootResourcesService{}
 			c.MAASServer = &MockUDNSRulesService{}
@@ -132,7 +134,7 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 	}
 
 	vr := &vapi.ValidationResult{}
-	vrKey := types.NamespacedName{Name: validationResultName(val), Namespace: validatorNamespace}
+	vrKey := types.NamespacedName{Name: vres.Name(val), Namespace: validatorNamespace}
 
 	It("Should create a ValidationResult and update its Status with a failed condition", func() {
 		By("By creating a new MaasValidator")

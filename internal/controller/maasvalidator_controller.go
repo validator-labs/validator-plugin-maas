@@ -23,12 +23,10 @@ import (
 	"strings"
 	"time"
 
-	maasclient "github.com/canonical/gomaasclient/client"
 	"github.com/go-logr/logr"
 
 	corev1 "k8s.io/api/core/v1"
 	apierrs "k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
 	ktypes "k8s.io/apimachinery/pkg/types"
@@ -37,13 +35,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
-	"github.com/validator-labs/validator-plugin-maas/internal/constants"
-	dnsval "github.com/validator-labs/validator-plugin-maas/internal/validators/dns"
-	osval "github.com/validator-labs/validator-plugin-maas/internal/validators/os"
-	resval "github.com/validator-labs/validator-plugin-maas/internal/validators/res"
+	"github.com/validator-labs/validator-plugin-maas/pkg/validate"
 	vapi "github.com/validator-labs/validator/api/v1alpha1"
-	"github.com/validator-labs/validator/pkg/types"
-	"github.com/validator-labs/validator/pkg/util"
 	vres "github.com/validator-labs/validator/pkg/validationresult"
 )
 
@@ -58,9 +51,6 @@ type MaasValidatorReconciler struct {
 //+kubebuilder:rbac:groups=validation.spectrocloud.labs,resources=maasvalidators/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=validation.spectrocloud.labs,resources=maasvalidators/finalizers,verbs=update
 
-// SetUpClient is defined to enable monkey patching the setUpClient function in integration tests
-var SetUpClient = setUpClient
-
 // Reconcile reconciles each rule found in each MaasValidator in the cluster and creates ValidationResults accordingly
 func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	l := r.Log.V(0).WithValues("name", req.Name, "namespace", req.Namespace)
@@ -73,6 +63,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 	secretName := validator.Spec.Auth.SecretName
 	tokenKey := validator.Spec.Auth.TokenKey
+	maasURL := validator.Spec.Host
 
 	var (
 		maasToken string
@@ -83,13 +74,6 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		l.Error(err, "failed to retrieve MAAS API token")
 	}
 
-	maasURL := validator.Spec.Host
-	maasClient, err := SetUpClient(maasURL, maasToken)
-
-	if err != nil {
-		l.Error(err, "failed to initialize MAAS client")
-	}
-
 	// Get the active validator's validation result
 	vr := &vapi.ValidationResult{}
 	p, err := patch.NewHelper(vr, r.Client)
@@ -98,16 +82,16 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, err
 	}
 	nn := ktypes.NamespacedName{
-		Name:      validationResultName(validator),
+		Name:      vres.Name(validator),
 		Namespace: req.Namespace,
 	}
 	if err := r.Get(ctx, nn, vr); err == nil {
-		vres.HandleExistingValidationResult(vr, r.Log)
+		vres.HandleExisting(vr, r.Log)
 	} else {
 		if !apierrs.IsNotFound(err) {
 			l.Error(err, "unexpected error getting ValidationResult")
 		}
-		if err := vres.HandleNewValidationResult(ctx, r.Client, p, buildValidationResult(validator), r.Log); err != nil {
+		if err := vres.HandleNew(ctx, r.Client, p, vres.Build(validator), r.Log); err != nil {
 			return ctrl.Result{}, err
 		}
 		return ctrl.Result{RequeueAfter: time.Millisecond}, nil
@@ -116,56 +100,10 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	// Always update the expected result count in case the validator's rules have changed
 	vr.Spec.ExpectedResults = validator.Spec.ResultCount()
 
-	resp := types.ValidationResponse{
-		ValidationRuleResults: make([]*types.ValidationRuleResult, 0, vr.Spec.ExpectedResults),
-		ValidationRuleErrors:  make([]error, 0, vr.Spec.ExpectedResults),
-	}
-
-	imageRulesService := osval.NewImageRulesService(r.Log, maasClient.BootResources)
-	resourceRulesService := resval.NewResourceRulesService(r.Log, maasClient.Machines)
-	upstreamDNSRulesService := dnsval.NewUpstreamDNSRulesService(r.Log, maasClient.MAASServer)
-	internalDNSRulesService := dnsval.NewInternalDNSRulesService(r.Log, maasClient.DNSResources)
-
-	// MAAS Instance image rules
-	for _, rule := range validator.Spec.ImageRules {
-		vrr, err := imageRulesService.ReconcileMaasInstanceImageRule(rule)
-		if err != nil {
-			r.Log.V(0).Error(err, "failed to reconcile MAAS image rule")
-		}
-		resp.AddResult(vrr, err)
-	}
-
-	// MAAS Instance upstream DNS rules
-	for _, rule := range validator.Spec.UpstreamDNSRules {
-		vrr, err := upstreamDNSRulesService.ReconcileMaasInstanceUpstreamDNSRule(rule)
-		if err != nil {
-			r.Log.V(0).Error(err, "failed to reconcile MAAS upstream DNS rule")
-		}
-		resp.AddResult(vrr, err)
-	}
-
-	seenAZ := make(map[string]bool, 0)
-	// MAAS Instance resource availability rules
-	for _, rule := range validator.Spec.ResourceAvailabilityRules {
-		vrr, err := resourceRulesService.ReconcileMaasInstanceResourceRule(rule, seenAZ)
-		if err != nil {
-			r.Log.V(0).Error(err, "failed to reconcile MAAS resource rule")
-		}
-		resp.AddResult(vrr, err)
-		seenAZ[rule.AZ] = true
-	}
-
-	// MAAS Instance internal DNS rules
-	for _, rule := range validator.Spec.InternalDNSRules {
-		vrr, err := internalDNSRulesService.ReconcileMaasInstanceInternalDNSRule(rule)
-		if err != nil {
-			r.Log.V(0).Error(err, "failed to reconcile MAAS internal DNS rule")
-		}
-		resp.AddResult(vrr, err)
-	}
+	resp := validate.Validate(validator.Spec, maasURL, maasToken, r.Log)
 
 	// Patch the ValidationResult with the latest ValidationRuleResults
-	if err := vres.SafeUpdateValidationResult(ctx, p, vr, resp, r.Log); err != nil {
+	if err := vres.SafeUpdate(ctx, p, vr, resp, r.Log); err != nil {
 		return ctrl.Result{}, err
 	}
 
@@ -178,40 +116,6 @@ func (r *MaasValidatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&v1alpha1.MaasValidator{}).
 		Complete(r)
-}
-
-func buildValidationResult(validator *v1alpha1.MaasValidator) *vapi.ValidationResult {
-	return &vapi.ValidationResult{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      validationResultName(validator),
-			Namespace: validator.Namespace,
-			OwnerReferences: []metav1.OwnerReference{
-				{
-					APIVersion: validator.APIVersion,
-					Kind:       validator.Kind,
-					Name:       validator.Name,
-					UID:        validator.UID,
-					Controller: util.Ptr(true),
-				},
-			},
-		},
-		Spec: vapi.ValidationResultSpec{
-			Plugin:          constants.PluginCode,
-			ExpectedResults: validator.Spec.ResultCount(),
-		},
-	}
-}
-
-func validationResultName(validator *v1alpha1.MaasValidator) string {
-	return fmt.Sprintf("validator-plugin-maas-%s", validator.Name)
-}
-
-func setUpClient(maasURL, maasToken string) (*maasclient.Client, error) {
-	maasClient, err := maasclient.GetClient(maasURL, maasToken, "2.0")
-	if err != nil {
-		return nil, err
-	}
-	return maasClient, nil
 }
 
 func (r *MaasValidatorReconciler) tokenFromSecret(name, namespace, tokenKey string) (string, error) {
