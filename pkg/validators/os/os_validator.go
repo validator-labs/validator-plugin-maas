@@ -10,8 +10,8 @@ import (
 	"github.com/go-logr/logr"
 
 	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
-	"github.com/validator-labs/validator-plugin-maas/internal/constants"
 	"github.com/validator-labs/validator-plugin-maas/internal/utils"
+	"github.com/validator-labs/validator-plugin-maas/pkg/constants"
 	"github.com/validator-labs/validator/pkg/types"
 )
 

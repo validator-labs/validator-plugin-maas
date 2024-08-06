@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"github.com/validator-labs/validator-plugin-maas/pkg/constants"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -30,6 +31,11 @@ type MaasValidatorSpec struct {
 	InternalDNSRules          []InternalDNSRule          `json:"internalDNSRules,omitempty" yaml:"internalDNSRules,omitempty"`
 	UpstreamDNSRules          []UpstreamDNSRule          `json:"upstreamDNSRules,omitempty" yaml:"upstreamDNSRules,omitempty"`
 	ResourceAvailabilityRules []ResourceAvailabilityRule `json:"resourceAvailabilityRules,omitempty" yaml:"resourceAvailabilityRules,omitempty"`
+}
+
+// PluginCode returns the MAAS validator's plugin code.
+func (s MaasValidatorSpec) PluginCode() string {
+	return constants.PluginCode
 }
 
 // ResultCount returns the number of validation results expected for an MaasValidatorSpec.
@@ -132,6 +138,16 @@ type MaasValidator struct {
 
 	Spec   MaasValidatorSpec   `json:"spec,omitempty"`
 	Status MaasValidatorStatus `json:"status,omitempty"`
+}
+
+// PluginCode returns the MAAS validator's plugin code.
+func (v MaasValidator) PluginCode() string {
+	return v.Spec.PluginCode()
+}
+
+// ResultCount returns the number of validation results expected for an MaasValidatorSpec.
+func (v MaasValidator) ResultCount() int {
+	return v.Spec.ResultCount()
 }
 
 //+kubebuilder:object:root=true

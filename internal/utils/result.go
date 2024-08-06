@@ -16,7 +16,7 @@ func BuildValidationResult(ruleName, ruleType string) *types.ValidationRuleResul
 	latestCondition := vapi.DefaultValidationCondition()
 	latestCondition.Details = make([]string, 0)
 	latestCondition.Failures = make([]string, 0)
-	latestCondition.Message = fmt.Sprintf("All %s checks passed", ruleType)
+	latestCondition.Message = fmt.Sprintf("Validation succeeded for %s", ruleType)
 	latestCondition.ValidationRule = fmt.Sprintf("%s-%s", vapiconstants.ValidationRulePrefix, util.Sanitize(ruleName))
 	latestCondition.ValidationType = ruleType
 	return &types.ValidationRuleResult{Condition: &latestCondition, State: &state}
