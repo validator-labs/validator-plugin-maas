@@ -27,7 +27,7 @@ func Validate(spec v1alpha1.MaasValidatorSpec, maasURL string, maasToken string,
 		ValidationRuleResults: make([]*types.ValidationRuleResult, 0, spec.ResultCount()),
 		ValidationRuleErrors:  make([]error, 0, spec.ResultCount()),
 	}
-	vrr := utils.BuildValidationResult(constants.PluginCode)
+	vrr := utils.BuildValidationResult(constants.PluginCode, constants.PluginCode)
 
 	maasClient, err := SetUpClient(maasURL, maasToken)
 	if err != nil {

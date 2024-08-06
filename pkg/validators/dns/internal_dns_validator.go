@@ -29,7 +29,7 @@ func NewInternalDNSRulesService(log logr.Logger, api api.DNSResources) *Internal
 
 // ReconcileMaasInstanceInternalDNSRule reconciles a MAAS instance internal DNS rule
 func (s *InternalDNSRulesService) ReconcileMaasInstanceInternalDNSRule(rule v1alpha1.InternalDNSRule) (*types.ValidationRuleResult, error) {
-	vr := utils.BuildValidationResult(rule.MaasDomain)
+	vr := utils.BuildValidationResult(rule.MaasDomain, constants.ValidationTypeIDNS)
 
 	details, errs := s.ensureDNSResources(rule)
 
