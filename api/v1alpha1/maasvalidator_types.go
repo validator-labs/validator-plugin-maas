@@ -17,6 +17,8 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"reflect"
+
 	"github.com/validator-labs/validator-plugin-maas/pkg/constants"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -138,6 +140,11 @@ type MaasValidator struct {
 
 	Spec   MaasValidatorSpec   `json:"spec,omitempty"`
 	Status MaasValidatorStatus `json:"status,omitempty"`
+}
+
+// GetKind returns the MAAS validator's kind.
+func (v MaasValidator) GetKind() string {
+	return reflect.TypeOf(v).Name()
 }
 
 // PluginCode returns the MAAS validator's plugin code.
