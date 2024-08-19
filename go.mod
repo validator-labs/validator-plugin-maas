@@ -9,12 +9,12 @@ require (
 	github.com/onsi/ginkgo/v2 v2.20.0
 	github.com/onsi/gomega v1.34.1
 	github.com/stretchr/testify v1.9.0
-	github.com/validator-labs/validator v0.1.3-0.20240809205255-c05a36eebd3c
 	k8s.io/api v0.31.0
 	k8s.io/apimachinery v0.31.0
 	k8s.io/client-go v0.31.0
-	sigs.k8s.io/cluster-api v1.7.4
 	sigs.k8s.io/controller-runtime v0.19.0
+	github.com/validator-labs/validator v0.1.6
+	sigs.k8s.io/cluster-api v1.8.1
 )
 
 replace github.com/canonical/gomaasclient v0.6.0 => github.com/arturshadnik/gomaasclient v0.0.0-20240731231205-8239cfb13409
@@ -24,7 +24,7 @@ require (
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
-	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
+	github.com/emicklei/go-restful/v3 v3.12.1 // indirect
 	github.com/evanphx/json-patch/v5 v5.9.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
