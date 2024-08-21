@@ -6,7 +6,7 @@ require (
 	github.com/canonical/gomaasclient v0.6.0
 	github.com/deckarep/golang-set/v2 v2.6.0
 	github.com/go-logr/logr v1.4.2
-	github.com/onsi/ginkgo/v2 v2.20.0
+	github.com/onsi/ginkgo/v2 v2.20.1
 	github.com/onsi/gomega v1.34.1
 	github.com/stretchr/testify v1.9.0
 	github.com/validator-labs/validator v0.1.6
