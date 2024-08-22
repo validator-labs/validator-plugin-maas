@@ -44,7 +44,7 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 				},
 			),
 			imageRules: []v1alpha1.ImageRule{
-				{Name: "Image found", Images: []v1alpha1.Image{
+				{RuleName: "Image found", Images: []v1alpha1.Image{
 					{Name: "Ubuntu", Architecture: "amd64/ga-20.04"},
 				}},
 			},
@@ -59,7 +59,7 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 					images: make([]entity.BootResource, 0),
 				}),
 			imageRules: []v1alpha1.ImageRule{
-				{Name: "Image not found", Images: []v1alpha1.Image{
+				{RuleName: "Image not found", Images: []v1alpha1.Image{
 					{Name: "Ubuntu", Architecture: "amd64/ga-20.04"},
 				}},
 			},
@@ -74,10 +74,10 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 					images: make([]entity.BootResource, 0),
 				}),
 			imageRules: []v1alpha1.ImageRule{
-				{Name: "Image not found", Images: []v1alpha1.Image{
+				{RuleName: "Image not found", Images: []v1alpha1.Image{
 					{Name: "Ubuntu", Architecture: "amd64/ga-20.04"},
 				}},
-				{Name: "Image not found", Images: []v1alpha1.Image{
+				{RuleName: "Image not found", Images: []v1alpha1.Image{
 					{Name: "Ubuntu", Architecture: "amd64/ga-22.04"},
 				}},
 			},

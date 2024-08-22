@@ -19,8 +19,11 @@ package v1alpha1
 import (
 	"reflect"
 
-	"github.com/validator-labs/validator-plugin-maas/pkg/constants"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/validator-labs/validator/pkg/validationrule"
+
+	"github.com/validator-labs/validator-plugin-maas/pkg/constants"
 )
 
 // MaasValidatorSpec defines the desired state of MaasValidator
@@ -53,10 +56,24 @@ type Auth struct {
 
 // ImageRule defines a rule for validating one or more OS images
 type ImageRule struct {
+	validationrule.ManuallyNamed `json:"-"`
+
 	// Unique name for the rule
-	Name string `json:"name" yaml:"name"`
+	RuleName string `json:"name" yaml:"name"`
 	// The list of OS images to validate
 	Images []Image `json:"images" yaml:"images"`
+}
+
+var _ validationrule.Interface = (*ImageRule)(nil)
+
+// Name returns the name of the ImageRule.
+func (r ImageRule) Name() string {
+	return r.RuleName
+}
+
+// SetName sets the name of the ImageRule.
+func (r *ImageRule) SetName(name string) {
+	r.RuleName = name
 }
 
 // Image defines one OS image
@@ -69,10 +86,19 @@ type Image struct {
 
 // InternalDNSRule provides rules for the internal DNS server
 type InternalDNSRule struct {
+	validationrule.AutomaticallyNamed `json:"-"`
+
 	// The domain name for the internal DNS server
 	MaasDomain string `json:"maasDomain" yaml:"maasDomain"`
 	// The DNS resources for the internal DNS server
 	DNSResources []DNSResource `json:"dnsResources" yaml:"dnsResources"`
+}
+
+var _ validationrule.Interface = (*InternalDNSRule)(nil)
+
+// Name returns the name of the InternalDNSRule.
+func (r InternalDNSRule) Name() string {
+	return r.MaasDomain
 }
 
 // DNSResource provides an internal DNS resource
