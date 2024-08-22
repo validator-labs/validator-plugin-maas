@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.0.8](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.7...v0.0.8) (2024-08-22)
+
+
+### Other
+
+* satisfy ValidationRule ([#121](https://github.com/validator-labs/validator-plugin-maas/issues/121)) ([5894f51](https://github.com/validator-labs/validator-plugin-maas/commit/5894f5118612ae62610a9a2c8ba5ef47ad936a7b))
+
+
+### Dependency Updates
+
+* **deps:** update module github.com/onsi/ginkgo/v2 to v2.20.0 ([951e094](https://github.com/validator-labs/validator-plugin-maas/commit/951e09472a70ddbbab0e7bdaaa46a8fbad1c08e7))
+* **deps:** update module github.com/onsi/ginkgo/v2 to v2.20.1 ([cab9803](https://github.com/validator-labs/validator-plugin-maas/commit/cab9803d53ef36451f530b1e7471cd2ce76b8485))
+* **deps:** update module github.com/validator-labs/validator to v0.1.2 ([df63d44](https://github.com/validator-labs/validator-plugin-maas/commit/df63d445e157f3b6bc4da79e153ba1f05d7afab1))
+* **deps:** update module github.com/validator-labs/validator to v0.1.5 ([#123](https://github.com/validator-labs/validator-plugin-maas/issues/123)) ([a856370](https://github.com/validator-labs/validator-plugin-maas/commit/a856370d39ae2f976d34a9ea5cdcd752347c7be8))
+* **deps:** update module github.com/validator-labs/validator to v0.1.6 ([5dbc31f](https://github.com/validator-labs/validator-plugin-maas/commit/5dbc31fa1e66ce8abcf4b4a1f7235ed29e23116c))
+* **deps:** update module sigs.k8s.io/controller-runtime to v0.19.0 ([#124](https://github.com/validator-labs/validator-plugin-maas/issues/124)) ([e903cc7](https://github.com/validator-labs/validator-plugin-maas/commit/e903cc7f7fc4c0dfef4bbd7214a8603732ef532c))
+
+
+### Refactoring
+
+* make each rule implement `validationrule.Interface` ([#130](https://github.com/validator-labs/validator-plugin-maas/issues/130)) ([381e3ab](https://github.com/validator-labs/validator-plugin-maas/commit/381e3ab0ea38f68b2c93e518ec041ba2c8fb2a87))
+* support direct rule evaluation ([#118](https://github.com/validator-labs/validator-plugin-maas/issues/118)) ([e4d873d](https://github.com/validator-labs/validator-plugin-maas/commit/e4d873dca4e65b0dc144584188f576cb9a6122a7))
+
 ## [0.0.7](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.6...v0.0.7) (2024-08-02)
 
 
