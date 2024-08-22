@@ -111,7 +111,7 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 				SecretName: "maas-api-token",
 			},
 			ImageRules: []v1alpha1.ImageRule{
-				{Name: "Ubuntu", Images: []v1alpha1.Image{
+				{RuleName: "Ubuntu", Images: []v1alpha1.Image{
 					{Name: "Ubuntu", Architecture: "amd64/ga-20.04"},
 				}},
 			},
