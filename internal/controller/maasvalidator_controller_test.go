@@ -108,7 +108,7 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 		Spec: v1alpha1.MaasValidatorSpec{
 			Host: "maas.sc",
 			Auth: v1alpha1.Auth{
-				SecretName: "maas-api-token",
+				APIToken: "fake:maas:token",
 			},
 			ImageRules: []v1alpha1.ImageRule{
 				{RuleName: "Ubuntu", Images: []v1alpha1.Image{
