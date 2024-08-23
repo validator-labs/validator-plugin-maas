@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.9](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.8...v0.0.9) (2024-08-23)
+
+
+### Refactoring
+
+* make remaining rules implement rule interface ([#131](https://github.com/validator-labs/validator-plugin-maas/issues/131)) ([bb370f0](https://github.com/validator-labs/validator-plugin-maas/commit/bb370f04067cc50e1d426bf42d5f98f7b867f378))
+
 ## [0.0.8](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.7...v0.0.8) (2024-08-22)
 
 
