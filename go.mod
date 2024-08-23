@@ -3,7 +3,7 @@ module github.com/validator-labs/validator-plugin-maas
 go 1.22.5
 
 require (
-	github.com/canonical/gomaasclient v0.6.0
+	github.com/canonical/gomaasclient v0.7.0
 	github.com/deckarep/golang-set/v2 v2.6.0
 	github.com/go-logr/logr v1.4.2
 	github.com/onsi/ginkgo/v2 v2.20.1
