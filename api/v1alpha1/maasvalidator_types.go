@@ -21,6 +21,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/validator-labs/validator/pkg/plugins"
 	"github.com/validator-labs/validator/pkg/validationrule"
 
 	"github.com/validator-labs/validator-plugin-maas/pkg/constants"
@@ -37,6 +38,8 @@ type MaasValidatorSpec struct {
 	UpstreamDNSRules          []UpstreamDNSRule          `json:"upstreamDNSRules,omitempty" yaml:"upstreamDNSRules,omitempty"`
 	ResourceAvailabilityRules []ResourceAvailabilityRule `json:"resourceAvailabilityRules,omitempty" yaml:"resourceAvailabilityRules,omitempty"`
 }
+
+var _ plugins.PluginSpec = (*MaasValidatorSpec)(nil)
 
 // PluginCode returns the MAAS validator's plugin code.
 func (s MaasValidatorSpec) PluginCode() string {
