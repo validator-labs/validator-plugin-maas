@@ -121,20 +121,48 @@ type DNSRecord struct {
 
 // UpstreamDNSRule provides rules for validating the external DNS server
 type UpstreamDNSRule struct {
+	validationrule.ManuallyNamed `json:"-"`
+
 	// Unique name for the rule
-	Name string `json:"name" yaml:"name"`
+	RuleName string `json:"name" yaml:"name"`
 	// The minimum expected number of upstream DNS servers
 	NumDNSServers int `json:"numDNSServers" yaml:"numDNSServers"`
 }
 
+var _ validationrule.Interface = (*UpstreamDNSRule)(nil)
+
+// Name returns the name of the UpstreamDNSRule.
+func (r UpstreamDNSRule) Name() string {
+	return r.RuleName
+}
+
+// SetName sets the name of the UpstreamDNSRule.
+func (r *UpstreamDNSRule) SetName(name string) {
+	r.RuleName = name
+}
+
 // ResourceAvailabilityRule provides rules for validating resource availability
 type ResourceAvailabilityRule struct {
+	validationrule.ManuallyNamed `json:"-"`
+
 	// Unique name for the rule
-	Name string `json:"name" yaml:"name"`
+	RuleName string `json:"name" yaml:"name"`
 	// The availability zone to validate
 	AZ string `json:"az" yaml:"az"`
 	// The list of resources to validate
 	Resources []Resource `json:"resources" yaml:"resources"`
+}
+
+var _ validationrule.Interface = (*ResourceAvailabilityRule)(nil)
+
+// Name returns the name of the RBAC rule.
+func (r ResourceAvailabilityRule) Name() string {
+	return r.RuleName
+}
+
+// SetName sets the name of the RBAC rule.
+func (r *ResourceAvailabilityRule) SetName(name string) {
+	r.RuleName = name
 }
 
 // Resource defines a compute resource

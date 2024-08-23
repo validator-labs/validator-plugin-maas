@@ -43,7 +43,7 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 				},
 			),
 			resources: []v1alpha1.ResourceAvailabilityRule{
-				{Name: "AZ1 rule 1", AZ: "az1", Resources: []v1alpha1.Resource{
+				{RuleName: "AZ1 rule 1", AZ: "az1", Resources: []v1alpha1.Resource{
 					{NumMachines: 3, NumCPU: 16, RAM: 16, Disk: 100, Pool: "pool1", Tags: []string{"tag1", "tag2"}},
 				},
 				},
@@ -63,7 +63,7 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 					},
 				}),
 			resources: []v1alpha1.ResourceAvailabilityRule{
-				{Name: "AZ1 rule 2", AZ: "az1", Resources: []v1alpha1.Resource{
+				{RuleName: "AZ1 rule 2", AZ: "az1", Resources: []v1alpha1.Resource{
 					{NumMachines: 2, NumCPU: 16, RAM: 16, Disk: 100, Pool: "pool1", Tags: []string{"tag1", "tag2"}},
 				}},
 			},
@@ -78,7 +78,7 @@ func TestReconcileMaasInstanceImageRule(t *testing.T) {
 					MachinesList: []entity.Machine{},
 				}),
 			resources: []v1alpha1.ResourceAvailabilityRule{
-				{Name: "AZ1 rule 2", AZ: "az1", Resources: []v1alpha1.Resource{
+				{RuleName: "AZ1 rule 2", AZ: "az1", Resources: []v1alpha1.Resource{
 					{NumMachines: 1, NumCPU: 16, RAM: 16, Disk: 100, Pool: "pool1", Tags: []string{"tag1", "tag2"}},
 				}},
 			},
