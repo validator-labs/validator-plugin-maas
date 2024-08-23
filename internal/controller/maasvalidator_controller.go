@@ -56,22 +56,18 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	l := r.Log.V(0).WithValues("name", req.Name, "namespace", req.Namespace)
 	l.Info("Reconciling MaasValidator")
 
+	var err error
+
 	validator := &v1alpha1.MaasValidator{}
-	if err := r.Get(ctx, req.NamespacedName, validator); err != nil {
+	if err = r.Get(ctx, req.NamespacedName, validator); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	secretName := validator.Spec.Auth.SecretName
-	tokenKey := validator.Spec.Auth.TokenKey
-	maasURL := validator.Spec.Host
-
-	var (
-		maasToken string
-		err       error
-	)
-
-	if maasToken, err = r.tokenFromSecret(secretName, req.Namespace, tokenKey); err != nil {
-		l.Error(err, "failed to retrieve MAAS API token")
+	if validator.Spec.Auth.APIToken == "" {
+		if validator.Spec.Auth.APIToken, err = r.tokenFromSecret(validator.Spec.Auth.SecretName, req.Namespace, validator.Spec.Auth.TokenKey); err != nil {
+			l.Error(err, "failed to retrieve MAAS API token")
+			return ctrl.Result{}, err
+		}
 	}
 
 	// Get the active validator's validation result
@@ -100,7 +96,7 @@ func (r *MaasValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	// Always update the expected result count in case the validator's rules have changed
 	vr.Spec.ExpectedResults = validator.Spec.ResultCount()
 
-	resp := validate.Validate(validator.Spec, maasURL, maasToken, r.Log)
+	resp := validate.Validate(validator.Spec, r.Log)
 
 	// Patch the ValidationResult with the latest ValidationRuleResults
 	if err := vres.SafeUpdate(ctx, p, vr, resp, r.Log); err != nil {
