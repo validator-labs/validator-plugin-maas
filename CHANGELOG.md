@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.10](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.9...v0.0.10) (2024-08-23)
+
+
+### Bug Fixes
+
+* embedding structs related to `validationrule.Interface` ([#135](https://github.com/validator-labs/validator-plugin-maas/issues/135)) ([166aece](https://github.com/validator-labs/validator-plugin-maas/commit/166aece4db00b56d4857b1ed2c0118f65a5a6faa))
+
+
+### Other
+
+* assert that PluginSpec is implemented ([#133](https://github.com/validator-labs/validator-plugin-maas/issues/133)) ([e280094](https://github.com/validator-labs/validator-plugin-maas/commit/e280094220ac7eb6311cdd48d235b18b0edc8c64))
+
 ## [0.0.9](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.8...v0.0.9) (2024-08-23)
 
 
