@@ -5,7 +5,6 @@ metadata:
 spec:
   host: "http://maas.sc:5240/MAAS"
   auth:
-    # You have to specify credentials secret
     secretName: maas-creds
     tokenKey: "MAAS_API_KEY"
   internalDNSRules:

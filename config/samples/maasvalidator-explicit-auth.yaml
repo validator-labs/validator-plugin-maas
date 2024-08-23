@@ -1,0 +1,11 @@
+apiVersion: validation.spectrocloud.labs/v1alpha1
+kind: MaasValidator
+metadata:
+  name: maasvalidator-sample
+spec:
+  host: "http://maas.sc:5240/MAAS"
+  auth:
+    apiToken: <your:maas:token>
+  upstreamDNSRules:
+    - name: "Upstream DNS Rule 1"
+      numDNSServers: 1
