@@ -123,10 +123,10 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 				}},
 			},
 			UpstreamDNSRules: []v1alpha1.UpstreamDNSRule{
-				{Name: "Upstream DNS", NumDNSServers: 1},
+				{RuleName: "Upstream DNS", NumDNSServers: 1},
 			},
 			ResourceAvailabilityRules: []v1alpha1.ResourceAvailabilityRule{
-				{Name: "az1 2 machines", AZ: "az1", Resources: []v1alpha1.Resource{
+				{RuleName: "az1 2 machines", AZ: "az1", Resources: []v1alpha1.Resource{
 					{NumMachines: 2, NumCPU: 2, Disk: 20, RAM: 4},
 				}},
 			},
