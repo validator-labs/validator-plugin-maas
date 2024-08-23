@@ -37,7 +37,7 @@ func TestReconcileMaasInstanceUpstreamDNSRule(t *testing.T) {
 				},
 			),
 			upstreamDNSRules: []v1alpha1.UpstreamDNSRule{
-				{Name: "Upstream DNS rule 1", NumDNSServers: 1},
+				{RuleName: "Upstream DNS rule 1", NumDNSServers: 1},
 			},
 			errors:  nil,
 			details: []string{"Found 1 DNS server(s)"},
@@ -50,7 +50,7 @@ func TestReconcileMaasInstanceUpstreamDNSRule(t *testing.T) {
 					upstreamDNS: "8.8.8.8",
 				}),
 			upstreamDNSRules: []v1alpha1.UpstreamDNSRule{
-				{Name: "Upstream DNS rule 2", NumDNSServers: 2},
+				{RuleName: "Upstream DNS rule 2", NumDNSServers: 2},
 			},
 			errors:  []string{"expected 2 DNS server(s), got 1"},
 			details: nil,
@@ -63,7 +63,7 @@ func TestReconcileMaasInstanceUpstreamDNSRule(t *testing.T) {
 					upstreamDNS: "",
 				}),
 			upstreamDNSRules: []v1alpha1.UpstreamDNSRule{
-				{Name: "Upstream DNS rule 3", NumDNSServers: 1},
+				{RuleName: "Upstream DNS rule 3", NumDNSServers: 1},
 			},
 			errors:  []string{"expected 1 DNS server(s), got 0"},
 			details: nil,

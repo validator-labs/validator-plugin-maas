@@ -43,7 +43,7 @@ func (s *ResourceRulesService) ReconcileMaasInstanceResourceRule(rule v1alpha1.R
 	errs := make([]error, 0)
 	details := make([]string, 0)
 
-	vr := utils.BuildValidationResult(rule.Name, constants.ValidationTypeResource)
+	vr := utils.BuildValidationResult(rule.Name(), constants.ValidationTypeResource)
 
 	// do not process an AZ more than once
 	if seen[rule.AZ] {
