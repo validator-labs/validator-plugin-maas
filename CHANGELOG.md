@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.9](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.8...v0.0.9) (2024-08-24)
+
+
+### Bug Fixes
+
+* YAML rendering of structs embedded in rules ([#143](https://github.com/validator-labs/validator-plugin-maas/issues/143)) ([c7ae66d](https://github.com/validator-labs/validator-plugin-maas/commit/c7ae66d43d6f6b13c9d60fe69ef5455a29552f4f))
+
 ## [0.0.8](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.7...v0.0.8) (2024-08-23)
 
 
