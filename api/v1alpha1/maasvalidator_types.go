@@ -59,7 +59,7 @@ type Auth struct {
 
 // ImageRule defines a rule for validating one or more OS images
 type ImageRule struct {
-	validationrule.ManuallyNamed `json:",inline"`
+	validationrule.ManuallyNamed `json:",inline" yaml:",omitempty"`
 
 	// Unique name for the rule
 	RuleName string `json:"name" yaml:"name"`
@@ -89,7 +89,7 @@ type Image struct {
 
 // InternalDNSRule provides rules for the internal DNS server
 type InternalDNSRule struct {
-	validationrule.AutomaticallyNamed `json:",inline"`
+	validationrule.AutomaticallyNamed `json:",inline" yaml:",omitempty"`
 
 	// The domain name for the internal DNS server
 	MaasDomain string `json:"maasDomain" yaml:"maasDomain"`
@@ -124,7 +124,7 @@ type DNSRecord struct {
 
 // UpstreamDNSRule provides rules for validating the external DNS server
 type UpstreamDNSRule struct {
-	validationrule.ManuallyNamed `json:",inline"`
+	validationrule.ManuallyNamed `json:",inline" yaml:",omitempty"`
 
 	// Unique name for the rule
 	RuleName string `json:"name" yaml:"name"`
@@ -146,7 +146,7 @@ func (r *UpstreamDNSRule) SetName(name string) {
 
 // ResourceAvailabilityRule provides rules for validating resource availability
 type ResourceAvailabilityRule struct {
-	validationrule.ManuallyNamed `json:",inline"`
+	validationrule.ManuallyNamed `json:",inline" yaml:",omitempty"`
 
 	// Unique name for the rule
 	RuleName string `json:"name" yaml:"name"`
