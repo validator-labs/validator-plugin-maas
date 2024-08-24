@@ -2,6 +2,12 @@ module github.com/validator-labs/validator-plugin-maas
 
 go 1.22.5
 
+retract (
+	// Versions published more than once, so the latest "versions" of these
+	// versions cannot be accessed when using the Go module mirror.
+	[v0.0.8, v0.0.10]
+)
+
 require (
 	github.com/canonical/gomaasclient v0.7.0
 	github.com/deckarep/golang-set/v2 v2.6.0
