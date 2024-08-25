@@ -40,16 +40,21 @@ spec:
             description: MaasValidatorSpec defines the desired state of MaasValidator
             properties:
               auth:
-                description: Auth provides authentication information for the MAAS
-                  Instance
+                description: |-
+                  Auth provides authentication information for the MAAS Instance
+                  Requires one of SecretName and TokenKey (if reading secret from Kubernetes) or APIToken (if reading secret from file)
                 properties:
+                  apiToken:
+                    description: APIToken is the value of the MAAS API token
+                    type: string
                   secretName:
+                    description: SecretName is the name of the Kubernetes secret containing
+                      the MAAS API token
                     type: string
                   tokenKey:
+                    description: TokenKey is the key in the Kubernetes secret containing
+                      the MAAS API token
                     type: string
-                required:
-                - secretName
-                - tokenKey
                 type: object
               host:
                 description: Host is the URL for your MAAS Instance
