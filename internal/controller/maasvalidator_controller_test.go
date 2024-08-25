@@ -9,6 +9,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
@@ -20,7 +21,12 @@ import (
 	vres "github.com/validator-labs/validator/pkg/validationresult"
 )
 
-const MaasValidatorName = "maas-validator"
+const (
+	MaasValidatorName = "maas-validator"
+	fakeToken         = "fake:api:token"
+	fakeTokenKey      = "MAAS_API_KEY"
+	secretName        = "maas-creds"
+)
 
 type MockBootResourcesService struct {
 	api.BootResources
@@ -108,7 +114,8 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 		Spec: v1alpha1.MaasValidatorSpec{
 			Host: "maas.sc",
 			Auth: v1alpha1.Auth{
-				SecretName: "maas-api-token",
+				SecretName: "maas-creds",
+				TokenKey:   "MAAS_API_KEY",
 			},
 			ImageRules: []v1alpha1.ImageRule{
 				{RuleName: "Ubuntu", Images: []v1alpha1.Image{
@@ -136,10 +143,21 @@ var _ = Describe("MaaSValidator controller", Ordered, func() {
 	vr := &vapi.ValidationResult{}
 	vrKey := types.NamespacedName{Name: vres.Name(val), Namespace: validatorNamespace}
 
+	maasSecret := &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      secretName,
+			Namespace: validatorNamespace,
+		},
+		Data: map[string][]byte{
+			fakeTokenKey: []byte(fakeToken),
+		},
+	}
+
 	It("Should create a ValidationResult and update its Status with a failed condition", func() {
 		By("By creating a new MaasValidator")
 		ctx := context.Background()
 
+		Expect(k8sClient.Create(ctx, maasSecret)).Should(Succeed())
 		Expect(k8sClient.Create(ctx, val)).Should(Succeed())
 
 		// Wait for the ValidationResult's Status to be updated
