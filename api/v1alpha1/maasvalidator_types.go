@@ -52,9 +52,14 @@ func (s MaasValidatorSpec) ResultCount() int {
 }
 
 // Auth provides authentication information for the MAAS Instance
+// Requires one of SecretName and TokenKey (if reading secret from Kubernetes) or APIToken (if reading secret from file)
 type Auth struct {
-	SecretName string `json:"secretName" yaml:"secretName"`
-	TokenKey   string `json:"tokenKey" yaml:"tokenKey"`
+	// SecretName is the name of the Kubernetes secret containing the MAAS API token
+	SecretName string `json:"secretName,omitempty" yaml:"secretName,omitempty"`
+	// TokenKey is the key in the Kubernetes secret containing the MAAS API token
+	TokenKey string `json:"tokenKey,omitempty" yaml:"tokenKey,omitempty"`
+	// APIToken is the value of the MAAS API token
+	APIToken string `json:"apiToken,omitempty" yaml:"apiToken,omitempty"`
 }
 
 // ImageRule defines a rule for validating one or more OS images
