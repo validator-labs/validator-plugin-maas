@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.12](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.11...v0.0.12) (2024-08-26)
+
+
+### Features
+
+* support inline auth ([#153](https://github.com/validator-labs/validator-plugin-maas/issues/153)) ([aee4938](https://github.com/validator-labs/validator-plugin-maas/commit/aee4938995e903f3de21a464271d647a8acf67ef))
+
+
+### Other
+
+* clean up changelog ([#151](https://github.com/validator-labs/validator-plugin-maas/issues/151)) ([03c36f7](https://github.com/validator-labs/validator-plugin-maas/commit/03c36f765ca7441bb494beb4a8e5f9f8a7a5c8c3))
+
 ## [0.0.11](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.11...v0.0.11) (2024-08-24)
 
 
