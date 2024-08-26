@@ -22,14 +22,14 @@ import (
 var SetUpClient = setUpClient
 
 // Validate validates the MaasValidatorSpec and returns a ValidationResponse.
-func Validate(spec v1alpha1.MaasValidatorSpec, maasURL string, maasToken string, log logr.Logger) types.ValidationResponse {
+func Validate(spec v1alpha1.MaasValidatorSpec, log logr.Logger) types.ValidationResponse {
 	resp := types.ValidationResponse{
 		ValidationRuleResults: make([]*types.ValidationRuleResult, 0, spec.ResultCount()),
 		ValidationRuleErrors:  make([]error, 0, spec.ResultCount()),
 	}
 	vrr := utils.BuildValidationResult(constants.PluginCode, constants.PluginCode)
 
-	maasClient, err := SetUpClient(maasURL, maasToken)
+	maasClient, err := SetUpClient(spec.Host, spec.Auth.APIToken)
 	if err != nil {
 		resp.AddResult(vrr, fmt.Errorf("failed to create MAAS client: %w", err))
 		return resp
