@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.0.13](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.12...v0.0.13) (2024-09-05)
+
+
+### Dependency Updates
+
+* **deps:** update module github.com/onsi/ginkgo/v2 to v2.20.2 ([cee1ee7](https://github.com/validator-labs/validator-plugin-maas/commit/cee1ee701897fa6c7bee2f353a8fd75ce0b2ec0c))
+* **deps:** update module github.com/onsi/gomega to v1.34.2 ([0e24959](https://github.com/validator-labs/validator-plugin-maas/commit/0e24959b8bee70995e496515366ffecfd2560136))
+* **deps:** update module github.com/validator-labs/validator to v0.1.10 ([fae822d](https://github.com/validator-labs/validator-plugin-maas/commit/fae822d25d7ada46a831c13d57bebbc8832775fd))
+* **deps:** update module github.com/validator-labs/validator to v0.1.9 ([0fe0303](https://github.com/validator-labs/validator-plugin-maas/commit/0fe0303e945fde86cc80d6b64d8731a581f958a3))
+* **deps:** update module sigs.k8s.io/cluster-api to v1.8.2 ([de0dc2f](https://github.com/validator-labs/validator-plugin-maas/commit/de0dc2f661030c0850a3b3216987863458c26105))
+
 ## [0.0.12](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.11...v0.0.12) (2024-08-26)
 
 
