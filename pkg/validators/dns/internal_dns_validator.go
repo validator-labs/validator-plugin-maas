@@ -84,7 +84,7 @@ func formatDNSRecords(dnsResources []entity.DNSResource) map[string]map[string]v
 	formattedRecords := make(map[string]map[string]v1alpha1.DNSRecord)
 
 	for _, r := range dnsResources {
-		if r.ResourceRecords != nil && len(r.ResourceRecords) > 0 {
+		if len(r.ResourceRecords) > 0 {
 			fr := make(map[string]v1alpha1.DNSRecord, 0)
 			for _, rr := range r.ResourceRecords {
 				key := fmt.Sprint(rr.RRData, rr.RRType, rr.TTL)
