@@ -13,7 +13,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.22.0
 	github.com/onsi/gomega v1.36.0
 	github.com/stretchr/testify v1.10.0
-	github.com/validator-labs/validator v0.1.13
+	github.com/validator-labs/validator v0.1.14
 	k8s.io/api v0.31.3
 	k8s.io/apimachinery v0.31.3
 	k8s.io/client-go v0.31.3
