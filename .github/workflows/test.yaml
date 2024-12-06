@@ -9,5 +9,5 @@ on:
 
 jobs:
   call-test:
-    uses: validator-labs/workflows/.github/workflows/test.yaml@b9e4d708ad863b844fe4e0b777a80ad14000e6f8
+    uses: validator-labs/workflows/.github/workflows/test.yaml@28b57754dc8ddb5a3e4a5fb7e92a9a0b87f31efe
     secrets: inherit
