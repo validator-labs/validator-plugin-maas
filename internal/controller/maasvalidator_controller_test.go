@@ -14,7 +14,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 
 	// . "github.com/onsi/gomega"
-	//+kubebuilder:scaffold:imports
+	// +kubebuilder:scaffold:imports
 	"github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/validator-labs/validator-plugin-maas/pkg/validate"
 	vapi "github.com/validator-labs/validator/api/v1alpha1"
