@@ -192,8 +192,8 @@ type Resource struct {
 // MaasValidatorStatus defines the observed state of MaasValidator
 type MaasValidatorStatus struct{}
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
 
 // MaasValidator is the Schema for the maasvalidators API
 type MaasValidator struct {
@@ -219,7 +219,7 @@ func (v MaasValidator) ResultCount() int {
 	return v.Spec.ResultCount()
 }
 
-//+kubebuilder:object:root=true
+// +kubebuilder:object:root=true
 
 // MaasValidatorList contains a list of MaasValidator
 type MaasValidatorList struct {
