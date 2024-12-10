@@ -11,7 +11,7 @@ require (
 	github.com/deckarep/golang-set/v2 v2.7.0
 	github.com/go-logr/logr v1.4.2
 	github.com/onsi/ginkgo/v2 v2.22.0
-	github.com/onsi/gomega v1.36.0
+	github.com/onsi/gomega v1.36.1
 	github.com/stretchr/testify v1.10.0
 	github.com/validator-labs/validator v0.1.14
 	k8s.io/api v0.31.3
