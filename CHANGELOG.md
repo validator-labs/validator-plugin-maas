@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.14](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.13...v0.0.14) (2024-12-11)
+
+
+### Dependency Updates
+
+* **deps:** update all non-major dependencies to v0.31.4 ([#191](https://github.com/validator-labs/validator-plugin-maas/issues/191)) ([33ebac4](https://github.com/validator-labs/validator-plugin-maas/commit/33ebac46d6aaaa325f6893b5f518f6c7994cb5f5))
+* **deps:** update build digest to 5e4aaa9 ([#193](https://github.com/validator-labs/validator-plugin-maas/issues/193)) ([625e2b9](https://github.com/validator-labs/validator-plugin-maas/commit/625e2b942745ad2f08fe3e4700f62dae47fdd432))
+
 ## [0.0.13](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.12...v0.0.13) (2024-12-11)
 
 
