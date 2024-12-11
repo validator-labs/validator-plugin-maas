@@ -1,5 +1,52 @@
 # Changelog
 
+## [0.0.13](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.12...v0.0.13) (2024-12-11)
+
+
+### Other
+
+* make reviewable ([#162](https://github.com/validator-labs/validator-plugin-maas/issues/162)) ([1adb7a3](https://github.com/validator-labs/validator-plugin-maas/commit/1adb7a3beedf455c59ac3f1f3aab5d58e2beb4ba))
+* make reviewable ([#165](https://github.com/validator-labs/validator-plugin-maas/issues/165)) ([806549b](https://github.com/validator-labs/validator-plugin-maas/commit/806549bfadcb128628239b32f478d88612a3b855))
+* remove deprecated kube-rbac-proxy ([#185](https://github.com/validator-labs/validator-plugin-maas/issues/185)) ([ccd09f7](https://github.com/validator-labs/validator-plugin-maas/commit/ccd09f7115a535c6e04ee0ba64e15e62cbbc50f7))
+* update renovate.json ([68ba4e3](https://github.com/validator-labs/validator-plugin-maas/commit/68ba4e3a6c3b7dc557bfd7b3809f2784d226701d))
+* Update renovate.json ([4cabcf3](https://github.com/validator-labs/validator-plugin-maas/commit/4cabcf3d6f016cc1757efe69e1ef14c2ddfd0272))
+
+
+### Dependency Updates
+
+* **deps:** update all non-major dependencies ([#168](https://github.com/validator-labs/validator-plugin-maas/issues/168)) ([b8bab52](https://github.com/validator-labs/validator-plugin-maas/commit/b8bab520477755f1ccd40949fe621d513d8d4129))
+* **deps:** update all non-major dependencies ([#173](https://github.com/validator-labs/validator-plugin-maas/issues/173)) ([9f10771](https://github.com/validator-labs/validator-plugin-maas/commit/9f10771ed49d60661427abe3fcf536fbc11d778b))
+* **deps:** update all non-major dependencies ([#184](https://github.com/validator-labs/validator-plugin-maas/issues/184)) ([e7e9f54](https://github.com/validator-labs/validator-plugin-maas/commit/e7e9f54b9397080dc1127752804512aac3c41157))
+* **deps:** update build digest to 3463b98 ([#170](https://github.com/validator-labs/validator-plugin-maas/issues/170)) ([eb22d66](https://github.com/validator-labs/validator-plugin-maas/commit/eb22d66fe671a2c28e4d038f7717b074e3f7c816))
+* **deps:** update build digest to 3840c9d ([#171](https://github.com/validator-labs/validator-plugin-maas/issues/171)) ([df3828a](https://github.com/validator-labs/validator-plugin-maas/commit/df3828af7c5c7888e9c40e1e1f7d0d2b3750c85c))
+* **deps:** update build digest to 5ffe724 ([#174](https://github.com/validator-labs/validator-plugin-maas/issues/174)) ([09ba18e](https://github.com/validator-labs/validator-plugin-maas/commit/09ba18e4262e481d17c2e365eea96109f8875608))
+* **deps:** update build digest to 713df39 ([#172](https://github.com/validator-labs/validator-plugin-maas/issues/172)) ([06ae53d](https://github.com/validator-labs/validator-plugin-maas/commit/06ae53d54089af83fcc3e3f7a31f2f3de54c6a85))
+* **deps:** update build digest to a46a554 ([#177](https://github.com/validator-labs/validator-plugin-maas/issues/177)) ([59be487](https://github.com/validator-labs/validator-plugin-maas/commit/59be4871ac22e981a7fa64cd1337d2e28e9dad1c))
+* **deps:** update build digest to c847351 ([#187](https://github.com/validator-labs/validator-plugin-maas/issues/187)) ([91e1062](https://github.com/validator-labs/validator-plugin-maas/commit/91e106230fabfc35eb227e402fb56b0b49a06b68))
+* **deps:** update build digest to d0ef938 ([#181](https://github.com/validator-labs/validator-plugin-maas/issues/181)) ([c6f079a](https://github.com/validator-labs/validator-plugin-maas/commit/c6f079a4d1b97c2135823f32706489e9b778ce68))
+* **deps:** update build digest to db64f63 ([#169](https://github.com/validator-labs/validator-plugin-maas/issues/169)) ([1e1aa64](https://github.com/validator-labs/validator-plugin-maas/commit/1e1aa64e1c5b85e11ecbd795c704e8ae811f2464))
+* **deps:** update build digest to dd09b58 ([#176](https://github.com/validator-labs/validator-plugin-maas/issues/176)) ([cca4036](https://github.com/validator-labs/validator-plugin-maas/commit/cca40367bb03407b5af375ea85671dd6bfe34cd2))
+* **deps:** update build digest to de3e944 ([#186](https://github.com/validator-labs/validator-plugin-maas/issues/186)) ([8c5c68f](https://github.com/validator-labs/validator-plugin-maas/commit/8c5c68f21c2b3fbde6e1f9315f140f37ee16e9ad))
+* **deps:** update kubernetes packages to v0.31.1 ([a78b991](https://github.com/validator-labs/validator-plugin-maas/commit/a78b991ce61d1e3c4d3cd15855913b43f28ab481))
+* **deps:** update kubernetes packages to v0.31.2 ([5aac110](https://github.com/validator-labs/validator-plugin-maas/commit/5aac1103df0de80c7d0b250cc5043d2a97c7ac45))
+* **deps:** update module github.com/onsi/ginkgo/v2 to v2.20.2 ([cee1ee7](https://github.com/validator-labs/validator-plugin-maas/commit/cee1ee701897fa6c7bee2f353a8fd75ce0b2ec0c))
+* **deps:** update module github.com/onsi/ginkgo/v2 to v2.21.0 ([a9b33e5](https://github.com/validator-labs/validator-plugin-maas/commit/a9b33e596483b3a7cffaf5d57e23fe7f9ee212f2))
+* **deps:** update module github.com/onsi/gomega to v1.34.2 ([0e24959](https://github.com/validator-labs/validator-plugin-maas/commit/0e24959b8bee70995e496515366ffecfd2560136))
+* **deps:** update module github.com/onsi/gomega to v1.35.0 ([75797b3](https://github.com/validator-labs/validator-plugin-maas/commit/75797b3caad62a7948e84db577e37e2db2e96cd9))
+* **deps:** update module github.com/onsi/gomega to v1.36.0 ([#180](https://github.com/validator-labs/validator-plugin-maas/issues/180)) ([f68ff11](https://github.com/validator-labs/validator-plugin-maas/commit/f68ff11eb3650b107f8f2d768c0f300302fe3e33))
+* **deps:** update module github.com/onsi/gomega to v1.36.1 ([#188](https://github.com/validator-labs/validator-plugin-maas/issues/188)) ([c83531a](https://github.com/validator-labs/validator-plugin-maas/commit/c83531a6c1030c6997b84dbafe63aa1cdbc9fde2))
+* **deps:** update module github.com/stretchr/testify to v1.10.0 ([#179](https://github.com/validator-labs/validator-plugin-maas/issues/179)) ([bfcbd67](https://github.com/validator-labs/validator-plugin-maas/commit/bfcbd67b0cdba8c109ab4ddf3fd888e4aa2bfcbd))
+* **deps:** update module github.com/validator-labs/validator to v0.1.10 ([fae822d](https://github.com/validator-labs/validator-plugin-maas/commit/fae822d25d7ada46a831c13d57bebbc8832775fd))
+* **deps:** update module github.com/validator-labs/validator to v0.1.12 ([#159](https://github.com/validator-labs/validator-plugin-maas/issues/159)) ([520dd0c](https://github.com/validator-labs/validator-plugin-maas/commit/520dd0ccbae66dc4955db8b6e7d7cacf36ffabb4))
+* **deps:** update module github.com/validator-labs/validator to v0.1.13 ([#178](https://github.com/validator-labs/validator-plugin-maas/issues/178)) ([8b7f232](https://github.com/validator-labs/validator-plugin-maas/commit/8b7f232c7ea6e01171bb0ed67b5c383f3403f45d))
+* **deps:** update module github.com/validator-labs/validator to v0.1.14 ([#182](https://github.com/validator-labs/validator-plugin-maas/issues/182)) ([a788e6e](https://github.com/validator-labs/validator-plugin-maas/commit/a788e6ea040f4527ce3f4369ddadb7400130d4c6))
+* **deps:** update module github.com/validator-labs/validator to v0.1.9 ([0fe0303](https://github.com/validator-labs/validator-plugin-maas/commit/0fe0303e945fde86cc80d6b64d8731a581f958a3))
+* **deps:** update module sigs.k8s.io/cluster-api to v1.8.2 ([de0dc2f](https://github.com/validator-labs/validator-plugin-maas/commit/de0dc2f661030c0850a3b3216987863458c26105))
+* **deps:** update module sigs.k8s.io/cluster-api to v1.8.4 ([ef21e50](https://github.com/validator-labs/validator-plugin-maas/commit/ef21e5042b9bbdda9a4ca3a12ff25861e5ec2c30))
+* **deps:** update module sigs.k8s.io/cluster-api to v1.9.0 ([#190](https://github.com/validator-labs/validator-plugin-maas/issues/190)) ([fbbdb62](https://github.com/validator-labs/validator-plugin-maas/commit/fbbdb62a824eab3a6e4490073170256c0ac9c281))
+* **deps:** update module sigs.k8s.io/controller-runtime to v0.19.1 ([df05e59](https://github.com/validator-labs/validator-plugin-maas/commit/df05e5916ccf8d5c4124d7ae5eaaa00e1a4d92da))
+* **deps:** update module sigs.k8s.io/controller-runtime to v0.19.2 ([#175](https://github.com/validator-labs/validator-plugin-maas/issues/175)) ([776c853](https://github.com/validator-labs/validator-plugin-maas/commit/776c853c703e0efe7f9e331cd431ff7ab4456629))
+
 ## [0.0.12](https://github.com/validator-labs/validator-plugin-maas/compare/v0.0.11...v0.0.12) (2024-08-26)
 
 
