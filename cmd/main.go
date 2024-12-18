@@ -37,6 +37,7 @@ import (
 
 	validationv1alpha1 "github.com/validator-labs/validator-plugin-maas/api/v1alpha1"
 	"github.com/validator-labs/validator-plugin-maas/internal/controller"
+	validatorv1alpha1 "github.com/validator-labs/validator/api/v1alpha1"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -47,7 +48,7 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
-
+	utilruntime.Must(validatorv1alpha1.AddToScheme(scheme))
 	utilruntime.Must(validationv1alpha1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
