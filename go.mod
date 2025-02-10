@@ -1,6 +1,6 @@
 module github.com/validator-labs/validator-plugin-maas
 
-go 1.22.5
+go 1.23.6
 
 // Versions published more than once, so the latest "versions" of these
 // versions cannot be accessed when using the Go module mirror.
