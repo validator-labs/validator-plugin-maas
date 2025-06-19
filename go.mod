@@ -7,18 +7,18 @@ go 1.23.6
 retract [v0.0.8, v0.0.10]
 
 require (
-	github.com/canonical/gomaasclient v0.8.0
-	github.com/deckarep/golang-set/v2 v2.7.0
-	github.com/go-logr/logr v1.4.2
-	github.com/onsi/ginkgo/v2 v2.22.2
-	github.com/onsi/gomega v1.36.2
+	github.com/canonical/gomaasclient v0.15.0
+	github.com/deckarep/golang-set/v2 v2.8.0
+	github.com/go-logr/logr v1.4.3
+	github.com/onsi/ginkgo/v2 v2.23.4
+	github.com/onsi/gomega v1.37.0
 	github.com/stretchr/testify v1.10.0
 	github.com/validator-labs/validator v0.1.16
-	k8s.io/api v0.32.2
-	k8s.io/apimachinery v0.32.2
-	k8s.io/client-go v0.32.2
-	sigs.k8s.io/cluster-api v1.9.5
-	sigs.k8s.io/controller-runtime v0.20.2
+	k8s.io/api v0.33.2
+	k8s.io/apimachinery v0.33.2
+	k8s.io/client-go v0.33.2
+	sigs.k8s.io/cluster-api v1.10.3
+	sigs.k8s.io/controller-runtime v0.21.0
 )
 
 require (
