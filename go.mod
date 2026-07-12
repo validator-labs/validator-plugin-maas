@@ -16,7 +16,7 @@ require (
 	github.com/validator-labs/validator v0.1.16
 	k8s.io/api v0.32.2
 	k8s.io/apimachinery v0.32.2
-	k8s.io/client-go v0.32.2
+	k8s.io/client-go v1.5.2
 	sigs.k8s.io/cluster-api v1.9.5
 	sigs.k8s.io/controller-runtime v0.20.2
 )
