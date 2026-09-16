@@ -1,6 +1,6 @@
 module github.com/validator-labs/validator-plugin-maas
 
-go 1.23.6
+go 1.25
 
 // Versions published more than once, so the latest "versions" of these
 // versions cannot be accessed when using the Go module mirror.
@@ -8,7 +8,8 @@ retract [v0.0.8, v0.0.10]
 
 require (
 	github.com/canonical/gomaasclient v0.8.0
-	github.com/deckarep/golang-set/v2 v2.7.0
+	github.com/deckarep/golang-set/v2 v2.9.0
+	github.com/deckarep/golang-set/v3 v3.0.0
 	github.com/go-logr/logr v1.4.2
 	github.com/onsi/ginkgo/v2 v2.22.2
 	github.com/onsi/gomega v1.36.2
@@ -77,6 +78,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stoewer/go-strcase v1.3.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
+	go.mongodb.org/mongo-driver v1.17.4 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.53.0 // indirect
 	go.opentelemetry.io/otel v1.28.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.28.0 // indirect
